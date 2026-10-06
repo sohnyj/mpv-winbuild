@@ -1,0 +1,5 @@
+#!/bin/sh
+# Query only the packages installed into the sysroot, for static linking.
+PKG_CONFIG_LIBDIR="@SYSROOT_DIR@/lib/pkgconfig:@SYSROOT_DIR@/share/pkgconfig"
+export PKG_CONFIG_LIBDIR
+exec "@PKGCONF_EXECUTABLE@" --static "$@"

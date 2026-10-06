@@ -1,0 +1,4 @@
+#!/bin/sh
+# clang only searches its own directories for configuration files, so the
+# profile's configuration file is passed explicitly.
+exec "@DRIVER@" --config="@CONFIG_FILE@" "$@"
