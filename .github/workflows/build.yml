@@ -1,0 +1,262 @@
+name: Build mpv
+
+on:
+  workflow_dispatch:
+    inputs:
+      github_release:
+        description: Upload the archives to a GitHub release
+        type: boolean
+        default: true
+      fresh_build:
+        description: Build from scratch instead of from the build caches
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Moves every source to the tip of its branch once, so that both levels
+  # build the same commits.
+  sources:
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          scripts/install-dependencies.sh
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Restore sources
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: sources
+          key: sources-${{ github.run_id }}
+          restore-keys: sources-
+
+      - name: Update sources
+        run: scripts/build.sh --sources-only
+
+      - name: Upload revisions
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: revisions
+          path: build/*/revisions.txt
+          if-no-files-found: error
+
+      - name: Save sources
+        id: save_sources
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: sources
+          key: sources-${{ github.run_id }}
+
+      - name: Delete older sources caches
+        if: ${{ steps.save_sources.outcome == 'success' }}
+        run: |
+          gh cache list --key sources- --limit 100 --json key \
+            --jq '.[].key | select(. != "sources-${{ github.run_id }}")' \
+            | xargs -r -n 1 gh cache delete
+
+  build:
+    needs: sources
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      actions: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - level: v3
+            march: x86-64-v3
+            mtune: generic
+          - level: znver3
+            march: znver3
+            mtune: znver3
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CCACHE_MAXSIZE: 1G
+      BUILD_DIR: build/${{ matrix.march }}
+      LOGS_DIR: mpv-x86_64-${{ matrix.level }}-logs
+    outputs:
+      clang_version: ${{ steps.identity.outputs.clang_version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies
+        run: |
+          scripts/install-dependencies.sh
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Restore sources
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: sources
+          key: sources-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      - name: Download revisions
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: revisions
+
+      # The inputs that change the build but that the stamps of the build
+      # directory do not track. A build cache is restored only for the same
+      # inputs; otherwise the build starts from scratch, with ccache.
+      - name: Identify the build inputs
+        id: identity
+        run: |
+          . scripts/defaults.env
+          mingw_commit="$(awk '$1 == "mingw-w64" { print $2 }' revisions.txt)"
+          {
+            echo "clang $(dpkg-query --show --showformat='${Version}' "clang-${LLVM_VERSION}")"
+            echo "nasm $(dpkg-query --show --showformat='${Version}' nasm)"
+            echo "glslang $(dpkg-query --show --showformat='${Version}' glslang-tools)"
+            echo "cmake $(cmake --version | head -n 1)"
+            echo "meson $(meson --version)"
+            echo "rust $(curl -fsSL https://static.rust-lang.org/dist/channel-rust-stable.toml \
+              | awk '/^\[pkg\.rust\]/ { found = 1 } found && /^version = / { print; found = 0 }')"
+            for dir in mingw-w64-headers mingw-w64-crt mingw-w64-libraries/winpthreads; do
+              echo "mingw-w64 ${dir} $(git -C sources/mingw-w64 rev-parse "${mingw_commit}:${dir}")"
+            done
+            echo "recipes ${{ hashFiles('CMakeLists.txt', 'cmake/**', 'toolchain/**', 'packages/**') }}"
+          } | tee identity.txt
+          echo "hash=$(sha256sum identity.txt | cut -c 1-16)" >> "${GITHUB_OUTPUT}"
+          echo "clang_version=$("clang-${LLVM_VERSION}" -dumpversion)" >> "${GITHUB_OUTPUT}"
+
+      - name: Restore build
+        if: ${{ !inputs.fresh_build }}
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ env.BUILD_DIR }}
+            !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
+          key: build-${{ matrix.march }}-${{ steps.identity.outputs.hash }}-${{ github.run_id }}
+          restore-keys: build-${{ matrix.march }}-${{ steps.identity.outputs.hash }}-
+
+      - name: Restore ccache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ccache
+          key: ccache-${{ matrix.march }}-${{ github.run_id }}
+          restore-keys: ccache-${{ matrix.march }}-
+
+      - name: Build
+        id: build
+        run: scripts/build.sh --march ${{ matrix.march }} --mtune ${{ matrix.mtune }} --revisions revisions.txt
+
+      - name: Package
+        run: scripts/package.sh --march ${{ matrix.march }} --level ${{ matrix.level }}
+
+      - name: Upload archives
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-${{ matrix.level }}
+          path: release
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Collect logs
+        if: ${{ always() }}
+        run: |
+          mkdir -p "${LOGS_DIR}"
+          cp -f identity.txt "${LOGS_DIR}/" || true
+          find "${BUILD_DIR}" -type f \( -iname "*-*.log" -o -wholename "*/ffbuild/config.log" \) \
+            -exec cp -f -t "${LOGS_DIR}" {} + || true
+
+      - name: Upload logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ env.LOGS_DIR }}
+          path: ${{ env.LOGS_DIR }}
+          if-no-files-found: ignore
+
+      - name: Save build
+        id: save_build
+        if: ${{ always() && steps.build.conclusion != 'skipped' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ env.BUILD_DIR }}
+            !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
+          key: build-${{ matrix.march }}-${{ steps.identity.outputs.hash }}-${{ github.run_id }}
+
+      - name: Save ccache
+        id: save_ccache
+        if: ${{ always() && steps.build.conclusion != 'skipped' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ccache
+          key: ccache-${{ matrix.march }}-${{ github.run_id }}
+
+      # Older caches go only once the new one is saved.
+      - name: Delete older build caches
+        if: ${{ always() && steps.save_build.outcome == 'success' }}
+        run: |
+          gh cache list --key build-${{ matrix.march }}- --limit 100 --json key \
+            --jq '.[].key | select(. != "build-${{ matrix.march }}-${{ steps.identity.outputs.hash }}-${{ github.run_id }}")' \
+            | xargs -r -n 1 gh cache delete
+
+      - name: Delete older ccache caches
+        if: ${{ always() && steps.save_ccache.outcome == 'success' }}
+        run: |
+          gh cache list --key ccache-${{ matrix.march }}- --limit 100 --json key \
+            --jq '.[].key | select(. != "ccache-${{ matrix.march }}-${{ github.run_id }}")' \
+            | xargs -r -n 1 gh cache delete
+
+  release:
+    needs: build
+    if: ${{ inputs.github_release }}
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download archives
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: release-*
+          path: release
+          merge-multiple: true
+
+      - name: Download revisions
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: revisions
+
+      - name: Create the release
+        run: |
+          revision() { awk -v project="$1" '$1 == project { print substr($2, 1, 9) }' revisions.txt; }
+          tag="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
+          notes="**LLVM/Clang**: ${{ needs.build.outputs.clang_version }}
+          **mpv**: [$(revision mpv)](https://github.com/mpv-player/mpv/commit/$(revision mpv))
+          **FFmpeg**: [$(revision ffmpeg)](https://github.com/FFmpeg/FFmpeg/commit/$(revision ffmpeg))
+          **libplacebo**: [$(revision libplacebo)](https://github.com/haasn/libplacebo/commit/$(revision libplacebo))
+          **Workflow**: [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          gh release create "${tag}" release/*.7z --title "$(date -u '+%Y-%m-%d %H:%M')" --notes "${notes}"
+
+      - name: Keep the latest 30 releases
+        run: |
+          gh release list --limit 1000 --json tagName --jq '.[].tagName' \
+            | sort -r -V \
+            | tail -n +31 \
+            | xargs -r -n 1 gh release delete --cleanup-tag --yes
