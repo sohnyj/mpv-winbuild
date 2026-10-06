@@ -31,7 +31,7 @@ function(cleanup _name _last_step)
 
     # <STAMP_DIR> doesn't resolve into full path, so <LOG_DIR> is used instead since its same folder.
     ExternalProject_Add_Step(${_name} fullclean
-        COMMAND find <LOG_DIR> -type f " ! -iname '*.cmake' " -size 0c -delete # remove 0 byte files which are stamp files
+        COMMAND find <LOG_DIR> -type f ! -iname *.cmake -size 0c -delete # remove 0 byte files which are stamp files
         ${COMMAND_FORCE_UPDATE}
         ALWAYS TRUE
         EXCLUDE_FROM_MAIN TRUE
