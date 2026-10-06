@@ -94,23 +94,10 @@ function(force_rebuild_git _name)
         set(target "\${upstream}")
     endif()
 
-file(WRITE ${stamp_dir}/reset_head.sh
-"#!/bin/bash
-set -e
-[[ -e \"${source_dir}/.git\" ]] || exit 0
-upstream=$(git -C ${source_dir} rev-parse -q --verify @{u}) || upstream=$(git -C ${source_dir} rev-parse HEAD)
-target=$(git -C ${source_dir} rev-parse -q --verify ${target}^{commit})
-if [[ ! -f \"${stamp_dir}/${_name}-patch\"  || \"${stamp_dir}/${_name}-download\" -nt \"${stamp_dir}/${_name}-patch\" || ! -f \"${stamp_dir}/HEAD\" || \"$(cat ${stamp_dir}/HEAD)\" != \"\${target}\" ]]; then
-    git -C ${source_dir} reset --hard \${target} -q
-    find \"${stamp_dir}\" -type f  ! -iname '*.cmake' -size 0c -delete
-    echo \"Removing ${_name} stamp files.\"
-    git -C ${source_dir} rev-parse HEAD > ${stamp_dir}/HEAD
-else
-    git -C ${source_dir} reset --hard -q
-fi
-git -C ${source_dir} submodule --quiet update --recursive")
-file(CHMOD ${stamp_dir}/reset_head.sh
-PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/reset_head.sh.in" "${stamp_dir}/reset_head.sh"
+        FILE_PERMISSIONS ${executable_permissions}
+        @ONLY
+    )
 
     ExternalProject_Add_Step(${_name} force-update
         ALWAYS TRUE
@@ -131,20 +118,17 @@ PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_
         LOG 1
     )
 
-    if(EXISTS ${source_dir}/.git)
-        ExternalProject_Add_Step(${_name} check-git
-            DEPENDERS download
-            INDEPENDENT TRUE
-            WORKING_DIRECTORY ${stamp_dir}
-            COMMAND ${CMAKE_COMMAND} -E touch ${stamp_dir}/${_name}-download
-            COMMAND ${CMAKE_COMMAND} -E copy ${_name}-gitinfo.txt ${_name}-gitclone-lastrun.txt
-            LOG 1
-        )
-    else()
-        execute_process(
-            WORKING_DIRECTORY ${stamp_dir}
-            COMMAND rm ${_name}-gitclone-lastrun.txt
-            ERROR_QUIET
-        )
-    endif()
+    # The git clone script deletes the source and clones it again unless
+    # gitclone-lastrun.txt is newer than gitinfo.txt, so an existing checkout,
+    # which the build directories share, is marked as cloned. The step is
+    # decided when it runs: one added only once the source exists would rerun
+    # the download step after the first clone.
+    ExternalProject_Add_Step(${_name} check-git
+        DEPENDERS download
+        INDEPENDENT TRUE
+        WORKING_DIRECTORY ${stamp_dir}
+        COMMAND bash -c "[ ! -e <SOURCE_DIR>/.git ] || cp ${_name}-gitinfo.txt ${_name}-gitclone-lastrun.txt"
+        COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] || rm -f ${_name}-gitclone-lastrun.txt"
+        LOG 1
+    )
 endfunction()

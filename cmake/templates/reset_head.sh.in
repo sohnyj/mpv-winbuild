@@ -1,0 +1,17 @@
+#!/bin/bash
+# Moves the checkout of @_name@ to its target commit. When the commit, the
+# download or the recorded HEAD changed, deletes the stamps so that the next
+# build rebuilds the project; otherwise discards the changes in the checkout.
+set -e
+[[ -e "@source_dir@/.git" ]] || exit 0
+upstream=$(git -C @source_dir@ rev-parse -q --verify @{u}) || upstream=$(git -C @source_dir@ rev-parse HEAD)
+target=$(git -C @source_dir@ rev-parse -q --verify @target@^{commit})
+if [[ ! -f "@stamp_dir@/@_name@-patch"  || "@stamp_dir@/@_name@-download" -nt "@stamp_dir@/@_name@-patch" || ! -f "@stamp_dir@/HEAD" || "$(cat @stamp_dir@/HEAD)" != "${target}" ]]; then
+    git -C @source_dir@ reset --hard ${target} -q
+    find "@stamp_dir@" -type f  ! -iname '*.cmake' -size 0c -delete
+    echo "Removing @_name@ stamp files."
+    git -C @source_dir@ rev-parse HEAD > @stamp_dir@/HEAD
+else
+    git -C @source_dir@ reset --hard -q
+fi
+git -C @source_dir@ submodule --quiet update --recursive
