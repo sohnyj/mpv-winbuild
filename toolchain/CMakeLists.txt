@@ -6,7 +6,9 @@ set(packages
     llvm-project
     mingw-w64
     rustup
+    windows-rs
     # depth 1
+    cppwinrt
     mingw-w64-headers
     # depth 2
     mingw-w64-crt

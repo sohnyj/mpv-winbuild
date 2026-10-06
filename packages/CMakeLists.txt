@@ -56,6 +56,8 @@ set(packages
     subrandr
     # depth 5
     ffmpeg
+    # depth 6
+    mpv
 )
 foreach(package IN LISTS packages)
     set(SOURCE_LOCATION "${SOURCES_DIR}/${package}")
