@@ -14,9 +14,9 @@ ExternalProject_Add(ngtcp2
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
         -DBUILD_TESTING=OFF
-        "-DCMAKE_EXE_LINKER_FLAGS=-lbrotlicommon -lbrotlidec -lbrotlienc -lz -lzstd"
         -DENABLE_LIB_ONLY=ON
         -DENABLE_SHARED_LIB=OFF
+        "-DCMAKE_EXE_LINKER_FLAGS=-lbrotlicommon -lbrotlidec -lbrotlienc -lz -lzstd"
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )

@@ -22,9 +22,9 @@ ExternalProject_Add(openssl
         --cross-compile-prefix=${TARGET_TRIPLE}-
         --prefix=${SYSROOT_DIR}
         --libdir=lib
-        mingw64
-        CC=clang
         -flto=${LTO_MODE}
+        CC=clang
+        mingw64
         enable-brotli
         enable-ec_nistp_64_gcc_128
         enable-zlib
