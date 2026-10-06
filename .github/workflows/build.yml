@@ -85,17 +85,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - level: v3
-            march: x86-64-v3
+          - march: x86-64-v3
             mtune: generic
-          - level: znver3
-            march: znver3
+          - march: znver3
             mtune: znver3
     env:
       GH_TOKEN: ${{ github.token }}
       CCACHE_MAXSIZE: 1G
       BUILD_DIR: build/${{ matrix.march }}
-      LOGS_DIR: mpv-x86_64-${{ matrix.level }}-logs
+      LOGS_DIR: logs-${{ matrix.march }}
     outputs:
       clang_version: ${{ steps.clang.outputs.version }}
     steps:
@@ -170,12 +168,12 @@ jobs:
         run: scripts/build.sh --march ${{ matrix.march }} --mtune ${{ matrix.mtune }} --revisions revisions.txt
 
       - name: Package
-        run: scripts/package.sh --march ${{ matrix.march }} --level ${{ matrix.level }}
+        run: scripts/package.sh --march ${{ matrix.march }}
 
       - name: Upload archives
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: release-${{ matrix.level }}
+          name: release-${{ matrix.march }}
           path: release
           if-no-files-found: error
           compression-level: 0
