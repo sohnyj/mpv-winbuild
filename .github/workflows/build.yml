@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       github_release:
-        description: Upload the archives to a GitHub release
+        description: Upload to GitHub release
         type: boolean
         default: true
       fresh_build:
-        description: Build from scratch instead of from the build caches
+        description: Build from scratch
         type: boolean
         default: false
 
