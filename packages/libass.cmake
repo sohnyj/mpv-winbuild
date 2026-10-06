@@ -22,7 +22,6 @@ ExternalProject_Add(libass
         -Dasm=enabled
         -Dcheckasm=disabled
         -Dcompare=disabled
-        -Dcoretext=disabled
         -Ddirectwrite=enabled
         -Dfontconfig=disabled
         -Dfuzz=disabled
