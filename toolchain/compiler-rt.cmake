@@ -6,8 +6,8 @@ ExternalProject_Add(compiler-rt
         llvm-project
         mingw-w64-crt
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ${LLVM_SOURCE_DIR}
     SOURCE_SUBDIR compiler-rt/lib/builtins
+    SOURCE_DIR ${LLVM_SOURCE_DIR}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_C_COMPILER_TARGET=${TARGET_TRIPLE}

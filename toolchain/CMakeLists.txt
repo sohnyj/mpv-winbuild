@@ -19,7 +19,9 @@ set(packages
 foreach(package IN LISTS packages)
     set(SOURCE_LOCATION "${SOURCES_DIR}/${package}")
     include("${CMAKE_CURRENT_SOURCE_DIR}/${package}.cmake")
-    ExternalProject_Add_StepDependencies("${package}" configure ${PROFILE_FILES})
+    # A new toolchain profile rebuilds from the patch step: cleanup() restores
+    # the checkout after the install step.
+    ExternalProject_Add_StepDependencies("${package}" patch ${PROFILE_FILES})
 endforeach()
 # The packages are built after the runtimes, but a new runtime does not rebuild
 # them.

@@ -3,11 +3,11 @@
 # Windows executable names.
 ExternalProject_Add(bzip2
     GIT_REPOSITORY https://gitlab.com/bzip2/bzip2.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
     GIT_SUBMODULES ""
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
         --buildtype=release
         --cross-file=${MESON_CROSS}

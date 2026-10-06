@@ -7,9 +7,9 @@ ExternalProject_Add(libcxx
         compiler-rt
         llvm-project
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ${LLVM_SOURCE_DIR}
     SOURCE_SUBDIR runtimes
     LIST_SEPARATOR |
+    SOURCE_DIR ${LLVM_SOURCE_DIR}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_C_COMPILER_WORKS=ON

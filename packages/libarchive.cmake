@@ -10,7 +10,6 @@ ExternalProject_Add(libarchive
         zlib-ng
         zstd
     GIT_REPOSITORY https://github.com/libarchive/libarchive.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
@@ -20,6 +19,7 @@ ExternalProject_Add(libarchive
         !/examples/
         !/test_utils/"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}

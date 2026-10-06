@@ -1,9 +1,9 @@
 ExternalProject_Add(dav1d
     GIT_REPOSITORY https://code.videolan.org/videolan/dav1d.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
         --buildtype=release
         --cross-file=${MESON_CROSS}

@@ -1,11 +1,11 @@
 ExternalProject_Add(xxhash
     GIT_REPOSITORY https://github.com/Cyan4973/xxHash.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG dev
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/cli/ !/doc/ !/fuzz/ !/tests/"
     UPDATE_COMMAND ""
     SOURCE_SUBDIR build/cmake
+    SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}

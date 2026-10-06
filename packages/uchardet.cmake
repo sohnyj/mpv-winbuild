@@ -1,9 +1,9 @@
 ExternalProject_Add(uchardet
     GIT_REPOSITORY https://gitlab.freedesktop.org/uchardet/uchardet.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}

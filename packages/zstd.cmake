@@ -1,10 +1,10 @@
 ExternalProject_Add(zstd
     GIT_REPOSITORY https://github.com/facebook/zstd.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG dev
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/contrib/ !/doc/ !/examples/ !/tests/"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>/build/meson
         --buildtype=release
         --cross-file=${MESON_CROSS}

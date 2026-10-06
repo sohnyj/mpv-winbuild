@@ -1,9 +1,9 @@
 ExternalProject_Add(libunibreak
     GIT_REPOSITORY https://github.com/adah1972/libunibreak.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${EXEC} autoreconf -fi <SOURCE_DIR>
         COMMAND ${EXEC} <SOURCE_DIR>/configure
             --host=${TARGET_TRIPLE}

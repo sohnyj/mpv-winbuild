@@ -1,10 +1,10 @@
 ExternalProject_Add(libjpeg-turbo
     GIT_REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/fuzz/ !/test/ !/testimages/"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}

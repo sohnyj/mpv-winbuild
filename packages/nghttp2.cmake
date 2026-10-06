@@ -1,10 +1,10 @@
 ExternalProject_Add(nghttp2
     GIT_REPOSITORY https://github.com/nghttp2/nghttp2.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
     GIT_SUBMODULES ""
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}

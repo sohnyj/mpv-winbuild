@@ -18,11 +18,11 @@ set(luajit_make_variables
 )
 ExternalProject_Add(luajit
     GIT_REPOSITORY https://github.com/LuaJIT/LuaJIT.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG v2.1
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/doc/"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ${MAKE} -C <SOURCE_DIR>/src ${luajit_make_variables} amalg
     BUILD_IN_SOURCE 1

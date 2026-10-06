@@ -6,6 +6,7 @@ cpp = '@BIN_DIR@/@TARGET_TRIPLE@-clang++'
 ar = '@BIN_DIR@/@TARGET_TRIPLE@-ar'
 strip = '@BIN_DIR@/@TARGET_TRIPLE@-strip'
 windres = '@BIN_DIR@/@TARGET_TRIPLE@-windres'
+dlltool = '@BIN_DIR@/@TARGET_TRIPLE@-dlltool'
 pkg-config = '@BIN_DIR@/@TARGET_TRIPLE@-pkg-config'
 nasm = '@NASM_EXECUTABLE@'
 

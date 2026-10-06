@@ -2,7 +2,6 @@
 # installed clang was built from.
 ExternalProject_Add(llvm-project
     GIT_REPOSITORY https://github.com/llvm/llvm-project.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG release/${LLVM_VERSION}.x
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
@@ -31,6 +30,7 @@ ExternalProject_Add(llvm-project
         /llvm/cmake/"
     GIT_RESET ${LLVM_RUNTIMES_COMMIT}
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""

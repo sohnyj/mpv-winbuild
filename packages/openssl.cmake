@@ -6,7 +6,6 @@ ExternalProject_Add(openssl
         zlib-ng
         zstd
     GIT_REPOSITORY https://github.com/openssl/openssl.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
@@ -18,6 +17,7 @@ ExternalProject_Add(openssl
         !/test/"
     GIT_SUBMODULES ""
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/Configure
         --cross-compile-prefix=${TARGET_TRIPLE}-
         --prefix=${SYSROOT_DIR}

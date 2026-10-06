@@ -1,9 +1,9 @@
 ExternalProject_Add(fast_float
     GIT_REPOSITORY https://github.com/fastfloat/fast_float.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG main
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}

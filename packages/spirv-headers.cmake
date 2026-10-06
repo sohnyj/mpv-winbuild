@@ -1,10 +1,10 @@
 # Also a source of shaderc.
 ExternalProject_Add(spirv-headers
     GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Headers.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG main
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}

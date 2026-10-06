@@ -1,12 +1,12 @@
 ExternalProject_Add(libpsl
     GIT_REPOSITORY https://github.com/rockdaboot/libpsl.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/fuzz/ !/tests/"
     GIT_SUBMODULES
         list
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
         --buildtype=release
         --cross-file=${MESON_CROSS}

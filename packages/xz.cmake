@@ -1,6 +1,5 @@
 ExternalProject_Add(xz
     GIT_REPOSITORY https://github.com/tukaani-project/xz.git
-    SOURCE_DIR ${SOURCE_LOCATION}
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
@@ -13,6 +12,7 @@ ExternalProject_Add(xz
         !/po4a/
         !/windows/"
     UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${EXEC} autoreconf -fi <SOURCE_DIR>
         COMMAND ${EXEC} <SOURCE_DIR>/configure
             --host=${TARGET_TRIPLE}

@@ -1,10 +1,11 @@
-ExternalProject_Add(vulkan-loader
+ExternalProject_Add(ngtcp2
     DEPENDS
-        vulkan-headers
-    GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Loader.git
+        openssl
+    GIT_REPOSITORY https://github.com/ngtcp2/ngtcp2.git
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/docs/ !/tests/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/tests/"
+    GIT_SUBMODULES ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
@@ -12,10 +13,13 @@ ExternalProject_Add(vulkan-loader
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
-        -DUSE_GAS=ON
+        -DBUILD_TESTING=OFF
+        "-DCMAKE_EXE_LINKER_FLAGS=-lbrotlicommon -lbrotlidec -lbrotlienc -lz -lzstd"
+        -DENABLE_LIB_ONLY=ON
+        -DENABLE_SHARED_LIB=OFF
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(vulkan-loader)
-cleanup(vulkan-loader install)
+force_rebuild_git(ngtcp2)
+cleanup(ngtcp2 install)
