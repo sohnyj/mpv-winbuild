@@ -20,6 +20,8 @@ set(SYSROOT_DIR "" CACHE PATH "Directory the runtimes and packages are installed
 set(SOURCES_DIR "" CACHE PATH "Directory holding the source checkouts, shared between build directories")
 set(RUSTUP_LOCATION "" CACHE PATH "Directory of the Rust toolchain, shared between build directories")
 set(CCACHE_DIR "" CACHE PATH "Directory of the ccache cache of the compiler wrappers")
+# Empty moves the git sources to the tips of their branches.
+set(SOURCE_REVISIONS "" CACHE FILEPATH "File of <project> <commit> lines that the git sources are moved to")
 foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE TARGET_CPU_FLAGS TARGET_RUST_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS SYSROOT_DIR SOURCES_DIR RUSTUP_LOCATION CCACHE_DIR)
     if(NOT ${variable})
         message(FATAL_ERROR "Set ${variable}; scripts/build.sh passes it.")
@@ -73,3 +75,19 @@ add_custom_target(download)
 add_dependencies(download ${download_targets})
 add_custom_target(package-fullclean)
 add_dependencies(package-fullclean ${fullclean_targets})
+
+# revisions writes the checked-out commit of every git source to
+# revisions.txt, in the form that SOURCE_REVISIONS reads.
+set(git_sources "")
+foreach(repository IN LISTS repositories)
+    get_property(source_dir TARGET ${repository} PROPERTY _EP_SOURCE_DIR)
+    string(APPEND git_sources "${repository} ${source_dir}\n")
+endforeach()
+file(WRITE "${PROJECT_BINARY_DIR}/git-sources.txt" "${git_sources}")
+add_custom_target(revisions
+    COMMAND ${CMAKE_COMMAND}
+        -D "GIT_SOURCES=${PROJECT_BINARY_DIR}/git-sources.txt"
+        -D "OUTPUT=${PROJECT_BINARY_DIR}/revisions.txt"
+        -P "${PROJECT_SOURCE_DIR}/cmake/WriteRevisions.cmake"
+    VERBATIM
+)

@@ -8,9 +8,21 @@
 #
 # force_rebuild_git(<name>)
 #   Adds the step target <name>-force-update, which fetches the git source and
-#   moves it to its upstream branch, or to GIT_RESET; when that changes the
-#   checked-out commit, it deletes the stamps so that the next build rebuilds
-#   the project. A source that already exists is not cloned again.
+#   moves it to GIT_RESET, else to its commit in SOURCE_REVISIONS, else to its
+#   upstream branch; when that changes the checked-out commit, it deletes the
+#   stamps so that the next build rebuilds the project. A source that already
+#   exists is not cloned again.
+
+# The "<project> <commit>" lines of SOURCE_REVISIONS, as written by the
+# revisions target.
+if(SOURCE_REVISIONS)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${SOURCE_REVISIONS}")
+    file(STRINGS "${SOURCE_REVISIONS}" revision_lines)
+    foreach(line IN LISTS revision_lines)
+        string(REGEX MATCH "^([^ ]+) ([^ ]+)$" match "${line}")
+        set_property(GLOBAL PROPERTY "SOURCE_REVISION_${CMAKE_MATCH_1}" "${CMAKE_MATCH_2}")
+    endforeach()
+endif()
 
 function(cleanup _name _last_step)
     get_property(_build_in_source TARGET ${_name} PROPERTY _EP_BUILD_IN_SOURCE)
@@ -87,9 +99,12 @@ function(force_rebuild_git _name)
     get_property(git_reset TARGET ${_name} PROPERTY _EP_GIT_RESET)
     get_property(stamp_dir TARGET ${_name} PROPERTY _EP_STAMP_DIR)
     get_property(source_dir TARGET ${_name} PROPERTY _EP_SOURCE_DIR)
+    get_property(revision GLOBAL PROPERTY "SOURCE_REVISION_${_name}")
 
     if(NOT "${git_reset}" STREQUAL "")
         set(target "${git_reset}")
+    elseif(revision)
+        set(target "${revision}")
     else()
         set(target "\${upstream}")
     endif()
