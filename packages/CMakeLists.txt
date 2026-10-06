@@ -47,6 +47,10 @@ set(packages
     freetype2
     libplacebo
     ngtcp2
+    # depth 3
+    curl
+    harfbuzz
+    libbluray
 )
 foreach(package IN LISTS packages)
     set(SOURCE_LOCATION "${SOURCES_DIR}/${package}")

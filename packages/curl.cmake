@@ -1,0 +1,78 @@
+ExternalProject_Add(curl
+    DEPENDS
+        brotli
+        c-ares
+        libpsl
+        nghttp2
+        nghttp3
+        ngtcp2
+        openssl
+        zlib-ng
+        zstd
+    GIT_REPOSITORY https://github.com/curl/curl.git
+    GIT_TAG master
+    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/docs/ !/tests/"
+    UPDATE_COMMAND ""
+    SOURCE_DIR ${SOURCE_LOCATION}
+    CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}
+        -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+        -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
+        -DBUILD_CURL_EXE=OFF
+        -DBUILD_EXAMPLES=OFF
+        -DBUILD_LIBCURL_DOCS=OFF
+        -DBUILD_SHARED_LIBS=OFF
+        -DCARES_USE_STATIC_LIBS=ON
+        "-DCMAKE_C_FLAGS=-DNGHTTP3_STATICLIB -DNGHTTP2_STATICLIB -DNGTCP2_STATICLIB"
+        -DCMAKE_DISABLE_FIND_PACKAGE_Perl=ON
+        "-DCMAKE_EXE_LINKER_FLAGS=-lbrotlicommon -lbrotlidec -lbrotlienc -lzstd"
+        -DCURL_BROTLI=ON
+        -DCURL_CA_NATIVE=ON
+        -DCURL_DISABLE_AWS=ON
+        -DCURL_DISABLE_BEARER_AUTH=ON
+        -DCURL_DISABLE_BINDLOCAL=ON
+        -DCURL_DISABLE_DICT=ON
+        -DCURL_DISABLE_DOH=ON
+        -DCURL_DISABLE_FILE=ON
+        -DCURL_DISABLE_GETOPTIONS=ON
+        -DCURL_DISABLE_GOPHER=ON
+        -DCURL_DISABLE_IMAP=ON
+        -DCURL_DISABLE_IPFS=ON
+        -DCURL_DISABLE_LDAP=ON
+        -DCURL_DISABLE_MIME=ON
+        -DCURL_DISABLE_MQTT=ON
+        -DCURL_DISABLE_NETRC=ON
+        -DCURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG=ON
+        -DCURL_DISABLE_POP3=ON
+        -DCURL_DISABLE_PROGRESS_METER=ON
+        -DCURL_DISABLE_RTSP=ON
+        -DCURL_DISABLE_SHUFFLE_DNS=ON
+        -DCURL_DISABLE_SMTP=ON
+        -DCURL_DISABLE_TELNET=ON
+        -DCURL_DISABLE_TFTP=ON
+        -DCURL_DISABLE_WEBSOCKETS=ON
+        -DCURL_USE_LIBSSH2=OFF
+        -DCURL_USE_OPENSSL=ON
+        -DCURL_USE_PKGCONFIG=ON
+        -DCURL_ZLIB=ON
+        -DCURL_ZSTD=ON
+        -DENABLE_ARES=ON
+        -DENABLE_CURL_MANUAL=OFF
+        -DENABLE_THREADED_RESOLVER=ON
+        -DENABLE_UNICODE=ON
+        -DPICKY_COMPILER=OFF
+        -DUSE_ECH=ON
+        -DUSE_HTTPSRR=ON
+        -DUSE_NGHTTP2=ON
+        -DUSE_NGTCP2=ON
+        -DUSE_PROXY_HTTP3=ON
+        -DUSE_SSLS_EXPORT=ON
+        -DUSE_WIN32_IDN=ON
+    LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+    LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
+)
+
+force_rebuild_git(curl)
+cleanup(curl install)
