@@ -109,7 +109,7 @@ function(force_rebuild_git _name)
         set(target "\${upstream}")
     endif()
 
-    configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/reset_head.sh.in" "${stamp_dir}/reset_head.sh"
+    configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/reset_head.sh.in" "${stamp_dir}/reset_head.sh"
         FILE_PERMISSIONS ${executable_permissions}
         @ONLY
     )

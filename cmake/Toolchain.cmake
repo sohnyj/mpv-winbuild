@@ -1,9 +1,17 @@
 # Toolchain profiles on top of the apt.llvm.org clang.
 #
-# A profile holds the ${TARGET_TRIPLE}-* compiler wrappers and binutils links,
-# a pkg-config wrapper, the clang configuration file, a CMake toolchain file,
-# a Meson cross file, an autoconf site file and a command wrapper. It defines
-# tools and paths only; build switches stay in the recipes.
+# A profile holds what every build of the profile shares, in three layers:
+#   compiler and linker  the clang configuration file, with the target, the
+#                        sysroot, the runtimes and the flags of the whole
+#                        target; the ${TARGET_TRIPLE}-* compiler wrappers,
+#                        which run clang through ccache; the binutils links
+#   build systems        a CMake toolchain file, a Meson cross file, an
+#                        autoconf site file and a command wrapper, which give
+#                        each build system its tools and the sysroot
+#   dependencies         a pkg-config wrapper that queries the sysroot for
+#                        static linking
+# Switches of a single package stay in its recipe. A setting kept here only
+# because no package needs otherwise says so in a comment.
 
 include_guard(GLOBAL)
 
@@ -76,13 +84,13 @@ function(add_toolchain_profile profile cpu_flags)
     set(BIN_DIR "${profile_dir}/bin")
     set(CONFIG_FILE "${profile_dir}/${TARGET_TRIPLE}.cfg")
     set(CONFIG_SITE "${profile_dir}/config.site")
-    set(templates "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates")
+    set(profile_template_dir "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/profile")
 
-    configure_file("${templates}/clang.cfg.in" "${CONFIG_FILE}" @ONLY)
+    configure_file("${profile_template_dir}/clang.cfg.in" "${CONFIG_FILE}" @ONLY)
 
     foreach(driver IN ITEMS clang clang++)
         set(DRIVER "${LLVM_BINARY_DIR}/${driver}")
-        configure_file("${templates}/compiler.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-${driver}"
+        configure_file("${profile_template_dir}/compiler.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-${driver}"
             FILE_PERMISSIONS ${executable_permissions}
             @ONLY
         )
@@ -93,17 +101,17 @@ function(add_toolchain_profile profile cpu_flags)
         file(CREATE_LINK "${${variable}}" "${BIN_DIR}/${TARGET_TRIPLE}-${tool}" SYMBOLIC)
     endforeach()
 
-    configure_file("${templates}/pkg-config.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-pkg-config"
+    configure_file("${profile_template_dir}/pkg-config.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-pkg-config"
         FILE_PERMISSIONS ${executable_permissions}
         @ONLY
     )
-    configure_file("${templates}/exec.sh.in" "${profile_dir}/exec"
+    configure_file("${profile_template_dir}/exec.sh.in" "${profile_dir}/exec"
         FILE_PERMISSIONS ${executable_permissions}
         @ONLY
     )
-    configure_file("${templates}/toolchain.cmake.in" "${profile_dir}/toolchain.cmake" @ONLY)
-    configure_file("${templates}/meson-cross.ini.in" "${profile_dir}/meson-cross.ini" @ONLY)
-    configure_file("${templates}/config.site.in" "${CONFIG_SITE}" @ONLY)
+    configure_file("${profile_template_dir}/toolchain.cmake.in" "${profile_dir}/toolchain.cmake" @ONLY)
+    configure_file("${profile_template_dir}/meson-cross.ini.in" "${profile_dir}/meson-cross.ini" @ONLY)
+    configure_file("${profile_template_dir}/config.site.in" "${CONFIG_SITE}" @ONLY)
 
     set(EXEC "${profile_dir}/exec" PARENT_SCOPE)
     set(MAKE "${profile_dir}/exec" make "-j${MAKE_JOBS}" PARENT_SCOPE)
