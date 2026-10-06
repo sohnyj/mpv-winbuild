@@ -51,6 +51,9 @@ set(packages
     curl
     harfbuzz
     libbluray
+    # depth 4
+    libass
+    subrandr
 )
 foreach(package IN LISTS packages)
     set(SOURCE_LOCATION "${SOURCES_DIR}/${package}")

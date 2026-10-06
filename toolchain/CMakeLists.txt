@@ -5,6 +5,7 @@ set(packages
     # depth 0
     llvm-project
     mingw-w64
+    rustup
     # depth 1
     mingw-w64-headers
     # depth 2

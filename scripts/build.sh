@@ -7,7 +7,7 @@
 #                           e.g. x86-64-v3, znver3)
 #   --mtune <cpu>           clang -mtune of the packages (default: TARGET_MTUNE of defaults.sh)
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of defaults.sh)
-#   buildroot               location of the sources/ and build/ directories
+#   buildroot               location of the sources/, rustup/ and build/ directories
 #                           (default: the repository root)
 set -euo pipefail
 
@@ -43,11 +43,13 @@ cmake -G Ninja --fresh -S "${repo_root}" -B "${build_dir}" \
   -DLLVM_VERSION="${llvm_version}" \
   -DTARGET_TRIPLE="${TARGET_TRIPLE}" \
   -DTARGET_CPU_FLAGS="-march=${march} -mtune=${mtune}" \
+  -DTARGET_RUST_FLAGS="-C target-cpu=${march}" \
   -DRUNTIME_CPU_FLAGS="-march=${RUNTIME_MARCH} -mtune=${RUNTIME_MTUNE}" \
   -DLTO_MODE="${LTO_MODE}" \
   -DMAKE_JOBS="$(nproc)" \
   -DSYSROOT_DIR="${build_dir}/sysroot" \
-  -DSOURCES_DIR="${buildroot}/sources"
+  -DSOURCES_DIR="${buildroot}/sources" \
+  -DRUSTUP_LOCATION="${buildroot}/rustup"
 
 echo ">> Download sources"
 ninja -C "${build_dir}" download
