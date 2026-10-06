@@ -1,0 +1,11 @@
+# Autoconf site defaults for the @PROFILE@ toolchain profile of mpv-winbuild,
+# read by every configure script run through the profile's exec wrapper.
+# configure reads this file after its arguments, so a recipe can still pass
+# its own value.
+
+# Absolute paths: llvm-windres finds the preprocessor next to the path it was
+# started from.
+: "${CC=@BIN_DIR@/@TARGET_TRIPLE@-clang}"
+: "${CXX=@BIN_DIR@/@TARGET_TRIPLE@-clang++}"
+: "${RC=@BIN_DIR@/@TARGET_TRIPLE@-windres}"
+: "${WINDRES=@BIN_DIR@/@TARGET_TRIPLE@-windres}"

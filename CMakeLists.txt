@@ -6,48 +6,63 @@ if(NOT CMAKE_GENERATOR MATCHES "^Ninja")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-include(CpuLevels)
 
-# The scripts and CI pass these; scripts/defaults.sh holds their defaults.
+# Inputs. scripts/build.sh passes every one of them, with the defaults of
+# scripts/defaults.sh; CI calls the script.
 set(LLVM_VERSION "" CACHE STRING "Major version of the apt.llvm.org toolchain")
-set(TARGET_LEVEL "" CACHE STRING "CPU level the packages are built for (cmake/CpuLevels.cmake)")
-set(TARGET_TUNE "" CACHE STRING "clang -mtune for the packages; empty for the tuning of TARGET_LEVEL")
-get_property(cpu_levels GLOBAL PROPERTY CPU_LEVELS)
-set_property(CACHE TARGET_LEVEL PROPERTY STRINGS ${cpu_levels})
-foreach(variable IN ITEMS LLVM_VERSION TARGET_LEVEL)
+set(TARGET_TRIPLE "" CACHE STRING "Target triple, such as x86_64-w64-mingw32")
+set(TARGET_CPU_FLAGS "" CACHE STRING "clang CPU flags of the packages, such as -march=x86-64-v3 -mtune=generic")
+set(RUNTIME_CPU_FLAGS "" CACHE STRING "clang CPU flags of the runtimes")
+set(LTO_MODE "" CACHE STRING "clang -flto mode of the packages, such as thin")
+set(MAKE_JOBS "" CACHE STRING "Parallel jobs of the make builds")
+set(SYSROOT_DIR "" CACHE PATH "Directory the runtimes and packages are installed into")
+set(SOURCES_DIR "" CACHE PATH "Directory holding the source checkouts, shared between build directories")
+foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE TARGET_CPU_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS SYSROOT_DIR SOURCES_DIR)
     if(NOT ${variable})
-        message(FATAL_ERROR "Set ${variable}; scripts/defaults.sh holds the default.")
+        message(FATAL_ERROR "Set ${variable}; scripts/build.sh passes it.")
     endif()
 endforeach()
-if(NOT LLVM_VERSION MATCHES "^[0-9]+$")
-    message(FATAL_ERROR "LLVM_VERSION is a major version such as 23, not ${LLVM_VERSION}")
+
+find_program(MESON_EXECUTABLE NAMES meson REQUIRED)
+execute_process(
+    COMMAND "${MESON_EXECUTABLE}" --version
+    OUTPUT_VARIABLE meson_version
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    COMMAND_ERROR_IS_FATAL ANY
+)
+if(meson_version VERSION_LESS 1.12)
+    message(FATAL_ERROR "Meson 1.12 or newer is required, found ${meson_version}")
 endif()
 
-set(SOURCES_DIR "${PROJECT_SOURCE_DIR}/sources" CACHE PATH
-    "Directory holding the source checkouts, shared between build directories")
+# The architecture component of the triple.
+string(REGEX MATCH "^[^-]+" TARGET_PROCESSOR "${TARGET_TRIPLE}")
+set(RESOURCE_DIR "${PROJECT_BINARY_DIR}/resource")
+set(THINLTO_CACHE_DIR "${PROJECT_BINARY_DIR}/thinlto")
 
+include(PatchedExternalProject)
 include(Toolchain)
-include(AddPackage)
+include(CustomSteps)
 
-# The runtimes are built for x86-64-v3 at every level, and the packages of
-# every level link against them.
-cpu_level_flags(x86-64-v3 runtime_cpu_flags)
-add_toolchain_profile(runtime ${runtime_cpu_flags})
-cpu_level_flags("${TARGET_LEVEL}" target_cpu_flags TUNE "${TARGET_TUNE}")
-add_toolchain_profile(target ${target_cpu_flags})
+set_property(DIRECTORY PROPERTY EP_STEP_TARGETS download)
 
-foreach(recipe IN ITEMS
-    llvm-project
-    mingw-w64
-    mingw-w64-headers
-    mingw-w64-crt
-    compiler-rt
-    libcxx
-    winpthreads
-)
-    include("runtime/${recipe}.cmake")
+add_subdirectory(toolchain)
+add_subdirectory(packages)
+
+set(projects ${RUNTIMES} ${PACKAGES})
+set(repositories "")
+foreach(project IN LISTS projects)
+    get_property(git_repository TARGET ${project} PROPERTY _EP_GIT_REPOSITORY)
+    if(git_repository)
+        list(APPEND repositories ${project})
+    endif()
 endforeach()
+list(TRANSFORM repositories APPEND "-force-update" OUTPUT_VARIABLE update_targets)
+list(TRANSFORM projects APPEND "-download" OUTPUT_VARIABLE download_targets)
+list(TRANSFORM projects APPEND "-fullclean" OUTPUT_VARIABLE fullclean_targets)
 
-get_property(update_targets GLOBAL PROPERTY SOURCE_UPDATE_TARGETS)
 add_custom_target(update)
 add_dependencies(update ${update_targets})
+add_custom_target(download)
+add_dependencies(download ${download_targets})
+add_custom_target(package-fullclean)
+add_dependencies(package-fullclean ${fullclean_targets})

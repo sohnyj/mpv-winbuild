@@ -31,11 +31,6 @@ while (( $# > 0 )); do
   esac
 done
 
-if [[ ! "${llvm_version}" =~ ^[0-9]+$ ]]; then
-  echo "--llvm-version takes a major version such as 23, not ${llvm_version}" >&2
-  exit 1
-fi
-
 # shellcheck source=/dev/null
 . /etc/os-release
 codename="${VERSION_CODENAME}"

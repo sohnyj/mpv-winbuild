@@ -1,0 +1,7 @@
+#!/bin/sh
+# Runs a build command with the @PROFILE@ toolchain profile: its tools come
+# first in PATH, and configure scripts read its autoconf site file.
+PATH="@BIN_DIR@:$PATH"
+CONFIG_SITE="@CONFIG_SITE@"
+export PATH CONFIG_SITE
+exec "$@"

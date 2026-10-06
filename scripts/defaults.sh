@@ -4,3 +4,17 @@
 # Major version of the apt.llvm.org toolchain, one that has a release suite
 # (llvm-toolchain-<codename>-<version>).
 LLVM_VERSION=23
+
+# Target of the runtimes and packages.
+TARGET_TRIPLE=x86_64-w64-mingw32
+
+# clang -march and -mtune of the packages (build.sh --march, --mtune).
+TARGET_MARCH=x86-64-v3
+TARGET_MTUNE=generic
+
+# clang -march and -mtune of the runtimes, shared by the builds of every CPU.
+RUNTIME_MARCH=x86-64-v3
+RUNTIME_MTUNE=generic
+
+# clang -flto mode of the packages.
+LTO_MODE=thin

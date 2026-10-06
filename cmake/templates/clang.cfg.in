@@ -2,7 +2,7 @@
 # Options prefixed with $ are used only when linking and are placed after the
 # linker inputs.
 
---target=x86_64-w64-mingw32
+--target=@TARGET_TRIPLE@
 --sysroot=@SYSROOT_DIR@
 -resource-dir=@RESOURCE_DIR@
 -rtlib=compiler-rt

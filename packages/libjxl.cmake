@@ -1,0 +1,37 @@
+ExternalProject_Add(libjxl
+    DEPENDS
+        brotli
+        highway
+        lcms2
+    GIT_REPOSITORY https://github.com/libjxl/libjxl.git
+    SOURCE_DIR ${SOURCE_LOCATION}
+    GIT_TAG main
+    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/doc/ !/examples/"
+    GIT_SUBMODULES ""
+    UPDATE_COMMAND ""
+    CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}
+        -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+        -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
+        -DBUILD_SHARED_LIBS=OFF
+        -DBUILD_TESTING=OFF
+        -DJPEGXL_ENABLE_DOXYGEN=OFF
+        -DJPEGXL_ENABLE_EXAMPLES=OFF
+        -DJPEGXL_ENABLE_HWY_AVX3=ON
+        -DJPEGXL_ENABLE_HWY_AVX3_SPR=ON
+        -DJPEGXL_ENABLE_HWY_AVX3_ZEN4=ON
+        -DJPEGXL_ENABLE_JNI=OFF
+        -DJPEGXL_ENABLE_MANPAGES=OFF
+        -DJPEGXL_ENABLE_SJPEG=OFF
+        -DJPEGXL_ENABLE_SKCMS=OFF
+        -DJPEGXL_ENABLE_TOOLS=OFF
+        -DJPEGXL_ENABLE_TRANSCODE_JPEG=OFF
+        -DJPEGXL_FORCE_SYSTEM_LCMS2=ON
+    LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+    LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
+)
+
+force_rebuild_git(libjxl)
+cleanup(libjxl install)

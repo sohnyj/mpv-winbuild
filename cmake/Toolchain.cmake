@@ -1,10 +1,9 @@
 # Toolchain profiles on top of the apt.llvm.org clang.
 #
-# A profile is a directory under TOOLCHAIN_DIR holding the
-# x86_64-w64-mingw32-* compiler wrappers and binutils links, a pkg-config
-# wrapper, the clang configuration file and a CMake toolchain file. Every
-# generated file lives inside the build directory, so build directories for
-# different CPU levels never affect each other.
+# A profile holds the ${TARGET_TRIPLE}-* compiler wrappers and binutils links,
+# a pkg-config wrapper, the clang configuration file, a CMake toolchain file,
+# a Meson cross file, an autoconf site file and a command wrapper. It defines
+# tools and paths only; build switches stay in the recipes.
 
 include_guard(GLOBAL)
 
@@ -20,6 +19,7 @@ foreach(tool IN LISTS binutils)
     find_program("${variable}" NAMES "llvm-${tool}" HINTS "${LLVM_BINARY_DIR}" NO_DEFAULT_PATH REQUIRED)
 endforeach()
 find_program(PKGCONF_EXECUTABLE NAMES pkgconf REQUIRED)
+find_program(NASM_EXECUTABLE NAMES nasm REQUIRED)
 
 execute_process(
     COMMAND "${CLANG_EXECUTABLE}" -print-resource-dir
@@ -43,13 +43,8 @@ endif()
 set(LLVM_RUNTIMES_COMMIT "${CMAKE_MATCH_1}")
 message(STATUS "clang-${LLVM_VERSION} ${clang_package_version}")
 
-set(TOOLCHAIN_DIR "${PROJECT_BINARY_DIR}/toolchain")
-set(SYSROOT_DIR "${PROJECT_BINARY_DIR}/sysroot")
-set(RESOURCE_DIR "${TOOLCHAIN_DIR}/resource")
-set(THINLTO_CACHE_DIR "${PROJECT_BINARY_DIR}/thinlto")
-
 # clang resource directory: the builtin headers of the installed clang and the
-# compiler-rt builtins built for the target (runtime/compiler-rt.cmake).
+# compiler-rt builtins built for the target (toolchain/compiler-rt.cmake).
 file(MAKE_DIRECTORY "${RESOURCE_DIR}")
 file(CREATE_LINK "${clang_resource_dir}/include" "${RESOURCE_DIR}/include" SYMBOLIC)
 
@@ -59,23 +54,32 @@ set(executable_permissions
     WORLD_READ WORLD_EXECUTE
 )
 
-# add_toolchain_profile(<profile> <cpu-flag>...)
+# add_toolchain_profile(<profile> <cpu flags>)
 #
-# Generates TOOLCHAIN_DIR/<profile> and sets <PROFILE>_BIN_DIR and
-# <PROFILE>_TOOLCHAIN_FILE in the calling scope.
-function(add_toolchain_profile profile)
+# Generates the profile in CMAKE_CURRENT_BINARY_DIR/<profile>, compiling for
+# <cpu flags>, and sets, in the calling directory, the values the recipes pass
+# to their build systems:
+#
+#   EXEC            command prefix that runs a command with the profile's
+#                   tools first in PATH and its autoconf site file
+#   MAKE            make with MAKE_JOBS jobs, run through EXEC
+#   TOOLCHAIN_FILE  CMake toolchain file
+#   MESON_CROSS     Meson cross file
+#   PROFILE_FILES   every generated file a configure step depends on
+function(add_toolchain_profile profile cpu_flags)
     set(PROFILE "${profile}")
-    set(profile_dir "${TOOLCHAIN_DIR}/${profile}")
+    set(CPU_FLAGS "${cpu_flags}")
+    set(profile_dir "${CMAKE_CURRENT_BINARY_DIR}/${profile}")
     set(BIN_DIR "${profile_dir}/bin")
-    set(CONFIG_FILE "${profile_dir}/x86_64-w64-windows-gnu.cfg")
+    set(CONFIG_FILE "${profile_dir}/${TARGET_TRIPLE}.cfg")
+    set(CONFIG_SITE "${profile_dir}/config.site")
     set(templates "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates")
 
-    list(JOIN ARGN "\n" CPU_FLAGS)
     configure_file("${templates}/clang.cfg.in" "${CONFIG_FILE}" @ONLY)
 
     foreach(driver IN ITEMS clang clang++)
         set(DRIVER "${LLVM_BINARY_DIR}/${driver}")
-        configure_file("${templates}/compiler.sh.in" "${BIN_DIR}/x86_64-w64-mingw32-${driver}"
+        configure_file("${templates}/compiler.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-${driver}"
             FILE_PERMISSIONS ${executable_permissions}
             @ONLY
         )
@@ -83,16 +87,36 @@ function(add_toolchain_profile profile)
 
     foreach(tool IN LISTS binutils)
         string(TOUPPER "LLVM_${tool}" variable)
-        file(CREATE_LINK "${${variable}}" "${BIN_DIR}/x86_64-w64-mingw32-${tool}" SYMBOLIC)
+        file(CREATE_LINK "${${variable}}" "${BIN_DIR}/${TARGET_TRIPLE}-${tool}" SYMBOLIC)
     endforeach()
 
-    configure_file("${templates}/pkg-config.sh.in" "${BIN_DIR}/x86_64-w64-mingw32-pkg-config"
+    configure_file("${templates}/pkg-config.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-pkg-config"
+        FILE_PERMISSIONS ${executable_permissions}
+        @ONLY
+    )
+    configure_file("${templates}/exec.sh.in" "${profile_dir}/exec"
         FILE_PERMISSIONS ${executable_permissions}
         @ONLY
     )
     configure_file("${templates}/toolchain.cmake.in" "${profile_dir}/toolchain.cmake" @ONLY)
+    configure_file("${templates}/meson-cross.ini.in" "${profile_dir}/meson-cross.ini" @ONLY)
+    configure_file("${templates}/config.site.in" "${CONFIG_SITE}" @ONLY)
 
-    string(TOUPPER "${profile}" prefix)
-    set("${prefix}_BIN_DIR" "${BIN_DIR}" PARENT_SCOPE)
-    set("${prefix}_TOOLCHAIN_FILE" "${profile_dir}/toolchain.cmake" PARENT_SCOPE)
+    set(EXEC "${profile_dir}/exec" PARENT_SCOPE)
+    set(MAKE "${profile_dir}/exec" make "-j${MAKE_JOBS}" PARENT_SCOPE)
+    set(TOOLCHAIN_FILE "${profile_dir}/toolchain.cmake" PARENT_SCOPE)
+    set(MESON_CROSS "${profile_dir}/meson-cross.ini" PARENT_SCOPE)
+    # configure_file() rewrites a file only when its content changes, so
+    # depending on these reconfigures packages only after a real change.
+    set(PROFILE_FILES
+        "${CONFIG_FILE}"
+        "${BIN_DIR}/${TARGET_TRIPLE}-clang"
+        "${BIN_DIR}/${TARGET_TRIPLE}-clang++"
+        "${BIN_DIR}/${TARGET_TRIPLE}-pkg-config"
+        "${profile_dir}/exec"
+        "${profile_dir}/toolchain.cmake"
+        "${profile_dir}/meson-cross.ini"
+        "${CONFIG_SITE}"
+        PARENT_SCOPE
+    )
 endfunction()
