@@ -3,10 +3,10 @@
 # packages, from sources moved to the tip of their branches.
 #
 # Usage: build.sh [--march <cpu>] [--mtune <cpu>] [--llvm-version <major>] [buildroot]
-#   --march <cpu>           clang -march of the packages (default: TARGET_MARCH of defaults.sh;
+#   --march <cpu>           clang -march of the packages (default: TARGET_MARCH of defaults.env;
 #                           e.g. x86-64-v3, znver3)
-#   --mtune <cpu>           clang -mtune of the packages (default: TARGET_MTUNE of defaults.sh)
-#   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of defaults.sh)
+#   --mtune <cpu>           clang -mtune of the packages (default: TARGET_MTUNE of defaults.env)
+#   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of defaults.env)
 #   buildroot               location of the sources/, rustup/ and build/ directories
 #                           (default: the repository root)
 set -euo pipefail
@@ -14,8 +14,8 @@ set -euo pipefail
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
 
 repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
-# shellcheck source=defaults.sh
-. "${repo_root}/scripts/defaults.sh"
+# shellcheck source=defaults.env
+. "${repo_root}/scripts/defaults.env"
 
 march="${TARGET_MARCH}"
 mtune="${TARGET_MTUNE}"

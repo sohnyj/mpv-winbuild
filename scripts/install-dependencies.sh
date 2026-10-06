@@ -14,8 +14,8 @@ if (( EUID == 0 )); then
 fi
 
 script_dir="$(dirname "$(realpath "$0")")"
-# shellcheck source=defaults.sh
-. "${script_dir}/defaults.sh"
+# shellcheck source=defaults.env
+. "${script_dir}/defaults.env"
 
 llvm_version="${LLVM_VERSION}"
 while (( $# > 0 )); do

@@ -2,7 +2,7 @@
 # Reset git-based package sources for a fresh re-clone. For each package, ninja
 # runs its <package>-fullclean and <package>-removeprefix.
 #
-# Usage: clean-repo.sh [-p <package>]... [buildroot]
+# Usage: clean.sh [-p <package>]... [buildroot]
 #   -p, --package <package>  package to clean (repeatable; default: every git source clone)
 #   buildroot                location of the sources/ and build/ directories
 #                            (default: the repository root)

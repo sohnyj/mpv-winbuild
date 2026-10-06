@@ -2,7 +2,7 @@
 # Move the git sources to the tip of their branches: runs `ninja update` in
 # every configured build directory.
 #
-# Usage: update-repo.sh [buildroot]
+# Usage: update.sh [buildroot]
 #   buildroot  location of the build/ directory (default: the repository root)
 set -uo pipefail
 

@@ -8,7 +8,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Inputs. scripts/build.sh passes every one of them, with the defaults of
-# scripts/defaults.sh; CI calls the script.
+# scripts/defaults.env; CI calls the script.
 set(LLVM_VERSION "" CACHE STRING "Major version of the apt.llvm.org toolchain")
 set(TARGET_TRIPLE "" CACHE STRING "Target triple, such as x86_64-w64-mingw32")
 set(TARGET_CPU_FLAGS "" CACHE STRING "clang CPU flags of the packages, such as -march=x86-64-v3 -mtune=generic")
