@@ -5,7 +5,6 @@ ExternalProject_Add(subrandr
     DEPENDS
         freetype2
         harfbuzz
-        rustup
     GIT_REPOSITORY https://github.com/afishhh/subrandr.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
