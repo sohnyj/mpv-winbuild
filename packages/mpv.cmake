@@ -1,6 +1,7 @@
 ExternalProject_Add(mpv
     DEPENDS
         amf-headers
+        cppwinrt
         curl
         ffmpeg
         lcms2

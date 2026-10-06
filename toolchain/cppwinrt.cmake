@@ -1,8 +1,6 @@
 # A host tool that generates the C++/WinRT headers from the Windows metadata
 # into the sysroot, where mpv's win32-smtc includes them.
 ExternalProject_Add(cppwinrt
-    DEPENDS
-        windows-rs
     GIT_REPOSITORY https://github.com/microsoft/cppwinrt.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
@@ -20,3 +18,5 @@ ExternalProject_Add(cppwinrt
 
 force_rebuild_git(cppwinrt)
 cleanup(cppwinrt install)
+add_dependencies(cppwinrt windows-rs)
+ExternalProject_Add_StepDependencies(cppwinrt install ${WINDOWS_RS_SOURCE_DIR}/${WINDOWS_WINMD})
