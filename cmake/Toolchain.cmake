@@ -63,6 +63,8 @@ set(executable_permissions
 #   EXEC            command prefix that runs a command with the profile's
 #                   tools first in PATH and its autoconf site file
 #   MAKE            make with MAKE_JOBS jobs, run through EXEC
+#   TOOLCHAIN_BIN_DIR  directory of the ${TARGET_TRIPLE}-* tools; llvm-windres
+#                   finds its preprocessor only when started by this path
 #   TOOLCHAIN_FILE  CMake toolchain file
 #   MESON_CROSS     Meson cross file
 #   PROFILE_FILES   every generated file a configure step depends on
@@ -104,6 +106,7 @@ function(add_toolchain_profile profile cpu_flags)
 
     set(EXEC "${profile_dir}/exec" PARENT_SCOPE)
     set(MAKE "${profile_dir}/exec" make "-j${MAKE_JOBS}" PARENT_SCOPE)
+    set(TOOLCHAIN_BIN_DIR "${BIN_DIR}" PARENT_SCOPE)
     set(TOOLCHAIN_FILE "${profile_dir}/toolchain.cmake" PARENT_SCOPE)
     set(MESON_CROSS "${profile_dir}/meson-cross.ini" PARENT_SCOPE)
     # configure_file() rewrites a file only when its content changes, so

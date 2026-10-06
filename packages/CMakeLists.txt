@@ -54,6 +54,8 @@ set(packages
     # depth 4
     libass
     subrandr
+    # depth 5
+    ffmpeg
 )
 foreach(package IN LISTS packages)
     set(SOURCE_LOCATION "${SOURCES_DIR}/${package}")
