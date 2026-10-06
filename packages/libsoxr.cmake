@@ -1,3 +1,5 @@
+# The project requires a CMake older than policy CMP0069, which then ignores
+# CMAKE_INTERPROCEDURAL_OPTIMIZATION; the policy default enables LTO.
 ExternalProject_Add(libsoxr
     GIT_REPOSITORY https://github.com/chirlu/soxr.git
     GIT_TAG master
@@ -11,6 +13,7 @@ ExternalProject_Add(libsoxr
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
         -DBUILD_SHARED_LIBS=OFF
         -DBUILD_TESTS=OFF
+        -DCMAKE_POLICY_DEFAULT_CMP0069=NEW
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         -DWITH_DEV_TRACE=OFF
         -DWITH_LSR_BINDINGS=OFF

@@ -1,3 +1,5 @@
+# The project requires a CMake older than policy CMP0069, which then ignores
+# CMAKE_INTERPROCEDURAL_OPTIMIZATION; the policy default enables LTO.
 ExternalProject_Add(uchardet
     GIT_REPOSITORY https://gitlab.freedesktop.org/uchardet/uchardet.git
     GIT_TAG master
@@ -11,6 +13,7 @@ ExternalProject_Add(uchardet
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
         -DBUILD_BINARY=OFF
         -DBUILD_SHARED_LIBS=OFF
+        -DCMAKE_POLICY_DEFAULT_CMP0069=NEW
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
