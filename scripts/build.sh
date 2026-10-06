@@ -74,4 +74,5 @@ if [[ "${sources_only}" == true ]]; then
 fi
 
 echo ">> Build"
+ccache --dir "${buildroot}/ccache" --max-size "${CCACHE_MAXSIZE}"
 ninja -C "${build_dir}"

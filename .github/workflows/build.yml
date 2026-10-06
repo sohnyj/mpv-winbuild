@@ -91,7 +91,6 @@ jobs:
             mtune: znver3
     env:
       GH_TOKEN: ${{ github.token }}
-      CCACHE_MAXSIZE: 1G
       BUILD_DIR: build/${{ matrix.march }}
       LOGS_DIR: logs-${{ matrix.march }}
     outputs:
