@@ -7,7 +7,7 @@
 #                           e.g. x86-64-v3, znver3)
 #   --mtune <cpu>           clang -mtune of the packages (default: TARGET_MTUNE of defaults.env)
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of defaults.env)
-#   buildroot               location of the sources/, rustup/ and build/ directories
+#   buildroot               location of the sources/, rustup/, ccache/ and build/ directories
 #                           (default: the repository root)
 set -euo pipefail
 
@@ -49,7 +49,8 @@ cmake -G Ninja --fresh -S "${repo_root}" -B "${build_dir}" \
   -DMAKE_JOBS="$(nproc)" \
   -DSYSROOT_DIR="${build_dir}/sysroot" \
   -DSOURCES_DIR="${buildroot}/sources" \
-  -DRUSTUP_LOCATION="${buildroot}/rustup"
+  -DRUSTUP_LOCATION="${buildroot}/rustup" \
+  -DCCACHE_DIR="${buildroot}/ccache"
 
 echo ">> Download sources"
 ninja -C "${build_dir}" download

@@ -1,3 +1,4 @@
 /build*/
+/ccache/
 /rustup/
 /sources/

@@ -60,6 +60,7 @@ sudo apt-get install -y \
   autopoint \
   build-essential \
   ca-certificates \
+  ccache \
   "clang-${llvm_version}" \
   curl \
   git \
