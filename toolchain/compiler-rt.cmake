@@ -1,6 +1,7 @@
 # compiler-rt builtins, installed into the resource directory of the build
 # directory. Nothing links before the builtins exist, so the compiler checks
-# only compile.
+# only compile. compiler-rt reads the CMake package of its LLVM, given as
+# LLVM_DIR, since the toolchain file confines package searches to the sysroot.
 ExternalProject_Add(compiler-rt
     DEPENDS
         llvm-project
@@ -16,6 +17,7 @@ ExternalProject_Add(compiler-rt
         -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
         -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON
         -DCOMPILER_RT_EXCLUDE_ATOMIC_BUILTIN=OFF
+        -DLLVM_DIR=${LLVM_CMAKE_PACKAGE_DIR}
         -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=ON
     LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1

@@ -70,6 +70,7 @@ sudo apt-get install -y \
   libtool \
   "lld-${llvm_version}" \
   "llvm-${llvm_version}" \
+  "llvm-${llvm_version}-dev" \
   make \
   nasm \
   ninja-build \

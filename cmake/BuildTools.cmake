@@ -1,5 +1,5 @@
-# The programs the build runs, and the llvm-project commit of the installed
-# clang.
+# The programs the build runs, and the CMake package and the llvm-project commit
+# of the installed LLVM.
 
 include_guard(GLOBAL)
 
@@ -17,6 +17,8 @@ endif()
 find_program(CLANG_EXECUTABLE NAMES "clang-${LLVM_VERSION}" REQUIRED)
 file(REAL_PATH "${CLANG_EXECUTABLE}" clang_real_path)
 cmake_path(GET clang_real_path PARENT_PATH LLVM_BINARY_DIR)
+cmake_path(GET LLVM_BINARY_DIR PARENT_PATH llvm_prefix)
+set(LLVM_CMAKE_PACKAGE_DIR "${llvm_prefix}/lib/cmake/llvm")
 # Reconfigure when apt upgrades clang, which can move the runtimes commit.
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${clang_real_path}")
 
