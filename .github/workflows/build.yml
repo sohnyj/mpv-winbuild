@@ -33,8 +33,20 @@ jobs:
       actions: write
     env:
       GH_TOKEN: ${{ github.token }}
+    # Cache keys and artifact names start with the target triple; the build and
+    # ccache caches carry the LLVM version after the level.
+    outputs:
+      target: ${{ steps.defaults.outputs.target }}
+      llvm: ${{ steps.defaults.outputs.llvm }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Read the defaults
+        id: defaults
+        run: |
+          . scripts/defaults.env
+          echo "target=${TARGET_TRIPLE}" >> "${GITHUB_OUTPUT}"
+          echo "llvm=llvm${LLVM_VERSION}" >> "${GITHUB_OUTPUT}"
 
       - name: Install dependencies
         run: |
@@ -45,8 +57,8 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: sources
-          key: sources-${{ github.run_id }}
-          restore-keys: sources-
+          key: ${{ steps.defaults.outputs.target }}-sources-${{ github.run_id }}
+          restore-keys: ${{ steps.defaults.outputs.target }}-sources-
 
       - name: Update sources
         run: |
@@ -57,7 +69,7 @@ jobs:
       - name: Upload revisions
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: revisions
+          name: ${{ steps.defaults.outputs.target }}-revisions
           path: revisions.txt
           if-no-files-found: error
 
@@ -66,13 +78,13 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: sources
-          key: sources-${{ github.run_id }}
+          key: ${{ steps.defaults.outputs.target }}-sources-${{ github.run_id }}
 
       - name: Delete older sources caches
         if: ${{ steps.save_sources.outcome == 'success' }}
         run: |
-          gh cache list --key sources- --limit 100 --json key \
-            --jq '.[].key | select(. != "sources-${{ github.run_id }}")' \
+          gh cache list --key ${{ steps.defaults.outputs.target }}-sources- --limit 100 --json key \
+            --jq '.[].key | select(. != "${{ steps.defaults.outputs.target }}-sources-${{ github.run_id }}")' \
             | xargs -r -n 1 gh cache delete
 
   build:
@@ -92,7 +104,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       BUILD_DIR: build/${{ matrix.march }}
-      LOGS_DIR: logs-${{ matrix.march }}
+      LOGS_DIR: ${{ needs.sources.outputs.target }}-logs-${{ matrix.march }}
     outputs:
       clang_version: ${{ steps.clang.outputs.version }}
     steps:
@@ -113,13 +125,13 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: sources
-          key: sources-${{ github.run_id }}
+          key: ${{ needs.sources.outputs.target }}-sources-${{ github.run_id }}
           fail-on-cache-miss: true
 
       - name: Download revisions
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: revisions
+          name: ${{ needs.sources.outputs.target }}-revisions
 
       # The build cache key hashes the inputs that change the build but that
       # the stamps do not track. Other inputs restore no build cache, and the
@@ -151,15 +163,15 @@ jobs:
           path: |
             ${{ env.BUILD_DIR }}
             !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
-          key: build-${{ matrix.march }}-${{ steps.cache_key.outputs.hash }}-${{ github.run_id }}
-          restore-keys: build-${{ matrix.march }}-${{ steps.cache_key.outputs.hash }}-
+          key: ${{ needs.sources.outputs.target }}-build-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ steps.cache_key.outputs.hash }}-${{ github.run_id }}
+          restore-keys: ${{ needs.sources.outputs.target }}-build-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ steps.cache_key.outputs.hash }}-
 
       - name: Restore ccache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ccache
-          key: ccache-${{ matrix.march }}-${{ github.run_id }}
-          restore-keys: ccache-${{ matrix.march }}-
+          key: ${{ needs.sources.outputs.target }}-ccache-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ github.run_id }}
+          restore-keys: ${{ needs.sources.outputs.target }}-ccache-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-
 
       - name: Build
         id: build
@@ -171,7 +183,7 @@ jobs:
       - name: Upload archives
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: release-${{ matrix.march }}
+          name: ${{ needs.sources.outputs.target }}-release-${{ matrix.march }}
           path: release
           if-no-files-found: error
           compression-level: 0
@@ -200,7 +212,7 @@ jobs:
           path: |
             ${{ env.BUILD_DIR }}
             !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
-          key: build-${{ matrix.march }}-${{ steps.cache_key.outputs.hash }}-${{ github.run_id }}
+          key: ${{ needs.sources.outputs.target }}-build-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ steps.cache_key.outputs.hash }}-${{ github.run_id }}
 
       - name: Save ccache
         id: save_ccache
@@ -208,25 +220,25 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ccache
-          key: ccache-${{ matrix.march }}-${{ github.run_id }}
+          key: ${{ needs.sources.outputs.target }}-ccache-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ github.run_id }}
 
       # Older caches are deleted only after the new one is saved.
       - name: Delete older build caches
         if: ${{ always() && steps.save_build.outcome == 'success' }}
         run: |
-          gh cache list --key build-${{ matrix.march }}- --limit 100 --json key \
-            --jq '.[].key | select(. != "build-${{ matrix.march }}-${{ steps.cache_key.outputs.hash }}-${{ github.run_id }}")' \
+          gh cache list --key ${{ needs.sources.outputs.target }}-build-${{ matrix.march }}- --limit 100 --json key \
+            --jq '.[].key | select(. != "${{ needs.sources.outputs.target }}-build-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ steps.cache_key.outputs.hash }}-${{ github.run_id }}")' \
             | xargs -r -n 1 gh cache delete
 
       - name: Delete older ccache caches
         if: ${{ always() && steps.save_ccache.outcome == 'success' }}
         run: |
-          gh cache list --key ccache-${{ matrix.march }}- --limit 100 --json key \
-            --jq '.[].key | select(. != "ccache-${{ matrix.march }}-${{ github.run_id }}")' \
+          gh cache list --key ${{ needs.sources.outputs.target }}-ccache-${{ matrix.march }}- --limit 100 --json key \
+            --jq '.[].key | select(. != "${{ needs.sources.outputs.target }}-ccache-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ github.run_id }}")' \
             | xargs -r -n 1 gh cache delete
 
   release:
-    needs: build
+    needs: [sources, build]
     if: ${{ inputs.github_release }}
     runs-on: ubuntu-26.04
     permissions:
@@ -239,14 +251,14 @@ jobs:
       - name: Download archives
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          pattern: release-*
+          pattern: ${{ needs.sources.outputs.target }}-release-*
           path: release
           merge-multiple: true
 
       - name: Download revisions
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: revisions
+          name: ${{ needs.sources.outputs.target }}-revisions
 
       - name: Create the release
         run: |
