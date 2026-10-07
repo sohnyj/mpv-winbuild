@@ -1,6 +1,8 @@
 #!/bin/bash
 # Configure and build the runtimes and packages for a target CPU. The commits of
-# the git sources are written to build/<cpu>/revisions.txt.
+# the git sources are written to build/<cpu>/revisions.txt. When the output of
+# cache-key.sh differs from build/<cpu>/cache-key.txt, the build directory is
+# emptied first.
 #
 # Usage: build.sh [--march <cpu>] [--mtune <cpu>] [--llvm-version <major>]
 #                 [--revisions <file>] [--sources-only] [buildroot]
@@ -49,21 +51,30 @@ done
 mkdir -p "${buildroot}"
 buildroot="$(cd "${buildroot}" && pwd)"
 build_dir="${buildroot}/build/${march}"
+cache_key_file="${build_dir}/cache-key.txt"
 
-echo ">> Configure -march=${march} -mtune=${mtune} in ${build_dir}"
-cmake -G Ninja --fresh -S "${repo_root}" -B "${build_dir}" \
-  -DLLVM_VERSION="${llvm_version}" \
-  -DTARGET_TRIPLE="${TARGET_TRIPLE}" \
-  -DPACKAGE_CPU_FLAGS="-march=${march} -mtune=${mtune}" \
-  -DPACKAGE_RUST_FLAGS="-C target-cpu=${march}" \
-  -DRUNTIME_CPU_FLAGS="-march=${RUNTIME_MARCH} -mtune=${RUNTIME_MTUNE}" \
-  -DLTO_MODE="${LTO_MODE}" \
-  -DMAKE_JOBS="$(nproc)" \
-  -DSYSROOT_DIR="${build_dir}/sysroot" \
-  -DSOURCES_DIR="${buildroot}/sources" \
-  -DRUSTUP_DIR="${buildroot}/rustup" \
-  -DCCACHE_DIR="${buildroot}/ccache" \
-  -DSOURCE_REVISIONS_FILE="${revisions}"
+configure() {
+  echo ">> Configure -march=${march} -mtune=${mtune} in ${build_dir}"
+  cmake -G Ninja --fresh -S "${repo_root}" -B "${build_dir}" \
+    -DLLVM_VERSION="${llvm_version}" \
+    -DTARGET_TRIPLE="${TARGET_TRIPLE}" \
+    -DPACKAGE_CPU_FLAGS="-march=${march} -mtune=${mtune}" \
+    -DPACKAGE_RUST_FLAGS="-C target-cpu=${march}" \
+    -DRUNTIME_CPU_FLAGS="-march=${RUNTIME_MARCH} -mtune=${RUNTIME_MTUNE}" \
+    -DLTO_MODE="${LTO_MODE}" \
+    -DMAKE_JOBS="$(nproc)" \
+    -DSYSROOT_DIR="${build_dir}/sysroot" \
+    -DSOURCES_DIR="${buildroot}/sources" \
+    -DRUSTUP_DIR="${buildroot}/rustup" \
+    -DCCACHE_DIR="${buildroot}/ccache" \
+    -DSOURCE_REVISIONS_FILE="${revisions}"
+}
+
+configured=false
+if [[ -f "${build_dir}/build.ninja" ]]; then
+  configured=true
+fi
+configure
 
 echo ">> Download sources"
 ninja -C "${build_dir}" download
@@ -74,6 +85,18 @@ ninja -C "${build_dir}" revisions
 if [[ "${sources_only}" == true ]]; then
   exit 0
 fi
+
+# The key covers the mingw-w64 commit, so it is computed after the update.
+cache_key="$("${repo_root}/scripts/cache-key.sh" \
+  --llvm-version "${llvm_version}" "${buildroot}")"
+if [[ "${configured}" == true ]] && [[ ! -f "${cache_key_file}" \
+  || "$(< "${cache_key_file}")" != "${cache_key}" ]]; then
+  echo ">> Start from an empty build directory: cache-key.sh output changed"
+  rm -rf "${build_dir:?}"
+  configure
+  ninja -C "${build_dir}" revisions
+fi
+echo "${cache_key}" > "${cache_key_file}"
 
 echo ">> Build"
 ccache --dir "${buildroot}/ccache" --max-size "${CCACHE_MAXSIZE}"

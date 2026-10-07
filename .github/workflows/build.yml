@@ -133,27 +133,13 @@ jobs:
         with:
           name: ${{ needs.sources.outputs.target }}-revisions
 
-      # The build cache key hashes the inputs that change the build but that
-      # the stamps do not track. Other inputs restore no build cache, and the
-      # build starts from scratch with ccache. cache-key.txt records the values.
+      # The build cache key hashes the output of cache-key.sh: when it changes,
+      # no build cache matches, and the build starts from scratch with ccache.
+      # The logs include it as cache-key.txt.
       - name: Compute the build cache key
         id: cache_key
         run: |
-          . scripts/defaults.env
-          mingw_commit="$(awk '$1 == "mingw-w64" { print $2 }' revisions.txt)"
-          {
-            echo "clang $(dpkg-query --show --showformat='${Version}' "clang-${LLVM_VERSION}")"
-            echo "nasm $(dpkg-query --show --showformat='${Version}' nasm)"
-            echo "glslang $(dpkg-query --show --showformat='${Version}' glslang-tools)"
-            echo "cmake $(cmake --version | head -n 1)"
-            echo "meson $(meson --version)"
-            echo "rust $(curl -fsSL https://static.rust-lang.org/dist/channel-rust-stable.toml \
-              | awk '/^\[pkg\.rust\]/ { found = 1 } found && /^version = / { print; found = 0 }')"
-            for dir in mingw-w64-headers mingw-w64-crt mingw-w64-libraries/winpthreads; do
-              echo "mingw-w64 ${dir} $(git -C sources/mingw-w64 rev-parse "${mingw_commit}:${dir}")"
-            done
-            echo "recipes ${{ hashFiles('CMakeLists.txt', 'cmake/**', 'toolchain/**', 'packages/**') }}"
-          } | tee cache-key.txt
+          scripts/cache-key.sh | tee cache-key.txt
           echo "hash=$(sha256sum cache-key.txt | cut -c 1-16)" >> "${GITHUB_OUTPUT}"
 
       - name: Restore build
