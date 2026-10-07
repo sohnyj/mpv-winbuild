@@ -1,7 +1,7 @@
 # libc++, libc++abi and libunwind, static, on the Win32 thread API.
 #
-# The compiler checks are skipped because linking a C++ program needs the
-# libraries built here.
+# Linking a program needs the libraries built here, so the configure checks link
+# without libunwind and libc++, as the runtimes build does for its own checks.
 ExternalProject_Add(libcxx
     DEPENDS
         compiler-rt
@@ -12,8 +12,6 @@ ExternalProject_Add(libcxx
     SOURCE_DIR ${LLVM_SOURCE_DIR}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_C_COMPILER_WORKS=ON
-        -DCMAKE_CXX_COMPILER_WORKS=ON
         -DCMAKE_INSTALL_PREFIX=${SYSROOT_DIR}
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
         -DLIBCXXABI_ENABLE_ASSERTIONS=OFF
@@ -29,6 +27,7 @@ ExternalProject_Add(libcxx
         -DLIBUNWIND_USE_COMPILER_RT=ON
         -DLLVM_ENABLE_RUNTIMES=libunwind|libcxxabi|libcxx
         -DLLVM_INCLUDE_TESTS=OFF
+        "-DCMAKE_EXE_LINKER_FLAGS=--unwindlib=none -nostdlib++"
     LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
