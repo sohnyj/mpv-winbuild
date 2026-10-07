@@ -12,7 +12,7 @@ Autobuild runs daily at UTC 00:00.
 
 - **OS**: Windows 10 or later
 - **CPU**: x86-64-v3 (AVX2)
-    - The `znver3` build requires an AMD Zen 3 or newer CPU.
+    - The `znver3` build requires AMD Zen 3.
 
 ## Build scripts
 
