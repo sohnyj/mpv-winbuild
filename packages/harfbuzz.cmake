@@ -4,7 +4,12 @@ ExternalProject_Add(harfbuzz
     GIT_REPOSITORY https://github.com/harfbuzz/harfbuzz.git
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/docs/ !/perf/ !/test/ !/util/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/docs/
+        !/perf/
+        !/test/
+        !/util/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>

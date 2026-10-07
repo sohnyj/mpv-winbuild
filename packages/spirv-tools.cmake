@@ -3,7 +3,11 @@ ExternalProject_Add(spirv-tools
     GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Tools.git
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/android_test/ !/docs/ !/kokoro/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/android_test/
+        !/docs/
+        !/kokoro/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ""

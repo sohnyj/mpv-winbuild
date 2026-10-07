@@ -2,7 +2,10 @@ ExternalProject_Add(libpsl
     GIT_REPOSITORY https://github.com/rockdaboot/libpsl.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/fuzz/ !/tests/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/fuzz/
+        !/tests/"
     GIT_SUBMODULES
         list
     UPDATE_COMMAND ""

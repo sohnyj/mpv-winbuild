@@ -3,7 +3,9 @@ ExternalProject_Add(glslang
     GIT_REPOSITORY https://github.com/KhronosGroup/glslang.git
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/Test/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/Test/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ""

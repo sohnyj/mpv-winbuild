@@ -20,7 +20,9 @@ ExternalProject_Add(luajit
     GIT_REPOSITORY https://github.com/LuaJIT/LuaJIT.git
     GIT_TAG v2.1
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/doc/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/doc/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ""

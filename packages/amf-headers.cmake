@@ -2,7 +2,8 @@ ExternalProject_Add(amf-headers
     GIT_REPOSITORY https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /amf/public/include/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /amf/public/include/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ""

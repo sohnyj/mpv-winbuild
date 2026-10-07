@@ -5,7 +5,8 @@ ExternalProject_Add(windows-rs
     GIT_REPOSITORY https://github.com/microsoft/windows-rs.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /${WINDOWS_WINMD}"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /${WINDOWS_WINMD}"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ""

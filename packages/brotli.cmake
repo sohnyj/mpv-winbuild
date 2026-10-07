@@ -2,7 +2,12 @@ ExternalProject_Add(brotli
     GIT_REPOSITORY https://github.com/google/brotli.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/java/ !/js/ !/research/ !/tests/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/java/
+        !/js/
+        !/research/
+        !/tests/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS

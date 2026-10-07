@@ -6,7 +6,10 @@ ExternalProject_Add(libjxl
     GIT_REPOSITORY https://github.com/libjxl/libjxl.git
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/doc/ !/examples/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/doc/
+        !/examples/"
     GIT_SUBMODULES ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}

@@ -6,7 +6,11 @@ ExternalProject_Add(freetype2
     GIT_REPOSITORY https://github.com/freetype/freetype.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/devel/ !/docs/ !/tests/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/devel/
+        !/docs/
+        !/tests/"
     GIT_SUBMODULES ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}

@@ -6,7 +6,10 @@ ExternalProject_Add(cppwinrt
     GIT_REPOSITORY https://github.com/microsoft/cppwinrt.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/docs !/test"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/docs
+        !/test"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS

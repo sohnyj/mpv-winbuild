@@ -2,7 +2,11 @@ ExternalProject_Add(lcms2
     GIT_REPOSITORY https://github.com/mm2/Little-CMS.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/doc/ !/fuzzers/ !/testbed/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/doc/
+        !/fuzzers/
+        !/testbed/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>

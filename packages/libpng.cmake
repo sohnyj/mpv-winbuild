@@ -4,7 +4,11 @@ ExternalProject_Add(libpng
     GIT_REPOSITORY https://github.com/glennrp/libpng.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !/contrib/ !/projects/ !/tests/"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/contrib/
+        !/projects/
+        !/tests/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_LOCATION}
     CMAKE_ARGS
