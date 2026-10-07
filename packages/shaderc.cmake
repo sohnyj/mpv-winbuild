@@ -1,6 +1,6 @@
 # Only the combined static library is built, with glslang, SPIRV-Tools and
-# SPIRV-Headers from their own checkouts. mpv and libplacebo look for shaderc,
-# whose shaderc.pc links the shared library, so shaderc_combined.pc is
+# SPIRV-Headers from their own checkouts. mpv and libplacebo look for
+# shaderc.pc, which links the shared library, so shaderc_combined.pc is
 # installed under that name.
 ExternalProject_Add(shaderc
     DEPENDS
