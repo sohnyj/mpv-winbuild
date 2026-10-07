@@ -22,9 +22,9 @@ repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 # shellcheck source=defaults.env
 . "${repo_root}/scripts/defaults.env"
 
+llvm_version="${LLVM_VERSION}"
 march="${TARGET_MARCH}"
 mtune="${TARGET_MTUNE}"
-llvm_version="${LLVM_VERSION}"
 revisions=""
 sources_only=false
 buildroot="${repo_root}"
