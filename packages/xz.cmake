@@ -21,7 +21,6 @@ ExternalProject_Add(xz
             --disable-lzmadec
             --disable-lzmainfo
             --disable-microlzma
-            --disable-nls
             --disable-scripts
             --disable-shared
             --disable-xz

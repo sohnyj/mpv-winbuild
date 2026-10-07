@@ -82,7 +82,6 @@ ExternalProject_Add(ffmpeg
         --disable-ffprobe
         --disable-indev=gdigrab
         --disable-indev=vfwcap
-        --disable-vaapi
         --disable-protocol=gopher
         --disable-protocol=gophers
         --disable-protocol=mmsh

@@ -23,7 +23,6 @@ ExternalProject_Add(libass
         -Dasm=enabled
         -Dcheckasm=disabled
         -Ddirectwrite=enabled
-        -Dfontconfig=disabled
         -Dlibunibreak=enabled
     BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR>
     INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR>

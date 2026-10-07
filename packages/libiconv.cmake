@@ -9,7 +9,6 @@ ExternalProject_Add(libiconv
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/configure
         --host=${TARGET_TRIPLE}
         --prefix=${SYSROOT_DIR}
-        --disable-nls
         --disable-shared
         --enable-extra-encodings
         CPPFLAGS=-DNDEBUG
