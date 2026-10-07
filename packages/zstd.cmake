@@ -16,9 +16,6 @@ ExternalProject_Add(zstd
         -Db_lto_mode=${LTO_MODE}
         -Db_ndebug=true
         -Dbin_programs=false
-        -Dlz4=disabled
-        -Dlzma=disabled
-        -Dzlib=disabled
     BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR>
     INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR>
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

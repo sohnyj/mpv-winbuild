@@ -18,20 +18,17 @@ ExternalProject_Add(harfbuzz
         -Db_lto_mode=${LTO_MODE}
         -Db_ndebug=true
         -Dcairo=disabled
-        -Dchafa=disabled
         -Ddocs=disabled
         -Dfreetype=enabled
         -Dglib=disabled
         -Dgobject=disabled
         -Dgpu=disabled
         -Dicu=disabled
-        -Dpng=disabled
         -Draster=disabled
         -Dsubset=disabled
         -Dtests=disabled
         -Dutilities=disabled
         -Dvector=disabled
-        -Dzlib=disabled
     BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR>
     INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR>
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

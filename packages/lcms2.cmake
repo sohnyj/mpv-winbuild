@@ -15,9 +15,7 @@ ExternalProject_Add(lcms2
         -Db_lto=true
         -Db_lto_mode=${LTO_MODE}
         -Db_ndebug=true
-        -Djpeg=disabled
         -Dtests=disabled
-        -Dtiff=disabled
     BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR>
     INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR>
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

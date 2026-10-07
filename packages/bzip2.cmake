@@ -18,7 +18,6 @@ ExternalProject_Add(bzip2
         -Db_lto=true
         -Db_lto_mode=${LTO_MODE}
         -Db_ndebug=true
-        -Ddocs=disabled
     BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR> bz2
     INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR> --no-rebuild --tags devel
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

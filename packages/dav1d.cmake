@@ -16,7 +16,6 @@ ExternalProject_Add(dav1d
         -Db_ndebug=true
         -Denable_tests=false
         -Denable_tools=false
-        -Dxxhash_muxer=disabled
     BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR>
     INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR>
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
