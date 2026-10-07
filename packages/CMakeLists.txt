@@ -21,6 +21,7 @@ set(packages
     libudfread
     libunibreak
     libvpl
+    libzimg
     luajit
     nghttp2
     nghttp3
@@ -28,6 +29,7 @@ set(packages
     spirv-cross
     spirv-headers
     spirv-tools
+    subrandr
     uchardet
     vulkan-headers
     xxhash
@@ -39,7 +41,6 @@ set(packages
     libjxl
     libpng
     libxml2
-    libzimg
     openssl
     shaderc
     vulkan-loader
@@ -53,7 +54,6 @@ set(packages
     libbluray
     # depth 4
     libass
-    subrandr
     # depth 5
     ffmpeg
     # depth 6
