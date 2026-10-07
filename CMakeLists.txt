@@ -28,17 +28,6 @@ foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE TARGET_CPU_FLAGS TARGET_RUS
     endif()
 endforeach()
 
-find_program(MESON_EXECUTABLE NAMES meson REQUIRED)
-execute_process(
-    COMMAND "${MESON_EXECUTABLE}" --version
-    OUTPUT_VARIABLE meson_version
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    COMMAND_ERROR_IS_FATAL ANY
-)
-if(meson_version VERSION_LESS 1.12)
-    message(FATAL_ERROR "Meson 1.12 or newer is required, found ${meson_version}")
-endif()
-
 # The architecture component of the triple.
 string(REGEX MATCH "^[^-]+" TARGET_PROCESSOR "${TARGET_TRIPLE}")
 set(RUST_TARGET "${TARGET_PROCESSOR}-pc-windows-gnullvm")
@@ -55,6 +44,7 @@ set(RESOURCE_DIR "${PROJECT_BINARY_DIR}/resource")
 set(THINLTO_CACHE_DIR "${PROJECT_BINARY_DIR}/thinlto")
 
 include(PatchedExternalProject)
+include(BuildTools)
 include(Toolchain)
 include(CustomSteps)
 

@@ -16,58 +16,18 @@
 
 include_guard(GLOBAL)
 
-find_program(CLANG_EXECUTABLE NAMES "clang-${LLVM_VERSION}" REQUIRED)
-file(REAL_PATH "${CLANG_EXECUTABLE}" clang_real_path)
-cmake_path(GET clang_real_path PARENT_PATH LLVM_BINARY_DIR)
-# Reconfigure when apt upgrades clang, which can move the runtimes commit.
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${clang_real_path}")
-# Compilers of the programs that run on the build machine during the build,
-# such as code generators and configure checks.
-set(HOST_C_COMPILER "${LLVM_BINARY_DIR}/clang")
-set(HOST_CXX_COMPILER "${LLVM_BINARY_DIR}/clang++")
+include(BuildTools)
 
-set(binutils ar dlltool nm objcopy objdump ranlib strip windres)
-foreach(tool IN LISTS binutils)
-    string(TOUPPER "LLVM_${tool}" variable)
-    find_program("${variable}" NAMES "llvm-${tool}" HINTS "${LLVM_BINARY_DIR}" NO_DEFAULT_PATH REQUIRED)
-endforeach()
-find_program(PKGCONF_EXECUTABLE NAMES pkgconf REQUIRED)
-find_program(NASM_EXECUTABLE NAMES nasm REQUIRED)
-find_program(GLSLANG_EXECUTABLE NAMES glslang REQUIRED)
-find_program(CCACHE_EXECUTABLE NAMES ccache REQUIRED)
-
+# clang resource directory: the builtin headers of the installed clang and the
+# compiler-rt builtins built for the target (toolchain/compiler-rt.cmake).
 execute_process(
     COMMAND "${CLANG_EXECUTABLE}" -print-resource-dir
     OUTPUT_VARIABLE clang_resource_dir
     OUTPUT_STRIP_TRAILING_WHITESPACE
     COMMAND_ERROR_IS_FATAL ANY
 )
-
-# The llvm-project runtimes are built from release/<LLVM_VERSION>.x at the
-# commit the installed clang was built from. apt.llvm.org records it in the
-# package version of its release suites, for example
-# 1:23.1.3~++20260922084409+67f4a076a097-1~exp1~20260922084419.77.
-execute_process(
-    COMMAND dpkg-query --show "--showformat=\${Version}" "clang-${LLVM_VERSION}"
-    OUTPUT_VARIABLE clang_package_version
-    COMMAND_ERROR_IS_FATAL ANY
-)
-if(NOT clang_package_version MATCHES "^[0-9]+:${LLVM_VERSION}\\.[0-9]+\\.[0-9]+~\\+\\+[0-9]+\\+([0-9a-f]+)-")
-    message(FATAL_ERROR "clang-${LLVM_VERSION} ${clang_package_version} is not from an apt.llvm.org release suite")
-endif()
-set(LLVM_RUNTIMES_COMMIT "${CMAKE_MATCH_1}")
-message(STATUS "clang-${LLVM_VERSION} ${clang_package_version}")
-
-# clang resource directory: the builtin headers of the installed clang and the
-# compiler-rt builtins built for the target (toolchain/compiler-rt.cmake).
 file(MAKE_DIRECTORY "${RESOURCE_DIR}")
 file(CREATE_LINK "${clang_resource_dir}/include" "${RESOURCE_DIR}/include" SYMBOLIC)
-
-set(executable_permissions
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ GROUP_EXECUTE
-    WORLD_READ WORLD_EXECUTE
-)
 
 # add_toolchain_profile(<profile> <cpu flags>)
 #
@@ -97,25 +57,16 @@ function(add_toolchain_profile profile cpu_flags)
 
     foreach(driver IN ITEMS clang clang++)
         set(DRIVER "${LLVM_BINARY_DIR}/${driver}")
-        configure_file("${profile_template_dir}/compiler.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-${driver}"
-            FILE_PERMISSIONS ${executable_permissions}
-            @ONLY
-        )
+        configure_file("${profile_template_dir}/compiler.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-${driver}" @ONLY)
     endforeach()
 
-    foreach(tool IN LISTS binutils)
+    foreach(tool IN LISTS LLVM_BINUTILS)
         string(TOUPPER "LLVM_${tool}" variable)
         file(CREATE_LINK "${${variable}}" "${BIN_DIR}/${TARGET_TRIPLE}-${tool}" SYMBOLIC)
     endforeach()
 
-    configure_file("${profile_template_dir}/pkg-config.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-pkg-config"
-        FILE_PERMISSIONS ${executable_permissions}
-        @ONLY
-    )
-    configure_file("${profile_template_dir}/exec.sh.in" "${profile_dir}/exec"
-        FILE_PERMISSIONS ${executable_permissions}
-        @ONLY
-    )
+    configure_file("${profile_template_dir}/pkg-config.sh.in" "${BIN_DIR}/${TARGET_TRIPLE}-pkg-config" @ONLY)
+    configure_file("${profile_template_dir}/exec.sh.in" "${profile_dir}/exec" @ONLY)
     configure_file("${profile_template_dir}/toolchain.cmake.in" "${profile_dir}/toolchain.cmake" @ONLY)
     configure_file("${profile_template_dir}/meson-cross.ini.in" "${profile_dir}/meson-cross.ini" @ONLY)
     configure_file("${profile_template_dir}/meson-native.ini.in" "${profile_dir}/meson-native.ini" @ONLY)
