@@ -1,5 +1,6 @@
-# The project requires a CMake older than policy CMP0069, which then ignores
-# CMAKE_INTERPROCEDURAL_OPTIMIZATION; the policy default enables LTO.
+# The project's minimum CMake version, 3.1, is below 3.5, the oldest that
+# CMake 4 accepts, and predates policy CMP0069, so CMake ignores
+# CMAKE_INTERPROCEDURAL_OPTIMIZATION unless the policy default is NEW.
 ExternalProject_Add(libsoxr
     GIT_REPOSITORY https://github.com/chirlu/soxr.git
     GIT_TAG master

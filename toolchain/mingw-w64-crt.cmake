@@ -1,5 +1,6 @@
-# The CRT is built without section splitting and without LTO: its startup
-# objects and the functions code generation calls into must stay native code.
+# The CRT is built without LTO, as its startup objects and the functions code
+# generation calls into must stay native code, and without section splitting,
+# which gains little when most archive members hold a single function.
 #
 # mingw-w64 builds the stack protector functions into libmingwex and installs
 # no libssp, while clang's MinGW driver links -lssp_nonshared -lssp for

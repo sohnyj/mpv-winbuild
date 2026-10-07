@@ -1,4 +1,4 @@
-# Runtimes of the target and host tools, built with the runtime profile.
+# Runtimes of the target, built with the runtime profile, and host tools.
 add_toolchain_profile(runtime "${RUNTIME_CPU_FLAGS}")
 
 set(projects
@@ -28,6 +28,6 @@ foreach(project IN LISTS projects)
     ExternalProject_Add_StepDependencies("${project}" patch ${PROFILE_FILES})
 endforeach()
 
-# The packages are built after these projects, but a rebuilt project does not
-# rebuild them.
+# The packages are built after these projects, but a rebuilt project rebuilds
+# only the packages that name it in DEPENDS.
 set(TOOLCHAIN_PROJECTS ${projects} PARENT_SCOPE)
