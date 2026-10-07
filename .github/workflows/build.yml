@@ -8,7 +8,7 @@ on:
         type: boolean
         default: true
       fresh_build:
-        description: Build from scratch
+        description: Ignore build cache and build from scratch
         type: boolean
         default: false
 
