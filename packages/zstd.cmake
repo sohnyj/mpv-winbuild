@@ -8,6 +8,7 @@ ExternalProject_Add(zstd
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>/build/meson
         --buildtype=release
         --cross-file=${MESON_CROSS}
+        --native-file=${MESON_NATIVE}
         --default-library=static
         --prefix=${SYSROOT_DIR}
         --wrap-mode=nofallback

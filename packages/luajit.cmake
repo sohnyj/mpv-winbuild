@@ -6,7 +6,7 @@
 set(luajit_make_variables
     CROSS=${TARGET_TRIPLE}-
     CC=clang
-    HOST_CC=gcc
+    HOST_CC=${HOST_C_COMPILER}
     TARGET_SYS=Windows
     BUILDMODE=static
     "CCOPT=-O3 -fomit-frame-pointer"

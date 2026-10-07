@@ -42,9 +42,15 @@ endif()
 # The architecture component of the triple.
 string(REGEX MATCH "^[^-]+" TARGET_PROCESSOR "${TARGET_TRIPLE}")
 set(RUST_TARGET "${TARGET_PROCESSOR}-pc-windows-gnullvm")
-# The form of RUST_TARGET in the names of cargo's environment variables.
+# The triple of the build machine, which runs the build scripts and the
+# procedural macros.
+set(RUST_HOST "${CMAKE_HOST_SYSTEM_PROCESSOR}-unknown-linux-gnu")
+# The forms of RUST_TARGET and RUST_HOST in the names of cargo's environment
+# variables.
 string(MAKE_C_IDENTIFIER "${RUST_TARGET}" RUST_TARGET_IDENTIFIER)
 string(TOUPPER "${RUST_TARGET_IDENTIFIER}" RUST_TARGET_IDENTIFIER)
+string(MAKE_C_IDENTIFIER "${RUST_HOST}" RUST_HOST_IDENTIFIER)
+string(TOUPPER "${RUST_HOST_IDENTIFIER}" RUST_HOST_IDENTIFIER)
 set(RESOURCE_DIR "${PROJECT_BINARY_DIR}/resource")
 set(THINLTO_CACHE_DIR "${PROJECT_BINARY_DIR}/thinlto")
 

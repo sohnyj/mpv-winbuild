@@ -5,9 +5,10 @@
 #                        sysroot, the runtimes and the flags of the whole
 #                        target; the ${TARGET_TRIPLE}-* compiler wrappers,
 #                        which run clang through ccache; the binutils links
-#   build systems        a CMake toolchain file, a Meson cross file, an
-#                        autoconf site file and a command wrapper, which give
-#                        each build system its tools and the sysroot
+#   build systems        a CMake toolchain file, Meson cross and native files,
+#                        an autoconf site file and a command wrapper, which
+#                        give each build system its tools, the sysroot and the
+#                        compilers for the build machine
 #   dependencies         a pkg-config wrapper that queries the sysroot for
 #                        static linking
 # Switches of a single package stay in its recipe. A setting kept here only
@@ -20,6 +21,10 @@ file(REAL_PATH "${CLANG_EXECUTABLE}" clang_real_path)
 cmake_path(GET clang_real_path PARENT_PATH LLVM_BINARY_DIR)
 # Reconfigure when apt upgrades clang, which can move the runtimes commit.
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${clang_real_path}")
+# Compilers of the programs that run on the build machine during the build,
+# such as code generators and configure checks.
+set(HOST_C_COMPILER "${LLVM_BINARY_DIR}/clang")
+set(HOST_CXX_COMPILER "${LLVM_BINARY_DIR}/clang++")
 
 set(binutils ar dlltool nm objcopy objdump ranlib strip windres)
 foreach(tool IN LISTS binutils)
@@ -76,6 +81,7 @@ set(executable_permissions
 #                   finds its preprocessor only when started by this path
 #   TOOLCHAIN_FILE  CMake toolchain file
 #   MESON_CROSS     Meson cross file
+#   MESON_NATIVE    Meson native file
 #   PROFILE_FILES   every generated file a configure step depends on
 function(add_toolchain_profile profile cpu_flags)
     set(PROFILE "${profile}")
@@ -111,6 +117,7 @@ function(add_toolchain_profile profile cpu_flags)
     )
     configure_file("${profile_template_dir}/toolchain.cmake.in" "${profile_dir}/toolchain.cmake" @ONLY)
     configure_file("${profile_template_dir}/meson-cross.ini.in" "${profile_dir}/meson-cross.ini" @ONLY)
+    configure_file("${profile_template_dir}/meson-native.ini.in" "${profile_dir}/meson-native.ini" @ONLY)
     configure_file("${profile_template_dir}/config.site.in" "${CONFIG_SITE}" @ONLY)
 
     set(EXEC "${profile_dir}/exec" PARENT_SCOPE)
@@ -118,6 +125,7 @@ function(add_toolchain_profile profile cpu_flags)
     set(TOOLCHAIN_BIN_DIR "${BIN_DIR}" PARENT_SCOPE)
     set(TOOLCHAIN_FILE "${profile_dir}/toolchain.cmake" PARENT_SCOPE)
     set(MESON_CROSS "${profile_dir}/meson-cross.ini" PARENT_SCOPE)
+    set(MESON_NATIVE "${profile_dir}/meson-native.ini" PARENT_SCOPE)
     # configure_file() rewrites a file only when its content changes, so
     # depending on these reconfigures packages only after a real change.
     set(PROFILE_FILES
@@ -128,6 +136,7 @@ function(add_toolchain_profile profile cpu_flags)
         "${profile_dir}/exec"
         "${profile_dir}/toolchain.cmake"
         "${profile_dir}/meson-cross.ini"
+        "${profile_dir}/meson-native.ini"
         "${CONFIG_SITE}"
         PARENT_SCOPE
     )

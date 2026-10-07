@@ -1,0 +1,6 @@
+# Meson native file for the @PROFILE@ toolchain profile of mpv-winbuild: the
+# compilers of the programs built for the build machine.
+
+[binaries]
+c = '@HOST_C_COMPILER@'
+cpp = '@HOST_CXX_COMPILER@'

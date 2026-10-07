@@ -1,13 +1,16 @@
 #!/bin/sh
 # Runs a build command with the @PROFILE@ toolchain profile: its tools and the
 # Rust toolchain come first in PATH, configure scripts read its autoconf site
-# file, and cargo links for the target with its tools.
+# file, and cargo links for the target with its tools and for the build machine
+# with the clang of the build machine.
 RUSTUP_HOME="@RUSTUP_LOCATION@/.rustup"
 CARGO_HOME="@RUSTUP_LOCATION@/.cargo"
 PATH="@BIN_DIR@:${CARGO_HOME}/bin:$PATH"
 CONFIG_SITE="@CONFIG_SITE@"
 CARGO_TARGET_@RUST_TARGET_IDENTIFIER@_LINKER="@BIN_DIR@/@TARGET_TRIPLE@-clang++"
 CARGO_TARGET_@RUST_TARGET_IDENTIFIER@_AR="@BIN_DIR@/@TARGET_TRIPLE@-ar"
+CARGO_TARGET_@RUST_HOST_IDENTIFIER@_LINKER="@HOST_C_COMPILER@"
 export RUSTUP_HOME CARGO_HOME PATH CONFIG_SITE
 export CARGO_TARGET_@RUST_TARGET_IDENTIFIER@_LINKER CARGO_TARGET_@RUST_TARGET_IDENTIFIER@_AR
+export CARGO_TARGET_@RUST_HOST_IDENTIFIER@_LINKER
 exec "$@"

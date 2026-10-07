@@ -7,6 +7,7 @@ ExternalProject_Add(libudfread
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
         --buildtype=release
         --cross-file=${MESON_CROSS}
+        --native-file=${MESON_NATIVE}
         --default-library=static
         --prefix=${SYSROOT_DIR}
         --wrap-mode=nofallback

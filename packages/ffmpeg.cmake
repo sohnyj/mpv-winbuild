@@ -38,6 +38,7 @@ ExternalProject_Add(ffmpeg
         --cc=${TARGET_TRIPLE}-clang
         --cxx=${TARGET_TRIPLE}-clang++
         --nvcc=${CLANG_EXECUTABLE}
+        --host-cc=${HOST_C_COMPILER}
         --windres=${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-windres
         --prefix=${SYSROOT_DIR}
         --arch=${TARGET_PROCESSOR}
