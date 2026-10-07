@@ -25,7 +25,7 @@ ExternalProject_Add(libcxx
         -DLIBUNWIND_ENABLE_ASSERTIONS=OFF
         -DLIBUNWIND_ENABLE_SHARED=OFF
         -DLIBUNWIND_USE_COMPILER_RT=ON
-        -DLLVM_ENABLE_RUNTIMES=libunwind|libcxxabi|libcxx
+        -DLLVM_ENABLE_RUNTIMES=libcxx|libcxxabi|libunwind
         -DLLVM_INCLUDE_TESTS=OFF
         "-DCMAKE_EXE_LINKER_FLAGS=--unwindlib=none -nostdlib++"
     LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
