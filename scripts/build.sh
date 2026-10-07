@@ -1,19 +1,21 @@
 #!/bin/bash
-# Configure and build the runtimes and packages for a target CPU, from sources
-# at the tips of their branches or at the commits of --revisions. The commits
-# are written to build/<cpu>/revisions.txt.
+# Configure and build the runtimes and packages for a target CPU. The commits of
+# the git sources are written to build/<cpu>/revisions.txt.
 #
 # Usage: build.sh [--march <cpu>] [--mtune <cpu>] [--llvm-version <major>]
 #                 [--revisions <file>] [--sources-only] [buildroot]
-#   --march <cpu>           clang -march of the packages (default: PACKAGE_MARCH of defaults.env;
-#                           e.g. x86-64-v3, znver3)
-#   --mtune <cpu>           clang -mtune of the packages (default: PACKAGE_MTUNE of defaults.env)
-#   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of defaults.env)
-#   --revisions <file>      move the git sources to the commits of a revisions.txt
-#                           instead of the tips of their branches
-#   --sources-only          stop after updating the sources and writing revisions.txt
-#   buildroot               location of the sources/, rustup/, ccache/ and build/ directories
-#                           (default: the repository root)
+#   --march <cpu>           clang -march of the packages (default: PACKAGE_MARCH
+#                           of defaults.env; e.g. x86-64-v3, znver3)
+#   --mtune <cpu>           clang -mtune of the packages (default: PACKAGE_MTUNE
+#                           of defaults.env)
+#   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
+#                           defaults.env)
+#   --revisions <file>      move the git sources to the commits of a
+#                           revisions.txt instead of the tips of their branches
+#   --sources-only          stop after updating the sources and writing
+#                           revisions.txt
+#   buildroot               location of the sources/, rustup/, ccache/ and
+#                           build/ directories (default: the repository root)
 set -euo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
@@ -40,7 +42,7 @@ while (( $# > 0 )); do
     --revisions=*) revisions="$(realpath "${1#*=}")"; shift ;;
     --sources-only) sources_only=true; shift ;;
     -h|--help) usage 0 ;;
-    -*) echo "Unknown option: $1" >&2; usage 1 ;;
+    -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
     *) buildroot="$1"; shift ;;
   esac
 done

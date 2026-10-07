@@ -17,18 +17,18 @@ Autobuild runs daily at UTC 00:00.
 ## Build scripts
 
 The scripts run on Ubuntu 26.04, natively or on WSL2. Defaults such as the CPU
-and the LLVM version are in `scripts/defaults.env`. `build.sh`, `package.sh`,
-`update.sh` and `clean.sh` print their options with `--help` and take an
-optional trailing `buildroot`, the directory that holds `sources/`, `build/`,
-`ccache/`, `rustup/` and `release/` (default: the repository root).
+and the LLVM version are in `scripts/defaults.env`. Every script prints its
+options with `--help`. `build.sh`, `package.sh`, `update.sh` and `clean.sh`
+take an optional trailing `buildroot`, the directory that holds `sources/`,
+`build/`, `ccache/`, `rustup/` and `release/` (default: the repository root).
 
 | Script | Purpose |
 | ------ | ------- |
 | `install-dependencies.sh` | Install the build tools: Clang/LLD from apt.llvm.org, nasm, glslang and ccache, and CMake and Meson through pipx. |
 | `build.sh` | Update the sources and build the runtimes and packages for a CPU into `build/<march>/sysroot`. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` of a build into `release/*.7z`. |
-| `update.sh` | Move the git sources to the tips of their branches. |
-| `clean.sh` | Delete the stamps and source of the git packages given with `-p`, or of all of them, so that the next build clones them again. |
+| `update.sh` | Move the git sources to the tips of their branches, or to the commits of the `--revisions` file of the last build. |
+| `clean.sh` | Delete the build directories, stamps and sources of the git packages given with `-p`, or of all of them, so that the next build clones and builds them again. |
 
 ```bash
 scripts/install-dependencies.sh

@@ -1,6 +1,7 @@
 #!/bin/bash
-# Move the git sources to the tips of their branches: runs `ninja update` in
-# every configured build directory.
+# Run `ninja update` in every configured build directory, which moves the git
+# sources to the tips of their branches, or to the commits of the --revisions
+# file the directory was last configured with.
 #
 # Usage: update.sh [buildroot]
 #   buildroot  location of the build/ directory (default: the repository root)
@@ -14,11 +15,14 @@ buildroot="${repo_root}"
 while (( $# > 0 )); do
   case "$1" in
     -h|--help) usage 0 ;;
-    -*) echo "Unknown option: $1" >&2; usage 1 ;;
+    -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
     *) buildroot="$1"; shift ;;
   esac
 done
-[[ -d "${buildroot}" ]] || { echo "No such directory: ${buildroot}" >&2; exit 1; }
+if [[ ! -d "${buildroot}" ]]; then
+  echo "No such directory: ${buildroot}" >&2
+  exit 1
+fi
 buildroot="$(cd "${buildroot}" && pwd)"
 
 shopt -s nullglob

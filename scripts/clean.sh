@@ -1,10 +1,11 @@
 #!/bin/bash
-# Delete the stamps, install directory and source of git packages, so that the
-# next build clones them again: runs <package>-fullclean and
+# Delete the build directories, stamps and sources of git packages, so that
+# the next build clones and builds them again: runs <package>-fullclean and
 # <package>-removesource.
 #
 # Usage: clean.sh [-p <package>]... [buildroot]
-#   -p, --package <package>  package to clean (repeatable; default: every git source clone)
+#   -p, --package <package>  package to clean (repeatable; default: every git
+#                            source clone)
 #   buildroot                location of the sources/ and build/ directories
 #                            (default: the repository root)
 set -uo pipefail
@@ -20,15 +21,21 @@ while (( $# > 0 )); do
     -p|--package) packages+=("$2"); shift 2 ;;
     --package=*) packages+=("${1#*=}"); shift ;;
     -h|--help) usage 0 ;;
-    -*) echo "Unknown option: $1" >&2; usage 1 ;;
+    -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
     *) buildroot="$1"; shift ;;
   esac
 done
-[[ -d "${buildroot}" ]] || { echo "No such directory: ${buildroot}" >&2; exit 1; }
+if [[ ! -d "${buildroot}" ]]; then
+  echo "No such directory: ${buildroot}" >&2
+  exit 1
+fi
 buildroot="$(cd "${buildroot}" && pwd)"
 
 sources="${buildroot}/sources"
-[[ -d "${sources}" ]] || { echo "No sources dir under ${buildroot}" >&2; exit 1; }
+if [[ ! -d "${sources}" ]]; then
+  echo "No sources directory under ${buildroot}" >&2
+  exit 1
+fi
 
 shopt -s nullglob
 
@@ -36,12 +43,16 @@ build_dirs=()
 for dir in "${buildroot}"/build/*/; do
   [[ -f "${dir}build.ninja" ]] && build_dirs+=("${dir}")
 done
-(( ${#build_dirs[@]} > 0 )) || { echo "No configured build dir under ${buildroot}/build" >&2; exit 1; }
+if (( ${#build_dirs[@]} == 0 )); then
+  echo "No configured build directory under ${buildroot}/build" >&2
+  exit 1
+fi
 
 ninja_targets="$(ninja -C "${build_dirs[0]}" -t targets all)" || exit 1
 
 has_clean_target() {
-  awk -F: -v target="$1-fullclean" '$1 == target { found = 1 } END { exit !found }' <<< "${ninja_targets}"
+  awk -F: -v target="$1-fullclean" \
+    '$1 == target { found = 1 } END { exit !found }' <<< "${ninja_targets}"
 }
 
 if (( ${#packages[@]} == 0 )); then
@@ -62,7 +73,10 @@ else
     fi
   done
 fi
-(( ${#packages[@]} > 0 )) || { echo "Nothing to clean under ${sources}" >&2; exit 1; }
+if (( ${#packages[@]} == 0 )); then
+  echo "Nothing to clean under ${sources}" >&2
+  exit 1
+fi
 
 status=0
 for package in "${packages[@]}"; do

@@ -4,7 +4,8 @@
 # date and the mpv and FFmpeg commits of its revisions.txt.
 #
 # Usage: package.sh [--march <cpu>] [buildroot]
-#   --march <cpu>  build directory build/<cpu> (default: PACKAGE_MARCH of defaults.env)
+#   --march <cpu>  build directory build/<cpu> (default: PACKAGE_MARCH of
+#                  defaults.env)
 #   buildroot      location of the build/ directory; the archives are written to
 #                  its release/ (default: the repository root)
 set -euo pipefail
@@ -22,7 +23,7 @@ while (( $# > 0 )); do
     --march) march="$2"; shift 2 ;;
     --march=*) march="${1#*=}"; shift ;;
     -h|--help) usage 0 ;;
-    -*) echo "Unknown option: $1" >&2; usage 1 ;;
+    -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
     *) buildroot="$1"; shift ;;
   esac
 done
@@ -32,7 +33,8 @@ release_dir="${buildroot}/release"
 
 # The first nine characters of the commit of <project> in revisions.txt.
 revision() {
-  awk -v project="$1" '$1 == project { print substr($2, 1, 9) }' "${build_dir}/revisions.txt"
+  awk -v project="$1" '$1 == project { print substr($2, 1, 9) }' \
+    "${build_dir}/revisions.txt"
 }
 
 name="${TARGET_TRIPLE%%-*}-${march#x86-64-}-$(date -u +%Y%m%d)"

@@ -2,16 +2,14 @@
 # Install the host tools needed to build mpv-winbuild on Ubuntu 26.04.
 #
 # Usage: install-dependencies.sh [--llvm-version <major>]
+#   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
+#                           defaults.env)
 #
 # Run as a regular user: system packages are installed through sudo, and
 # CMake and Meson are installed into the user's pipx environment.
 set -euo pipefail
 
-if (( EUID == 0 )); then
-  echo "Run as a regular user, not with sudo: pipx installs into the" \
-    "invoking user's home, and the script calls sudo where it needs it." >&2
-  exit 1
-fi
+usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
 
 script_dir="$(dirname "$(realpath "$0")")"
 # shellcheck source=defaults.env
@@ -20,23 +18,26 @@ script_dir="$(dirname "$(realpath "$0")")"
 llvm_version="${LLVM_VERSION}"
 while (( $# > 0 )); do
   case "$1" in
-    --llvm-version)
-      llvm_version="$2"
-      shift 2
-      ;;
-    *)
-      echo "Unknown option: $1" >&2
-      exit 1
-      ;;
+    --llvm-version) llvm_version="$2"; shift 2 ;;
+    --llvm-version=*) llvm_version="${1#*=}"; shift ;;
+    -h|--help) usage 0 ;;
+    *) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
   esac
 done
+
+if (( EUID == 0 )); then
+  echo "Run as a regular user, not with sudo: pipx installs into the" \
+    "invoking user's home, and the script calls sudo where it needs it." >&2
+  exit 1
+fi
 
 # shellcheck source=/dev/null
 . /etc/os-release
 codename="${VERSION_CODENAME}"
 
 suite="llvm-toolchain-${codename}-${llvm_version}"
-if ! curl -fsIL "https://apt.llvm.org/${codename}/dists/${suite}/Release" > /dev/null; then
+release_url="https://apt.llvm.org/${codename}/dists/${suite}/Release"
+if ! curl -fsIL "${release_url}" > /dev/null; then
   echo "apt.llvm.org has no release suite ${suite}" >&2
   exit 1
 fi

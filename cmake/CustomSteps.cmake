@@ -4,7 +4,8 @@
 #   After <last step>, empties the build directory and resets the checkout.
 #   Adds the step targets <name>-fullclean (delete the stamps),
 #   <name>-buildclean (delete the build and install stamps), <name>-removebuild
-#   and <name>-removesource (delete the install directory and the source).
+#   (empty the build directory) and <name>-removesource (delete the build
+#   directory, the stamps and the source).
 #
 # add_git_update_steps(<name>)
 #   Adds the step target <name>-force-update, which fetches the source, moves it
@@ -89,7 +90,7 @@ function(cleanup _name _last_step)
         EXCLUDE_FROM_MAIN TRUE
         INDEPENDENT TRUE
         LOG 1
-        COMMENT "Deleting the install directory and source of ${_name} package"
+        COMMENT "Deleting the build directory, stamps and source of ${_name} package"
     )
     ExternalProject_Add_StepTargets(${_name} fullclean buildclean removesource)
 endfunction()
