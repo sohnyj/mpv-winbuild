@@ -2,9 +2,6 @@
 # (-Clinker-plugin-lto). cargo xtask runs cargo again, so every setting goes
 # through the environment.
 ExternalProject_Add(subrandr
-    DEPENDS
-        freetype2
-        harfbuzz
     GIT_REPOSITORY https://github.com/afishhh/subrandr.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
