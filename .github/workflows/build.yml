@@ -276,7 +276,7 @@ jobs:
           **FFmpeg**: [$(revision ffmpeg)](https://github.com/FFmpeg/FFmpeg/commit/$(revision ffmpeg))
           **libplacebo**: [$(revision libplacebo)](https://github.com/haasn/libplacebo/commit/$(revision libplacebo))
           **Workflow**: [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-          gh release create "${tag}" release/*.7z --title "$(date -u '+%Y-%m-%d %H:%M')" --notes "${notes}"
+          gh release create "${tag}" release/*.7z --target "${GITHUB_SHA}" --title "$(date -u '+%Y-%m-%d %H:%M')" --notes "${notes}"
 
       - name: Keep the latest 30 releases
         run: |
