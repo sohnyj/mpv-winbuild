@@ -13,6 +13,7 @@ ExternalProject_Add(spirv-tools
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(spirv-tools)
+add_git_update_steps(spirv-tools)
 cleanup(spirv-tools install)
+
 set(SPIRV_TOOLS_SOURCE_DIR ${SOURCE_LOCATION})

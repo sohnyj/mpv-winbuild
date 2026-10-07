@@ -1,5 +1,5 @@
-# The Rust toolchain for the target, installed into RUSTUP_LOCATION through
-# the environment of EXEC.
+# The Rust toolchain for the target, installed into RUSTUP_DIR through the
+# environment of EXEC.
 ExternalProject_Add(rustup
     DOWNLOAD_COMMAND ""
     CONFIGURE_COMMAND ${EXEC} sh -c "curl -sSf https://sh.rustup.rs | sh -s -- -y --default-host ${RUST_HOST} --target ${RUST_TARGET} --no-modify-path --profile minimal"

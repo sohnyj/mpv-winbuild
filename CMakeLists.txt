@@ -7,22 +7,22 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-# Inputs. scripts/build.sh passes every one of them, with the defaults of
-# scripts/defaults.env; CI calls the script.
+# Inputs, all passed by scripts/build.sh.
 set(LLVM_VERSION "" CACHE STRING "Major version of the apt.llvm.org toolchain")
 set(TARGET_TRIPLE "" CACHE STRING "Target triple, such as x86_64-w64-mingw32")
-set(TARGET_CPU_FLAGS "" CACHE STRING "clang CPU flags of the packages, such as -march=x86-64-v3 -mtune=generic")
-set(TARGET_RUST_FLAGS "" CACHE STRING "rustc CPU flags of the packages, such as -C target-cpu=x86-64-v3")
+set(PACKAGE_CPU_FLAGS "" CACHE STRING "clang CPU flags of the packages, such as -march=x86-64-v3 -mtune=generic")
+set(PACKAGE_RUST_FLAGS "" CACHE STRING "rustc CPU flags of the packages, such as -C target-cpu=x86-64-v3")
 set(RUNTIME_CPU_FLAGS "" CACHE STRING "clang CPU flags of the runtimes")
 set(LTO_MODE "" CACHE STRING "clang -flto mode of the packages, such as thin")
 set(MAKE_JOBS "" CACHE STRING "Parallel jobs of the make builds")
 set(SYSROOT_DIR "" CACHE PATH "Directory the runtimes and packages are installed into")
 set(SOURCES_DIR "" CACHE PATH "Directory holding the source checkouts, shared between build directories")
-set(RUSTUP_LOCATION "" CACHE PATH "Directory of the Rust toolchain, shared between build directories")
+set(RUSTUP_DIR "" CACHE PATH "Directory of the Rust toolchain, shared between build directories")
 set(CCACHE_DIR "" CACHE PATH "Directory of the ccache cache of the compiler wrappers")
 # Empty moves the git sources to the tips of their branches.
-set(SOURCE_REVISIONS "" CACHE FILEPATH "File of <project> <commit> lines that the git sources are moved to")
-foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE TARGET_CPU_FLAGS TARGET_RUST_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS SYSROOT_DIR SOURCES_DIR RUSTUP_LOCATION CCACHE_DIR)
+set(SOURCE_REVISIONS_FILE "" CACHE FILEPATH "File of <project> <commit> lines that the git sources are moved to")
+
+foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE PACKAGE_CPU_FLAGS PACKAGE_RUST_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS SYSROOT_DIR SOURCES_DIR RUSTUP_DIR CCACHE_DIR)
     if(NOT ${variable})
         message(FATAL_ERROR "Set ${variable}; scripts/build.sh passes it.")
     endif()
@@ -31,21 +31,20 @@ endforeach()
 # The architecture component of the triple.
 string(REGEX MATCH "^[^-]+" TARGET_PROCESSOR "${TARGET_TRIPLE}")
 set(RUST_TARGET "${TARGET_PROCESSOR}-pc-windows-gnullvm")
-# The triple of the build machine, which runs the build scripts and the
-# procedural macros.
+# The triple of the build machine, for build scripts and procedural macros.
 set(RUST_HOST "${CMAKE_HOST_SYSTEM_PROCESSOR}-unknown-linux-gnu")
-# The forms of RUST_TARGET and RUST_HOST in the names of cargo's environment
-# variables.
+# RUST_TARGET and RUST_HOST as cargo's environment variable names spell them.
 string(MAKE_C_IDENTIFIER "${RUST_TARGET}" RUST_TARGET_IDENTIFIER)
 string(TOUPPER "${RUST_TARGET_IDENTIFIER}" RUST_TARGET_IDENTIFIER)
 string(MAKE_C_IDENTIFIER "${RUST_HOST}" RUST_HOST_IDENTIFIER)
 string(TOUPPER "${RUST_HOST_IDENTIFIER}" RUST_HOST_IDENTIFIER)
-set(RESOURCE_DIR "${PROJECT_BINARY_DIR}/resource")
+
+set(CLANG_RESOURCE_DIR "${PROJECT_BINARY_DIR}/resource")
 set(THINLTO_CACHE_DIR "${PROJECT_BINARY_DIR}/thinlto")
 
 include(PatchedExternalProject)
 include(BuildTools)
-include(Toolchain)
+include(ToolchainProfile)
 include(CustomSteps)
 
 set_property(DIRECTORY PROPERTY EP_STEP_TARGETS download)
@@ -53,7 +52,7 @@ set_property(DIRECTORY PROPERTY EP_STEP_TARGETS download)
 add_subdirectory(toolchain)
 add_subdirectory(packages)
 
-set(projects ${RUNTIMES} ${PACKAGES})
+set(projects ${TOOLCHAIN_PROJECTS} ${PACKAGES})
 set(repositories "")
 foreach(project IN LISTS projects)
     get_property(git_repository TARGET ${project} PROPERTY _EP_GIT_REPOSITORY)
@@ -73,7 +72,7 @@ add_custom_target(package-fullclean)
 add_dependencies(package-fullclean ${fullclean_targets})
 
 # revisions writes the checked-out commit of every git source to
-# revisions.txt, in the form that SOURCE_REVISIONS reads.
+# revisions.txt, in the form that SOURCE_REVISIONS_FILE reads.
 set(git_sources "")
 foreach(repository IN LISTS repositories)
     get_property(source_dir TARGET ${repository} PROPERTY _EP_SOURCE_DIR)

@@ -31,5 +31,5 @@ ExternalProject_Add(harfbuzz
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(harfbuzz)
+add_git_update_steps(harfbuzz)
 cleanup(harfbuzz install)

@@ -20,5 +20,5 @@ ExternalProject_Add(libudfread
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libudfread)
+add_git_update_steps(libudfread)
 cleanup(libudfread install)

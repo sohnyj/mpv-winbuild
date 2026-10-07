@@ -1,6 +1,6 @@
-# winpthreads is a fallback: packages use the Win32 thread API, and only code
-# that calls POSIX thread or clock functions pulls members of this archive in.
-# Like the CRT it is built without section splitting and without LTO.
+# Packages use the Win32 thread API; only code that calls POSIX thread or clock
+# functions links members of this archive. Like the CRT, it is built without
+# section splitting and LTO.
 ExternalProject_Add(winpthreads
     DEPENDS
         libcxx

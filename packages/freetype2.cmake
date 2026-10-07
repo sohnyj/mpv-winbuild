@@ -31,5 +31,5 @@ ExternalProject_Add(freetype2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(freetype2)
+add_git_update_steps(freetype2)
 cleanup(freetype2 install)

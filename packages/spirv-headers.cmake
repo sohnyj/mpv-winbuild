@@ -14,6 +14,7 @@ ExternalProject_Add(spirv-headers
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(spirv-headers)
+add_git_update_steps(spirv-headers)
 cleanup(spirv-headers install)
+
 set(SPIRV_HEADERS_SOURCE_DIR ${SOURCE_LOCATION})

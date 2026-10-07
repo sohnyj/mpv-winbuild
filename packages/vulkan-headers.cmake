@@ -13,5 +13,5 @@ ExternalProject_Add(vulkan-headers
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(vulkan-headers)
+add_git_update_steps(vulkan-headers)
 cleanup(vulkan-headers install)

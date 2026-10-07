@@ -1,6 +1,6 @@
-# Only the library is built. The install step installs the devel tag (library,
-# header, pkg-config file): the alias script of the programs cannot handle
-# Windows executable names.
+# Only the library is built, and only the devel tag (library, header, .pc) is
+# installed: the alias script of the programs cannot handle Windows executable
+# names.
 ExternalProject_Add(bzip2
     GIT_REPOSITORY https://gitlab.com/bzip2/bzip2.git
     GIT_TAG master
@@ -24,5 +24,5 @@ ExternalProject_Add(bzip2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(bzip2)
+add_git_update_steps(bzip2)
 cleanup(bzip2 install)

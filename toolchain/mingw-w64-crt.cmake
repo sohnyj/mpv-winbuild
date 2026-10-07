@@ -3,7 +3,7 @@
 #
 # mingw-w64 builds the stack protector functions into libmingwex and installs
 # no libssp, while clang's MinGW driver links -lssp_nonshared -lssp for
-# -fstack-protector*. Empty archives satisfy those libraries.
+# -fstack-protector*, so empty archives are installed under those names.
 ExternalProject_Add(mingw-w64-crt
     DEPENDS
         mingw-w64

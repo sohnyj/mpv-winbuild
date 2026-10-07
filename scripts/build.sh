@@ -1,13 +1,13 @@
 #!/bin/bash
-# Configure and build mpv-winbuild for a target CPU: the runtimes, then the
-# packages, from sources moved to the tip of their branches. The commits
-# checked out are written to build/<cpu>/revisions.txt.
+# Configure and build the runtimes and packages for a target CPU, from sources
+# at the tips of their branches or at the commits of --revisions. The commits
+# are written to build/<cpu>/revisions.txt.
 #
 # Usage: build.sh [--march <cpu>] [--mtune <cpu>] [--llvm-version <major>]
 #                 [--revisions <file>] [--sources-only] [buildroot]
-#   --march <cpu>           clang -march of the packages (default: TARGET_MARCH of defaults.env;
+#   --march <cpu>           clang -march of the packages (default: PACKAGE_MARCH of defaults.env;
 #                           e.g. x86-64-v3, znver3)
-#   --mtune <cpu>           clang -mtune of the packages (default: TARGET_MTUNE of defaults.env)
+#   --mtune <cpu>           clang -mtune of the packages (default: PACKAGE_MTUNE of defaults.env)
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of defaults.env)
 #   --revisions <file>      move the git sources to the commits of a revisions.txt
 #                           instead of the tips of their branches
@@ -23,8 +23,8 @@ repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 . "${repo_root}/scripts/defaults.env"
 
 llvm_version="${LLVM_VERSION}"
-march="${TARGET_MARCH}"
-mtune="${TARGET_MTUNE}"
+march="${PACKAGE_MARCH}"
+mtune="${PACKAGE_MTUNE}"
 revisions=""
 sources_only=false
 buildroot="${repo_root}"
@@ -52,16 +52,16 @@ echo ">> Configure -march=${march} -mtune=${mtune} in ${build_dir}"
 cmake -G Ninja --fresh -S "${repo_root}" -B "${build_dir}" \
   -DLLVM_VERSION="${llvm_version}" \
   -DTARGET_TRIPLE="${TARGET_TRIPLE}" \
-  -DTARGET_CPU_FLAGS="-march=${march} -mtune=${mtune}" \
-  -DTARGET_RUST_FLAGS="-C target-cpu=${march}" \
+  -DPACKAGE_CPU_FLAGS="-march=${march} -mtune=${mtune}" \
+  -DPACKAGE_RUST_FLAGS="-C target-cpu=${march}" \
   -DRUNTIME_CPU_FLAGS="-march=${RUNTIME_MARCH} -mtune=${RUNTIME_MTUNE}" \
   -DLTO_MODE="${LTO_MODE}" \
   -DMAKE_JOBS="$(nproc)" \
   -DSYSROOT_DIR="${build_dir}/sysroot" \
   -DSOURCES_DIR="${buildroot}/sources" \
-  -DRUSTUP_LOCATION="${buildroot}/rustup" \
+  -DRUSTUP_DIR="${buildroot}/rustup" \
   -DCCACHE_DIR="${buildroot}/ccache" \
-  -DSOURCE_REVISIONS="${revisions}"
+  -DSOURCE_REVISIONS_FILE="${revisions}"
 
 echo ">> Download sources"
 ninja -C "${build_dir}" download

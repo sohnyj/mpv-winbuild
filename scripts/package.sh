@@ -1,11 +1,10 @@
 #!/bin/bash
 # Pack mpv.exe, mpv.com and ffmpeg.exe of a build directory into the release
-# archives, named after the level, the date (UTC) and the mpv and FFmpeg commits
-# of its revisions.txt. The level is the CPU without the x86-64- prefix of the
-# x86-64 microarchitecture levels: v3 for x86-64-v3, znver3 for znver3.
+# archives, named after the level (the CPU without x86-64-: v3, znver3), the UTC
+# date and the mpv and FFmpeg commits of its revisions.txt.
 #
 # Usage: package.sh [--march <cpu>] [buildroot]
-#   --march <cpu>  build directory build/<cpu> (default: TARGET_MARCH of defaults.env)
+#   --march <cpu>  build directory build/<cpu> (default: PACKAGE_MARCH of defaults.env)
 #   buildroot      location of the build/ directory; the archives are written to
 #                  its release/ (default: the repository root)
 set -euo pipefail
@@ -16,7 +15,7 @@ repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 # shellcheck source=defaults.env
 . "${repo_root}/scripts/defaults.env"
 
-march="${TARGET_MARCH}"
+march="${PACKAGE_MARCH}"
 buildroot="${repo_root}"
 while (( $# > 0 )); do
   case "$1" in

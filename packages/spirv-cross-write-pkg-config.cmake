@@ -1,7 +1,7 @@
 # Writes spirv-cross-c-shared.pc for the static SPIRV-Cross libraries, from the
 # installed spirv-cross-c.pc and the libraries the C API depends on.
 #
-#   cmake -D PKG_CONFIG_DIR=<dir> -P spirv-cross-pkg-config.cmake
+#   cmake -D PKG_CONFIG_DIR=<dir> -P spirv-cross-write-pkg-config.cmake
 
 cmake_minimum_required(VERSION 4.4)
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Move the git sources to the tip of their branches: runs `ninja update` in
+# Move the git sources to the tips of their branches: runs `ninja update` in
 # every configured build directory.
 #
 # Usage: update.sh [buildroot]

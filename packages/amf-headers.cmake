@@ -13,5 +13,5 @@ ExternalProject_Add(amf-headers
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(amf-headers)
+add_git_update_steps(amf-headers)
 cleanup(amf-headers install)

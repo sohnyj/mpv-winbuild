@@ -17,5 +17,5 @@ ExternalProject_Add(vulkan-loader
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(vulkan-loader)
+add_git_update_steps(vulkan-loader)
 cleanup(vulkan-loader install)

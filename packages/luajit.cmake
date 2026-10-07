@@ -1,7 +1,6 @@
-# LuaJIT builds only inside its source tree. luajit.pc lists Unix linker flags
-# (-Wl,-E -lm -ldl) in Libs.private that do not exist for MinGW; the install
-# step removes that line, as mpv's own static CI build does. CCOPT and
-# XCFLAGS also apply to the build tools compiled for the host, so ThinLTO goes
+# LuaJIT builds only inside its source tree. The install step removes the
+# Libs.private line of luajit.pc, whose Unix linker flags (-Wl,-E -lm -ldl)
+# MinGW lacks. CCOPT and XCFLAGS also apply to the build tools, so ThinLTO goes
 # into TARGET_CFLAGS.
 set(luajit_make_variables
     CROSS=${TARGET_TRIPLE}-
@@ -16,6 +15,7 @@ set(luajit_make_variables
     FILE_T=luajit.exe
     INSTALL_DEP=src/luajit.exe
 )
+
 ExternalProject_Add(luajit
     GIT_REPOSITORY https://github.com/LuaJIT/LuaJIT.git
     GIT_TAG v2.1
@@ -32,5 +32,5 @@ ExternalProject_Add(luajit
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(luajit)
+add_git_update_steps(luajit)
 cleanup(luajit install)

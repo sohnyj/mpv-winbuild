@@ -14,7 +14,7 @@ ExternalProject_Add(subrandr
         CARGO_PROFILE_RELEASE_LTO=thin
         CARGO_PROFILE_RELEASE_PANIC=abort
         CARGO_PROFILE_RELEASE_STRIP=true
-        "CARGO_TARGET_${RUST_TARGET_IDENTIFIER}_RUSTFLAGS=${TARGET_RUST_FLAGS} -Clinker-plugin-lto"
+        "CARGO_TARGET_${RUST_TARGET_IDENTIFIER}_RUSTFLAGS=${PACKAGE_RUST_FLAGS} -Clinker-plugin-lto"
         cargo xtask install
         --prefix ${SYSROOT_DIR}
         --target ${RUST_TARGET}
@@ -26,5 +26,5 @@ ExternalProject_Add(subrandr
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(subrandr)
+add_git_update_steps(subrandr)
 cleanup(subrandr install)

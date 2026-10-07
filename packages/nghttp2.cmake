@@ -19,5 +19,5 @@ ExternalProject_Add(nghttp2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(nghttp2)
+add_git_update_steps(nghttp2)
 cleanup(nghttp2 install)

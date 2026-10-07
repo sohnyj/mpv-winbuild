@@ -22,5 +22,5 @@ ExternalProject_Add(dav1d
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(dav1d)
+add_git_update_steps(dav1d)
 cleanup(dav1d install)

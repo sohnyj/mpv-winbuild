@@ -16,5 +16,5 @@ ExternalProject_Add(brotli
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(brotli)
+add_git_update_steps(brotli)
 cleanup(brotli install)

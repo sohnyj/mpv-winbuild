@@ -24,5 +24,5 @@ ExternalProject_Add(fribidi
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(fribidi)
+add_git_update_steps(fribidi)
 cleanup(fribidi install)

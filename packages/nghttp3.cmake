@@ -19,5 +19,5 @@ ExternalProject_Add(nghttp3
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(nghttp3)
+add_git_update_steps(nghttp3)
 cleanup(nghttp3 install)

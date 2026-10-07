@@ -79,5 +79,5 @@ ExternalProject_Add(mpv
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(mpv)
+add_git_update_steps(mpv)
 cleanup(mpv install)

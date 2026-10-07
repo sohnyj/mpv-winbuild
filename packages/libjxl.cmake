@@ -33,5 +33,5 @@ ExternalProject_Add(libjxl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libjxl)
+add_git_update_steps(libjxl)
 cleanup(libjxl install)

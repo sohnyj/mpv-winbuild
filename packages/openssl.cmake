@@ -1,5 +1,5 @@
-# Built inside the source tree: since commit 8c547ec7e1, Configure with no-apps
-# fails in a separate build directory, which lacks apps/include.
+# Built inside the source tree: with no-apps, Configure fails in a separate
+# build directory, which lacks apps/include.
 ExternalProject_Add(openssl
     DEPENDS
         brotli
@@ -96,5 +96,5 @@ ExternalProject_Add(openssl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(openssl)
+add_git_update_steps(openssl)
 cleanup(openssl install)

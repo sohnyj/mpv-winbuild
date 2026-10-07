@@ -1,7 +1,7 @@
-# shaderc builds glslang, SPIRV-Tools and SPIRV-Headers from their own
-# checkouts. Only the combined static library is built. mpv and libplacebo
-# look for the shaderc package, which shaderc installs for its shared library,
-# so the install step installs shaderc_combined.pc under that name.
+# Only the combined static library is built, with glslang, SPIRV-Tools and
+# SPIRV-Headers from their own checkouts. mpv and libplacebo look for shaderc,
+# which shaderc installs only for its shared library, so shaderc_combined.pc is
+# installed under that name.
 ExternalProject_Add(shaderc
     DEPENDS
         glslang
@@ -37,5 +37,5 @@ ExternalProject_Add(shaderc
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(shaderc)
+add_git_update_steps(shaderc)
 cleanup(shaderc install)

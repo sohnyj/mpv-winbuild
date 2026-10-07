@@ -1,5 +1,5 @@
-# test_standalone keeps meson.build from requiring gtest, which it does even
-# with the tests disabled.
+# meson.build requires gtest even with the tests disabled, unless
+# test_standalone is set.
 ExternalProject_Add(highway
     GIT_REPOSITORY https://github.com/google/highway.git
     GIT_TAG master
@@ -26,5 +26,5 @@ ExternalProject_Add(highway
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(highway)
+add_git_update_steps(highway)
 cleanup(highway install)

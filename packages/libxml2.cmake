@@ -37,5 +37,5 @@ ExternalProject_Add(libxml2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libxml2)
+add_git_update_steps(libxml2)
 cleanup(libxml2 install)

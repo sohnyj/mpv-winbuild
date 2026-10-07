@@ -1,7 +1,6 @@
-# mpv reads 7zip, ISO 9660, RAR, RAR5 and zip archives, alone or inside
-# bzip2, gzip and xz streams, and never sets a passphrase. Only the libraries
-# those formats decompress with are enabled, and every library libarchive
-# would otherwise pick up when found is turned on or off explicitly.
+# mpv reads 7zip, ISO 9660, RAR, RAR5 and zip archives, alone or inside bzip2,
+# gzip and xz streams, without a passphrase, so only their decompressors are
+# enabled. Libraries in the sysroot or in MinGW are switched explicitly.
 ExternalProject_Add(libarchive
     DEPENDS
         bzip2
@@ -44,5 +43,5 @@ ExternalProject_Add(libarchive
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libarchive)
+add_git_update_steps(libarchive)
 cleanup(libarchive install)

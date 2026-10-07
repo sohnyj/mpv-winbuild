@@ -1,5 +1,5 @@
-# Packages, built with the target profile into the sysroot.
-add_toolchain_profile(target "${TARGET_CPU_FLAGS}")
+# Packages, built with the package profile into the sysroot.
+add_toolchain_profile(package "${PACKAGE_CPU_FLAGS}")
 
 # Packages by depth: the longest chain of DEPENDS below each package.
 set(packages
@@ -59,12 +59,14 @@ set(packages
     # depth 6
     mpv
 )
+
 foreach(package IN LISTS packages)
     set(SOURCE_LOCATION "${SOURCES_DIR}/${package}")
     include("${CMAKE_CURRENT_SOURCE_DIR}/${package}.cmake")
     # A new toolchain profile rebuilds from the patch step: cleanup() restores
     # the checkout after the install step.
     ExternalProject_Add_StepDependencies("${package}" patch ${PROFILE_FILES})
-    ExternalProject_Add_StepDependencies("${package}" configure ${RUNTIMES})
+    ExternalProject_Add_StepDependencies("${package}" configure ${TOOLCHAIN_PROJECTS})
 endforeach()
+
 set(PACKAGES ${packages} PARENT_SCOPE)

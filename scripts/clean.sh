@@ -1,6 +1,7 @@
 #!/bin/bash
-# Reset git-based package sources for a fresh re-clone. For each package, ninja
-# runs its <package>-fullclean and <package>-removeprefix.
+# Delete the stamps, install directory and source of git packages, so that the
+# next build clones them again: runs <package>-fullclean and
+# <package>-removesource.
 #
 # Usage: clean.sh [-p <package>]... [buildroot]
 #   -p, --package <package>  package to clean (repeatable; default: every git source clone)
@@ -68,7 +69,7 @@ for package in "${packages[@]}"; do
   echo ">> Clean ${package}"
   for dir in "${build_dirs[@]}"; do
     ninja -C "${dir}" "${package}-fullclean" || status=1
-    ninja -C "${dir}" "${package}-removeprefix" || status=1
+    ninja -C "${dir}" "${package}-removesource" || status=1
   done
 done
 

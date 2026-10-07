@@ -1,5 +1,6 @@
-# Only the Windows metadata, the input of cppwinrt.
 set(WINDOWS_WINMD crates/libs/default/Windows.winmd)
+
+# Only the Windows metadata, the input of cppwinrt.
 ExternalProject_Add(windows-rs
     GIT_REPOSITORY https://github.com/microsoft/windows-rs.git
     GIT_TAG master
@@ -14,6 +15,7 @@ ExternalProject_Add(windows-rs
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(windows-rs)
+add_git_update_steps(windows-rs)
 cleanup(windows-rs install)
+
 set(WINDOWS_RS_SOURCE_DIR ${SOURCE_LOCATION})

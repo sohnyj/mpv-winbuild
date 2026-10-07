@@ -21,5 +21,5 @@ ExternalProject_Add(ngtcp2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(ngtcp2)
+add_git_update_steps(ngtcp2)
 cleanup(ngtcp2 install)

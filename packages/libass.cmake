@@ -30,5 +30,5 @@ ExternalProject_Add(libass
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libass)
+add_git_update_steps(libass)
 cleanup(libass install)

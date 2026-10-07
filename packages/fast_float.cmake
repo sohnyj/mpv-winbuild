@@ -12,5 +12,5 @@ ExternalProject_Add(fast_float
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(fast_float)
+add_git_update_steps(fast_float)
 cleanup(fast_float install)

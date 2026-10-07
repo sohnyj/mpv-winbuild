@@ -19,5 +19,5 @@ ExternalProject_Add(libvpl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libvpl)
+add_git_update_steps(libvpl)
 cleanup(libvpl install)

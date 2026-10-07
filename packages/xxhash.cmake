@@ -17,5 +17,5 @@ ExternalProject_Add(xxhash
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(xxhash)
+add_git_update_steps(xxhash)
 cleanup(xxhash install)

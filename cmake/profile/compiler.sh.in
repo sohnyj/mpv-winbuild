@@ -1,7 +1,7 @@
 #!/bin/sh
-# clang only searches its own directories for configuration files, so the
-# profile's configuration file is passed explicitly. ccache does not read that
-# file, so its content is hashed with every compilation.
+# clang looks for configuration files only in its own directories, so the
+# profile's file is passed explicitly, and ccache hashes it, since it does not
+# read --config.
 export CCACHE_DIR="@CCACHE_DIR@"
-export CCACHE_EXTRAFILES="@CONFIG_FILE@"
-exec "@CCACHE_EXECUTABLE@" "@DRIVER@" --config="@CONFIG_FILE@" "$@"
+export CCACHE_EXTRAFILES="@CLANG_CONFIG_FILE@"
+exec "@CCACHE_EXECUTABLE@" "@DRIVER@" --config="@CLANG_CONFIG_FILE@" "$@"

@@ -22,5 +22,5 @@ ExternalProject_Add(zstd
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(zstd)
+add_git_update_steps(zstd)
 cleanup(zstd install)

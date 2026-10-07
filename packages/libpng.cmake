@@ -17,5 +17,5 @@ ExternalProject_Add(libpng
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libpng)
+add_git_update_steps(libpng)
 cleanup(libpng install)

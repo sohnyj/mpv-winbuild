@@ -24,7 +24,7 @@ defaults:
     shell: bash
 
 jobs:
-  # Moves every source to the tip of its branch once, so that both levels
+  # Moves the sources to the tips of their branches once, so that both levels
   # build the same commits.
   sources:
     runs-on: ubuntu-26.04
@@ -52,7 +52,7 @@ jobs:
         run: |
           scripts/build.sh --sources-only
           . scripts/defaults.env
-          cp "build/${TARGET_MARCH}/revisions.txt" revisions.txt
+          cp "build/${PACKAGE_MARCH}/revisions.txt" revisions.txt
 
       - name: Upload revisions
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -122,9 +122,8 @@ jobs:
           name: revisions
 
       # The build cache key hashes the inputs that change the build but that
-      # the stamps of the build directory do not track. A build cache is
-      # restored only for the same inputs; otherwise the build starts from
-      # scratch, with ccache. cache-key.txt keeps the values for the logs.
+      # the stamps do not track. Other inputs restore no build cache, and the
+      # build starts from scratch with ccache. cache-key.txt records the values.
       - name: Compute the build cache key
         id: cache_key
         run: |
@@ -211,7 +210,7 @@ jobs:
           path: ccache
           key: ccache-${{ matrix.march }}-${{ github.run_id }}
 
-      # Older caches go only once the new one is saved.
+      # Older caches are deleted only after the new one is saved.
       - name: Delete older build caches
         if: ${{ always() && steps.save_build.outcome == 'success' }}
         run: |

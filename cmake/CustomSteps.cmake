@@ -1,23 +1,22 @@
-# Steps added to the external projects of the recipes.
+# Steps added to the external projects.
 #
 # cleanup(<name> <last step>)
-#   After <last step>, empties the build directory and resets the git
-#   checkout. Adds the step targets <name>-fullclean (delete the stamps),
-#   <name>-liteclean (delete the build and install stamps), <name>-removebuild
-#   and <name>-removeprefix (delete the prefix and the source).
+#   After <last step>, empties the build directory and resets the checkout.
+#   Adds the step targets <name>-fullclean (delete the stamps),
+#   <name>-buildclean (delete the build and install stamps), <name>-removebuild
+#   and <name>-removesource (delete the install directory and the source).
 #
-# force_rebuild_git(<name>)
-#   Adds the step target <name>-force-update, which fetches the git source and
-#   moves it to GIT_RESET, else to its commit in SOURCE_REVISIONS, else to its
-#   upstream branch; when that changes the checked-out commit, it deletes the
-#   stamps so that the next build rebuilds the project. A source that already
-#   exists is not cloned again.
+# add_git_update_steps(<name>)
+#   Adds the step target <name>-force-update, which fetches the source, moves it
+#   to GIT_RESET, else to its commit in SOURCE_REVISIONS_FILE, else to its
+#   upstream branch, and deletes the stamps when the commit changes. A source
+#   that already exists is not cloned again.
 
-# The "<project> <commit>" lines of SOURCE_REVISIONS, as written by the
-# revisions target.
-if(SOURCE_REVISIONS)
-    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${SOURCE_REVISIONS}")
-    file(STRINGS "${SOURCE_REVISIONS}" revision_lines)
+# The "<project> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions
+# target writes them.
+if(SOURCE_REVISIONS_FILE)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${SOURCE_REVISIONS_FILE}")
+    file(STRINGS "${SOURCE_REVISIONS_FILE}" revision_lines)
     foreach(line IN LISTS revision_lines)
         string(REGEX MATCH "^([^ ]+) ([^ ]+)$" match "${line}")
         set_property(GLOBAL PROPERTY "SOURCE_REVISION_${CMAKE_MATCH_1}" "${CMAKE_MATCH_2}")
@@ -32,19 +31,19 @@ function(cleanup _name _last_step)
 
     if(_git_repository)
         if(_build_in_source)
-            set(remove_cmd git -C <SOURCE_DIR> clean -dfx)
+            set(remove_command git -C <SOURCE_DIR> clean -dfx)
         else()
-            set(remove_cmd bash -c "find <BINARY_DIR> -mindepth 1 -delete && git -C <SOURCE_DIR> clean -df")
+            set(remove_command bash -c "find <BINARY_DIR> -mindepth 1 -delete && git -C <SOURCE_DIR> clean -df")
         endif()
-        set(COMMAND_FORCE_UPDATE COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] && git -C <SOURCE_DIR> am --abort 2> /dev/null || true"
-                                 COMMAND ${stamp_dir}/reset_head.sh
-                                 COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] && git -C <SOURCE_DIR> restore . || true")
+        set(reset_checkout_commands COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] && git -C <SOURCE_DIR> am --abort 2> /dev/null || true"
+                                    COMMAND ${stamp_dir}/reset_head.sh
+                                    COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] && git -C <SOURCE_DIR> restore . || true")
     endif()
 
-    # <STAMP_DIR> doesn't resolve into full path, so <LOG_DIR> is used instead since its same folder.
+    # Step commands do not expand <STAMP_DIR>; <LOG_DIR> is the same directory.
     ExternalProject_Add_Step(${_name} fullclean
-        COMMAND find <LOG_DIR> -type f ! -iname *.cmake -size 0c -delete # remove 0 byte files which are stamp files
-        ${COMMAND_FORCE_UPDATE}
+        COMMAND find <LOG_DIR> -type f ! -iname *.cmake -size 0c -delete # the stamps are the empty files
+        ${reset_checkout_commands}
         ALWAYS TRUE
         EXCLUDE_FROM_MAIN TRUE
         INDEPENDENT TRUE
@@ -52,7 +51,7 @@ function(cleanup _name _last_step)
         COMMENT "Deleting all stamp files of ${_name} package"
     )
 
-    ExternalProject_Add_Step(${_name} liteclean
+    ExternalProject_Add_Step(${_name} buildclean
         COMMAND rm -f <LOG_DIR>/${_name}-build
                       <LOG_DIR>/${_name}-install
         ALWAYS TRUE
@@ -65,15 +64,15 @@ function(cleanup _name _last_step)
     if(_git_repository)
         ExternalProject_Add_Step(${_name} postremovebuild
             DEPENDEES ${_last_step}
-            COMMAND ${remove_cmd}
-            ${COMMAND_FORCE_UPDATE}
+            COMMAND ${remove_command}
+            ${reset_checkout_commands}
             LOG 1
             COMMENT "Deleting build directory of ${_name} package after install"
         )
 
         ExternalProject_Add_Step(${_name} removebuild
             DEPENDEES fullclean
-            COMMAND ${remove_cmd}
+            COMMAND ${remove_command}
             ALWAYS TRUE
             EXCLUDE_FROM_MAIN TRUE
             INDEPENDENT TRUE
@@ -83,19 +82,19 @@ function(cleanup _name _last_step)
         ExternalProject_Add_StepTargets(${_name} removebuild)
     endif()
 
-    ExternalProject_Add_Step(${_name} removeprefix
+    ExternalProject_Add_Step(${_name} removesource
         COMMAND rm -rf <INSTALL_DIR> ${source_dir}
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target rebuild_cache
         ALWAYS TRUE
         EXCLUDE_FROM_MAIN TRUE
         INDEPENDENT TRUE
         LOG 1
-        COMMENT "Deleting everything about ${_name} package"
+        COMMENT "Deleting the install directory and source of ${_name} package"
     )
-    ExternalProject_Add_StepTargets(${_name} fullclean liteclean removeprefix)
+    ExternalProject_Add_StepTargets(${_name} fullclean buildclean removesource)
 endfunction()
 
-function(force_rebuild_git _name)
+function(add_git_update_steps _name)
     get_property(git_reset TARGET ${_name} PROPERTY _EP_GIT_RESET)
     get_property(stamp_dir TARGET ${_name} PROPERTY _EP_STAMP_DIR)
     get_property(source_dir TARGET ${_name} PROPERTY _EP_SOURCE_DIR)
@@ -130,12 +129,11 @@ function(force_rebuild_git _name)
         LOG 1
     )
 
-    # The git clone script deletes the source and clones it again unless
-    # gitclone-lastrun.txt is newer than gitinfo.txt, so an existing checkout,
-    # which the build directories share, is marked as cloned. The step is
-    # decided when it runs: one added only once the source exists would rerun
-    # the download step after the first clone.
-    ExternalProject_Add_Step(${_name} check-git
+    # Marks an existing checkout, which the build directories share, as cloned:
+    # the clone script clones again unless gitclone-lastrun.txt is newer than
+    # gitinfo.txt. The check runs at build time, because a step added only
+    # once the source exists would rerun the download after the first clone.
+    ExternalProject_Add_Step(${_name} mark-cloned
         DEPENDERS download
         INDEPENDENT TRUE
         WORKING_DIRECTORY ${stamp_dir}

@@ -30,5 +30,5 @@ ExternalProject_Add(libbluray
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libbluray)
+add_git_update_steps(libbluray)
 cleanup(libbluray install)

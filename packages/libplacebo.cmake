@@ -40,5 +40,5 @@ ExternalProject_Add(libplacebo
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libplacebo)
+add_git_update_steps(libplacebo)
 cleanup(libplacebo install)

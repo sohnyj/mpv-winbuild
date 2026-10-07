@@ -1,6 +1,6 @@
-# SPIRV-Cross is built as static libraries. mpv and libplacebo look for the
-# spirv-cross-c-shared package, which SPIRV-Cross installs only for its shared
-# C library, so the install step writes it for the static libraries.
+# Static libraries. mpv and libplacebo look for spirv-cross-c-shared, which
+# SPIRV-Cross installs only for its shared C library, so the install step writes
+# it for the static libraries.
 ExternalProject_Add(spirv-cross
     GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Cross.git
     GIT_TAG main
@@ -25,10 +25,10 @@ ExternalProject_Add(spirv-cross
         -DSPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS=ON
     INSTALL_COMMAND ${CMAKE_COMMAND} --install <BINARY_DIR>
         COMMAND ${CMAKE_COMMAND} -D PKG_CONFIG_DIR=${SYSROOT_DIR}/lib/pkgconfig
-            -P ${CMAKE_CURRENT_LIST_DIR}/spirv-cross-pkg-config.cmake
+            -P ${CMAKE_CURRENT_LIST_DIR}/spirv-cross-write-pkg-config.cmake
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(spirv-cross)
+add_git_update_steps(spirv-cross)
 cleanup(spirv-cross install)

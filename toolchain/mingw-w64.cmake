@@ -12,6 +12,7 @@ ExternalProject_Add(mingw-w64
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(mingw-w64)
+add_git_update_steps(mingw-w64)
 cleanup(mingw-w64 install)
+
 set(MINGW_SOURCE_DIR ${SOURCE_LOCATION})

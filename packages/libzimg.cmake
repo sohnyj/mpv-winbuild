@@ -19,5 +19,5 @@ ExternalProject_Add(libzimg
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(libzimg)
+add_git_update_steps(libzimg)
 cleanup(libzimg install)

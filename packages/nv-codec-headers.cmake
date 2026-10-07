@@ -11,5 +11,5 @@ ExternalProject_Add(nv-codec-headers
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(nv-codec-headers)
+add_git_update_steps(nv-codec-headers)
 cleanup(nv-codec-headers install)

@@ -13,6 +13,7 @@ ExternalProject_Add(glslang
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(glslang)
+add_git_update_steps(glslang)
 cleanup(glslang install)
+
 set(GLSLANG_SOURCE_DIR ${SOURCE_LOCATION})

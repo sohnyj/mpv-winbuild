@@ -16,5 +16,5 @@ ExternalProject_Add(c-ares
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(c-ares)
+add_git_update_steps(c-ares)
 cleanup(c-ares install)

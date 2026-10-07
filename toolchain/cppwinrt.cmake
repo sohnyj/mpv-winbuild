@@ -19,5 +19,5 @@ ExternalProject_Add(cppwinrt
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(cppwinrt)
+add_git_update_steps(cppwinrt)
 cleanup(cppwinrt install)

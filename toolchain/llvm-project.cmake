@@ -38,6 +38,7 @@ ExternalProject_Add(llvm-project
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-force_rebuild_git(llvm-project)
+add_git_update_steps(llvm-project)
 cleanup(llvm-project install)
+
 set(LLVM_SOURCE_DIR ${SOURCE_LOCATION})
