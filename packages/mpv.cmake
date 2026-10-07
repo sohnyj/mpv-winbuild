@@ -39,8 +39,6 @@ ExternalProject_Add(mpv
         -Db_lto=true
         -Db_lto_mode=${LTO_MODE}
         -Db_ndebug=true
-        -Dc_link_args=-s
-        -Dcpp_link_args=-s
         -Damf=enabled
         -Dcdda=disabled
         -Dcplugins=disabled

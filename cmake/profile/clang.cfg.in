@@ -16,6 +16,7 @@
 -fdata-sections
 
 $-static
+$-Wl,-s
 $-Wl,--lto-O3
 $-Wl,--gc-sections
 $-Wl,--icf=safe
