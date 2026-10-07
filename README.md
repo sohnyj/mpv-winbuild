@@ -35,7 +35,6 @@ trailing `buildroot`, the directory that holds `sources/`, `build/`, `ccache/`,
 scripts/install-dependencies.sh
 scripts/build.sh    # x86-64-v3
 scripts/package.sh
-scripts/clean.sh
 ```
 
 ## Information about packages
