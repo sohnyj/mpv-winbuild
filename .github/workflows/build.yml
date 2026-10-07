@@ -175,7 +175,13 @@ jobs:
 
       - name: Build
         id: build
-        run: scripts/build.sh --march ${{ matrix.march }} --mtune ${{ matrix.mtune }} --revisions revisions.txt
+        run: |
+          ccache --dir ccache --zero-stats
+          scripts/build.sh --march ${{ matrix.march }} --mtune ${{ matrix.mtune }} --revisions revisions.txt
+
+      - name: Show the ccache statistics
+        if: ${{ always() && steps.build.conclusion != 'skipped' }}
+        run: ccache --dir ccache --show-stats --verbose
 
       - name: Package
         run: scripts/package.sh --march ${{ matrix.march }}
@@ -193,6 +199,7 @@ jobs:
         run: |
           mkdir -p "${LOGS_DIR}"
           cp -f cache-key.txt "${LOGS_DIR}/" || true
+          ccache --dir ccache --print-stats > "${LOGS_DIR}/ccache-stats.txt" || true
           find "${BUILD_DIR}" -type f \( -iname "*-*.log" -o -wholename "*/ffbuild/config.log" \) \
             -exec cp -f -t "${LOGS_DIR}" {} + || true
 
