@@ -6,12 +6,12 @@ set(luajit_make_variables
     CROSS=${TARGET_TRIPLE}-
     CC=clang
     HOST_CC=${HOST_C_COMPILER}
+    PREFIX=${SYSROOT_DIR}
     TARGET_SYS=Windows
-    BUILDMODE=static
     "CCOPT=-O3 -fomit-frame-pointer"
     TARGET_CFLAGS=-flto=${LTO_MODE}
     "XCFLAGS=-DLUAJIT_ENABLE_LUA52COMPAT -DNDEBUG"
-    PREFIX=${SYSROOT_DIR}
+    BUILDMODE=static
     FILE_T=luajit.exe
     INSTALL_DEP=src/luajit.exe
 )
