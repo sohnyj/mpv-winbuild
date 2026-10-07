@@ -33,6 +33,7 @@ foreach(tool IN LISTS binutils)
 endforeach()
 find_program(PKGCONF_EXECUTABLE NAMES pkgconf REQUIRED)
 find_program(NASM_EXECUTABLE NAMES nasm REQUIRED)
+find_program(GLSLANG_EXECUTABLE NAMES glslang REQUIRED)
 find_program(CCACHE_EXECUTABLE NAMES ccache REQUIRED)
 
 execute_process(

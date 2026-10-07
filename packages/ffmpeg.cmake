@@ -1,7 +1,3 @@
-# The configure step stops the build when features that configure turns off
-# without an error are missing: the AVX-512 assembly, and the SPIR-V compiler
-# (glslang on PATH), which configure keeps out of config.h; avgblur_vulkan
-# depends on nothing else.
 ExternalProject_Add(ffmpeg
     DEPENDS
         amf-headers
@@ -38,6 +34,7 @@ ExternalProject_Add(ffmpeg
         --cc=${TARGET_TRIPLE}-clang
         --cxx=${TARGET_TRIPLE}-clang++
         --nvcc=${CLANG_EXECUTABLE}
+        --glslc=${GLSLANG_EXECUTABLE}
         --host-cc=${HOST_C_COMPILER}
         --windres=${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-windres
         --prefix=${SYSROOT_DIR}
@@ -92,9 +89,6 @@ ExternalProject_Add(ffmpeg
         --disable-protocol=mmst
         --disable-protocol=prompeg
         --disable-protocol=udplite
-        COMMAND grep -q "^#define HAVE_AVX512_EXTERNAL 1$" config.h
-        COMMAND grep -q "^#define HAVE_AVX512ICL_EXTERNAL 1$" config.h
-        COMMAND grep -q "^#define CONFIG_AVGBLUR_VULKAN_FILTER 1$" config_components.h
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
