@@ -3,11 +3,11 @@
 # the next build clones and builds them again: runs <package>-fullclean and
 # <package>-removesource.
 #
-# Usage: clean.sh [-p <package>]... [buildroot]
-#   -p, --package <package>  package to clean (repeatable; default: every git
-#                            source clone)
-#   buildroot                location of the sources/ and build/ directories
-#                            (default: the repository root)
+# Usage: clean.sh [--package <package>]... [buildroot]
+#   --package <package>  package to clean (repeatable; default: every git
+#                        source clone)
+#   buildroot            location of the sources/ and build/ directories
+#                        (default: the repository root)
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
@@ -18,7 +18,7 @@ buildroot="${repo_root}"
 packages=()
 while (( $# > 0 )); do
   case "$1" in
-    -p|--package) packages+=("$2"); shift 2 ;;
+    --package) packages+=("$2"); shift 2 ;;
     --package=*) packages+=("${1#*=}"); shift ;;
     -h|--help) usage 0 ;;
     -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
