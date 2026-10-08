@@ -136,7 +136,7 @@ jobs:
       # The build cache key hashes the output of cache-key.sh: when it changes,
       # no build cache matches, and the build starts from scratch with ccache.
       # The logs include it as cache-key.txt.
-      - name: Compute the build cache key
+      - name: Hash the build inputs
         id: cache_key
         run: |
           scripts/cache-key.sh | tee cache-key.txt
