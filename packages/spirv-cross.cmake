@@ -22,7 +22,6 @@ ExternalProject_Add(spirv-cross
         -DSPIRV_CROSS_ENABLE_CPP=OFF
         -DSPIRV_CROSS_ENABLE_MSL=OFF
         -DSPIRV_CROSS_ENABLE_REFLECT=OFF
-        -DSPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS=ON
     INSTALL_COMMAND ${CMAKE_COMMAND} --install <BINARY_DIR>
         COMMAND ${CMAKE_COMMAND} -D PKG_CONFIG_DIR=${SYSROOT_DIR}/lib/pkgconfig
             -P ${CMAKE_CURRENT_LIST_DIR}/spirv-cross-write-pkg-config.cmake
