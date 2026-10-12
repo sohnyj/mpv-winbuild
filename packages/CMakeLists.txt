@@ -55,6 +55,8 @@ set(packages
     libass
     # depth 5
     ffmpeg
+    # after ffmpeg, to which it adds steps
+    ffmpeg-cropdetect-filters
     # depth 6
     mpv
 )
