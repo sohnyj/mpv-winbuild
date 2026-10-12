@@ -7,7 +7,9 @@
 # Usage: build.sh [--march <cpu>] [--mtune <cpu>] [--llvm-version <major>]
 #                 [--revisions <file>] [--sources-only] [workdir]
 #   --march <cpu>           clang -march of the packages (default: PACKAGE_MARCH
-#                           of defaults.env; e.g. x86-64-v3, znver3)
+#                           of defaults.env; e.g. x86-64-v3, znver3); with
+#                           <cpu>_cropdetect-vk the suffix only names the build
+#                           directory
 #   --mtune <cpu>           clang -mtune of the packages (default: PACKAGE_MTUNE
 #                           of defaults.env)
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
@@ -58,8 +60,8 @@ configure() {
   cmake -G Ninja --fresh -S "${repo_root}" -B "${build_dir}" \
     -DLLVM_VERSION="${llvm_version}" \
     -DTARGET_TRIPLE="${TARGET_TRIPLE}" \
-    -DPACKAGE_CPU_FLAGS="-march=${march} -mtune=${mtune}" \
-    -DPACKAGE_RUST_CPU_FLAGS="-C target-cpu=${march}" \
+    -DPACKAGE_CPU_FLAGS="-march=${march%_cropdetect-vk} -mtune=${mtune}" \
+    -DPACKAGE_RUST_CPU_FLAGS="-C target-cpu=${march%_cropdetect-vk}" \
     -DRUNTIME_CPU_FLAGS="-march=${RUNTIME_MARCH} -mtune=${RUNTIME_MTUNE}" \
     -DLTO_MODE="${LTO_MODE}" \
     -DMAKE_JOBS="$(nproc)" \
