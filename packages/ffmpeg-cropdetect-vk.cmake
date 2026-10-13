@@ -1,3 +1,7 @@
+# Cloned into the build directory: the sources cache of the workflow comes
+# from main, which does not have this package.
+set(SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-cropdetect-vk")
+
 ExternalProject_Add(ffmpeg-cropdetect-vk
     GIT_REPOSITORY https://github.com/sohnyj/cropdetect-vk.git
     GIT_TAG main
