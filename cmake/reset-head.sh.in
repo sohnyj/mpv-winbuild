@@ -5,9 +5,9 @@ set -e
 [[ -e "@source_dir@/.git" ]] || exit 0
 git -C @source_dir@ am --abort 2> /dev/null || true
 upstream=$(git -C @source_dir@ rev-parse -q --verify @{u}) || upstream=$(git -C @source_dir@ rev-parse HEAD)
-target=$(git -C @source_dir@ rev-parse -q --verify @target@^{commit})
-if [[ ! -f "@stamp_dir@/@name@-patch"  || "@stamp_dir@/@name@-download" -nt "@stamp_dir@/@name@-patch" || ! -f "@stamp_dir@/HEAD" || "$(cat @stamp_dir@/HEAD)" != "${target}" ]]; then
-    git -C @source_dir@ reset --hard ${target} -q
+commit=$(git -C @source_dir@ rev-parse -q --verify @commit@^{commit})
+if [[ ! -f "@stamp_dir@/@name@-patch"  || "@stamp_dir@/@name@-download" -nt "@stamp_dir@/@name@-patch" || ! -f "@stamp_dir@/HEAD" || "$(cat @stamp_dir@/HEAD)" != "${commit}" ]]; then
+    git -C @source_dir@ reset --hard ${commit} -q
     find "@stamp_dir@" -type f  ! -iname '*.cmake' -size 0c -delete
     echo "Removing @name@ stamp files."
     git -C @source_dir@ rev-parse HEAD > @stamp_dir@/HEAD

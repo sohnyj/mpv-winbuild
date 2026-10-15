@@ -37,8 +37,8 @@ cmake_version="$(cmake --version | awk 'NR == 1 { print $3 }')"
 glslang_version="$(package_version glslang-tools)"
 meson_version="$(meson --version)"
 nasm_version="$(package_version nasm)"
-rust_channel=https://static.rust-lang.org/dist/channel-rust-stable.toml
-rust_version="$(curl -fsSL "${rust_channel}" | awk -F '"' '
+rust_channel_url=https://static.rust-lang.org/dist/channel-rust-stable.toml
+rust_version="$(curl -fsSL "${rust_channel_url}" | awk -F '"' '
   /^\[pkg\.rust\]/ { found = 1 }
   found && /^version = / { print $2; found = 0 }')"
 mingw_w64_trees=()

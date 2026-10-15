@@ -1,9 +1,10 @@
-# cmake -D GIT_SOURCES=<file> -D OUTPUT=<file> -P WriteRevisions.cmake
+# cmake -D GIT_SOURCES_FILE=<file> -D REVISIONS_FILE=<file>
+#       -P WriteRevisions.cmake
 #
-# Writes to OUTPUT a "<source> <commit>" line, with the checked-out commit, for
-# each "<source> <source directory>" line of GIT_SOURCES.
+# Writes to REVISIONS_FILE a "<source> <commit>" line, with the checked-out
+# commit, for each "<source> <source directory>" line of GIT_SOURCES_FILE.
 
-file(STRINGS "${GIT_SOURCES}" lines)
+file(STRINGS "${GIT_SOURCES_FILE}" lines)
 set(revisions "")
 foreach(line IN LISTS lines)
     string(REGEX MATCH "^([^ ]+) (.+)$" match "${line}")
@@ -16,4 +17,4 @@ foreach(line IN LISTS lines)
     )
     string(APPEND revisions "${source} ${commit}\n")
 endforeach()
-file(WRITE "${OUTPUT}" "${revisions}")
+file(WRITE "${REVISIONS_FILE}" "${revisions}")
