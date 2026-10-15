@@ -101,6 +101,9 @@ jobs:
             mtune: generic
           - march: znver3
             mtune: znver3
+          - march: x86-64-v3_cropdetect-vk
+            mtune: generic
+            ref: cropdetect-vk
           - march: znver3_cropdetect-vk
             mtune: znver3
             ref: cropdetect-vk
