@@ -28,7 +28,7 @@ ExternalProject_Add(llvm-project
         !/polly/
         !/utils/
         /llvm/cmake/"
-    GIT_RESET ${LLVM_RUNTIMES_COMMIT}
+    GIT_RESET ${LLVM_COMMIT}
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""

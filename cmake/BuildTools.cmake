@@ -19,7 +19,7 @@ file(REAL_PATH "${CLANG_EXECUTABLE}" clang_real_path)
 cmake_path(GET clang_real_path PARENT_PATH LLVM_TOOLS_BINARY_DIR)
 cmake_path(GET LLVM_TOOLS_BINARY_DIR PARENT_PATH llvm_prefix)
 set(LLVM_CMAKE_PACKAGE_DIR "${llvm_prefix}/lib/cmake/llvm")
-# Reconfigure when apt upgrades clang, which can move the runtimes commit.
+# Reconfigure when apt upgrades clang, which can move the llvm-project commit.
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${clang_real_path}")
 
 # Compilers of the programs that run on the build machine.
@@ -48,5 +48,5 @@ execute_process(
 if(NOT clang_package_version MATCHES "^[0-9]+:${LLVM_VERSION}\\.[0-9]+\\.[0-9]+~\\+\\+[0-9]+\\+([0-9a-f]+)-")
     message(FATAL_ERROR "clang-${LLVM_VERSION} ${clang_package_version} is not from an apt.llvm.org release suite")
 endif()
-set(LLVM_RUNTIMES_COMMIT "${CMAKE_MATCH_1}")
+set(LLVM_COMMIT "${CMAKE_MATCH_1}")
 message(STATUS "clang-${LLVM_VERSION} ${clang_package_version}")
