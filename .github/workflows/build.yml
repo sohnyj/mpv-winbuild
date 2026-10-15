@@ -24,8 +24,6 @@ defaults:
     shell: bash
 
 jobs:
-  # Moves the sources to the tips of their branches once, so that the builds
-  # of both CPUs use the same commits.
   sources:
     runs-on: ubuntu-26.04
     permissions:
@@ -33,8 +31,6 @@ jobs:
       actions: write
     env:
       GH_TOKEN: ${{ github.token }}
-    # Cache keys and artifact names start with the target triple; the keys of
-    # the build and ccache caches have the LLVM version after the CPU.
     outputs:
       target: ${{ steps.defaults.outputs.target }}
       llvm: ${{ steps.defaults.outputs.llvm }}
