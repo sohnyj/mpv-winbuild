@@ -1,7 +1,6 @@
 #!/bin/bash
 # Aborts an unfinished git am and resets the checkout of @name@ to its target
-# commit. Deletes the stamps when the commit, the download or the recorded HEAD
-# changed.
+# commit. Deletes the stamps when the target commit or the download changed.
 set -e
 [[ -e "@source_dir@/.git" ]] || exit 0
 git -C @source_dir@ am --abort 2> /dev/null || true

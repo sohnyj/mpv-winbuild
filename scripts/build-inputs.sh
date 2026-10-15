@@ -50,7 +50,6 @@ recipes_hash="$(cd "${repo_root}" \
     -- CMakeLists.txt cmake toolchain packages \
   | xargs -0 sha256sum | sha256sum | cut -d ' ' -f 1)"
 
-# Build tools, Rust, mingw-w64 runtime trees, recipes.
 echo "clang ${clang_version}"
 echo "cmake ${cmake_version}"
 echo "glslang ${glslang_version}"

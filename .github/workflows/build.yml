@@ -139,8 +139,7 @@ jobs:
           name: ${{ needs.sources.outputs.target }}-revisions
 
       # The build cache key holds the hash of the output of build-inputs.sh, so
-      # a changed output starts the build from scratch, with ccache. The logs
-      # include the output as build-inputs.txt.
+      # a changed output starts the build from scratch, with ccache.
       - name: Hash the build inputs
         id: build_inputs
         run: |
@@ -220,7 +219,6 @@ jobs:
           path: ccache
           key: ${{ needs.sources.outputs.target }}-ccache-${{ matrix.march }}-${{ needs.sources.outputs.llvm }}-${{ github.run_id }}
 
-      # Older caches are deleted only after the new one is saved.
       - name: Delete older build caches
         if: ${{ always() && steps.save_build.outcome == 'success' }}
         run: |
