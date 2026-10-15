@@ -1,12 +1,9 @@
-set(WINDOWS_WINMD crates/libs/default/Windows.winmd)
-
-# Only the Windows metadata, the input of cppwinrt.
 ExternalProject_Add(windows-rs
     GIT_REPOSITORY https://github.com/microsoft/windows-rs.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /${WINDOWS_WINMD}"
+        /crates/libs/default/"
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
