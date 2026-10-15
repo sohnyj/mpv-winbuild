@@ -15,4 +15,4 @@ ExternalProject_Add(mingw-w64
 add_git_update_steps(mingw-w64)
 add_cleanup_steps(mingw-w64 install)
 
-set(MINGW_SOURCE_DIR ${SOURCE_DIR})
+set(MINGW_W64_SOURCE_DIR ${SOURCE_DIR})

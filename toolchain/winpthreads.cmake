@@ -7,7 +7,7 @@ ExternalProject_Add(winpthreads
         mingw-w64
         mingw-w64-crt
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ${MINGW_SOURCE_DIR}
+    SOURCE_DIR ${MINGW_W64_SOURCE_DIR}
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/mingw-w64-libraries/winpthreads/configure
         --host=${TARGET_TRIPLE}
         --prefix=${SYSROOT_DIR}

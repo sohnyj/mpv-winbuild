@@ -2,7 +2,7 @@ ExternalProject_Add(mingw-w64-headers
     DEPENDS
         mingw-w64
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ${MINGW_SOURCE_DIR}
+    SOURCE_DIR ${MINGW_W64_SOURCE_DIR}
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/mingw-w64-headers/configure
         --host=${TARGET_TRIPLE}
         --prefix=${SYSROOT_DIR}

@@ -27,7 +27,7 @@ while (( $# > 0 )); do
     *) workdir="$1"; shift ;;
   esac
 done
-mingw_source="${workdir}/sources/mingw-w64"
+mingw_w64_source="${workdir}/sources/mingw-w64"
 
 package_version() { dpkg-query --show --showformat='${Version}' "$1"; }
 
@@ -41,9 +41,9 @@ rust_channel=https://static.rust-lang.org/dist/channel-rust-stable.toml
 rust_version="$(curl -fsSL "${rust_channel}" | awk -F '"' '
   /^\[pkg\.rust\]/ { found = 1 }
   found && /^version = / { print $2; found = 0 }')"
-mingw_trees=()
+mingw_w64_trees=()
 for dir in mingw-w64-crt mingw-w64-headers mingw-w64-libraries/winpthreads; do
-  mingw_trees+=("${dir} $(git -C "${mingw_source}" rev-parse "HEAD:${dir}")")
+  mingw_w64_trees+=("${dir} $(git -C "${mingw_w64_source}" rev-parse "HEAD:${dir}")")
 done
 recipes_hash="$(cd "${repo_root}" \
   && git ls-files -z --cached --others --exclude-standard \
@@ -56,5 +56,5 @@ echo "glslang ${glslang_version}"
 echo "meson ${meson_version}"
 echo "nasm ${nasm_version}"
 echo "rust ${rust_version}"
-printf '%s\n' "${mingw_trees[@]}"
+printf '%s\n' "${mingw_w64_trees[@]}"
 echo "recipes ${recipes_hash}"
