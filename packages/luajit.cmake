@@ -1,6 +1,6 @@
 # LuaJIT builds only inside its source tree. The install step removes the
 # Libs.private line of luajit.pc, whose -Wl,-E and -ldl MinGW lacks. CCOPT and
-# XCFLAGS also apply to the build tools, so ThinLTO goes into TARGET_CFLAGS.
+# XCFLAGS also apply to the build tools, so -flto goes into TARGET_CFLAGS.
 set(luajit_make_variables
     CROSS=${TARGET_TRIPLE}-
     CC=clang

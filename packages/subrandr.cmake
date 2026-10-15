@@ -1,4 +1,4 @@
-# The Rust code is compiled to LLVM bitcode for the ThinLTO of the final link
+# The Rust code is compiled to LLVM bitcode for the LTO of the final link
 # (-Clinker-plugin-lto). cargo xtask runs cargo again, so every setting goes
 # through the environment.
 ExternalProject_Add(subrandr
