@@ -1,7 +1,8 @@
 #!/bin/bash
-# Delete the build directories, stamps and sources of packages and toolchain
-# components with a git source, so that the next build clones and builds them
-# again: runs <name>-delete-stamps and <name>-remove-prefix-and-source.
+# Delete the build directories, stamps and sources of the given packages and
+# toolchain components, or of every git source, so that the next build
+# downloads and builds them again: runs <name>-delete-stamps and
+# <name>-remove-prefix-and-source.
 #
 # Usage: clean.sh [--package <package>]... [--toolchain <component>]...
 #                 [workdir]
