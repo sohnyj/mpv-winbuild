@@ -10,7 +10,7 @@ Autobuild runs daily at UTC 00:00.
 
 ## Minimum Requirements
 
-- **OS**: Windows 10
+- **OS**: Windows 10 (x64)
 - **CPU**: x86-64-v3 (AVX2)
     - The `znver3` build requires AMD Zen 3.
     - The `cropdetect-vk` builds have the
