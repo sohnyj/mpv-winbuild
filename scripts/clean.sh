@@ -11,6 +11,9 @@
 #   workdir                  location of the sources/ and build/ directories
 #                            (default: the repository root)
 # Without --package and --toolchain, every git source clone is cleaned.
+#
+# Cleaning a component that builds from another's source, such as libcxx from
+# llvm-project, deletes that source; clean the source's component instead.
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
