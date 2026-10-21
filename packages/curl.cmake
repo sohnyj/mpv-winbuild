@@ -67,8 +67,6 @@ ExternalProject_Add(curl
         -DUSE_HTTPSRR=ON
         -DUSE_NGHTTP2=ON
         -DUSE_NGTCP2=ON
-        -DUSE_PROXY_HTTP3=ON
-        -DUSE_SSLS_EXPORT=ON
         -DUSE_WIN32_IDN=ON
         "-DCMAKE_C_FLAGS=-DNGHTTP3_STATICLIB -DNGHTTP2_STATICLIB -DNGTCP2_STATICLIB"
         "-DCMAKE_EXE_LINKER_FLAGS=-lbrotlicommon -lbrotlidec -lbrotlienc -lzstd"
