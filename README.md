@@ -31,7 +31,7 @@ trailing `workdir`, the directory that holds `sources/`, `build/`, `ccache/`,
 | `build-inputs.sh` | Print the inputs that the stamps do not track: the versions of the build tools and Rust, the mingw-w64 runtime trees and a hash of the recipes. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` of a build into `release/*.7z`. |
 | `update.sh` | Move the git sources to the tips of their branches, or to the commits of the `--revisions` file of the last build. |
-| `clean.sh` | Delete the build directories, stamps and sources of the given packages and toolchain components, or of every git source, so that the next build downloads and builds them again. |
+| `clean.sh` | Delete the build directories, stamps and sources of the given packages and toolchain components, or of every git clone under `sources/`, so that the next build downloads and builds them again. |
 
 ```bash
 scripts/install-dependencies.sh
