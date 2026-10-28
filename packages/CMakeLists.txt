@@ -66,6 +66,8 @@ foreach(package IN LISTS packages)
     # A changed toolchain profile rebuilds from the patch step, since the
     # checkout is reset after the install step.
     ExternalProject_Add_StepDependencies("${package}" patch ${PROFILE_FILES})
+    # The toolchain components are built first, but a rebuilt component
+    # rebuilds only the packages that name it in DEPENDS.
     ExternalProject_Add_StepDependencies("${package}" configure ${TOOLCHAIN_COMPONENTS})
 endforeach()
 

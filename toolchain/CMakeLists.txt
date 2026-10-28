@@ -29,6 +29,4 @@ foreach(toolchain_component IN LISTS toolchain_components)
     ExternalProject_Add_StepDependencies("${toolchain_component}" patch ${PROFILE_FILES})
 endforeach()
 
-# The packages are built after the toolchain components, but a rebuilt
-# component rebuilds only the packages that name it in DEPENDS.
 set(TOOLCHAIN_COMPONENTS ${toolchain_components} PARENT_SCOPE)
