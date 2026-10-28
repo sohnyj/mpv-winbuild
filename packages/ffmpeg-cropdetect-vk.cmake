@@ -34,7 +34,6 @@ ExternalProject_Add_Step(ffmpeg apply-cropdetect-vk
 )
 ExternalProject_Add_StepDependencies(ffmpeg apply-cropdetect-vk
     ffmpeg-cropdetect-vk
-    ${TOOLCHAIN_COMPONENTS}
 )
 
 ExternalProject_Add_Step(ffmpeg check-cropdetect-vk
