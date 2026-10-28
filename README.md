@@ -28,11 +28,8 @@ of those builds have it.
 
 ## Build scripts
 
-The scripts run on Ubuntu 26.04, natively or on WSL2. Defaults such as the CPU
-and the LLVM version are in `scripts/defaults.env`. Every script prints its
-options with `--help`. All but `install-dependencies.sh` take an optional
-trailing `workdir`, the directory that holds `sources/`, `build/`, `ccache/`,
-`rustup/` and `release/` (default: the repository root).
+- The scripts run on Ubuntu 26.04, natively or on WSL2.
+- Defaults such as the CPU and the LLVM version are in `scripts/defaults.env`.
 
 | Script | Purpose |
 | ------ | ------- |
