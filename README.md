@@ -11,10 +11,20 @@ Autobuild runs daily at UTC 00:00.
 ## Minimum Requirements
 
 - **OS**: Windows 10 (x64)
-- **CPU**: x86-64-v3 (AVX2)
-    - The `znver3` build requires AMD Zen 3.
-    - The `cropdetect-vk` builds have the
-      [cropdetect-vk](https://github.com/sohnyj/cropdetect-vk) patch applied.
+- **CPU**: that of the build, in the table below
+
+## Builds
+
+| Build | CPU | Extra filter |
+| ----- | --- | ------------ |
+| `x86_64-v3` | x86-64-v3 (AVX2) | |
+| `x86_64-znver3` | AMD Zen 3 or newer | |
+| `x86_64-v3_cropdetect-vk` | x86-64-v3 (AVX2) | `cropdetect_vulkan` |
+| `x86_64-znver3_cropdetect-vk` | AMD Zen 3 or newer | `cropdetect_vulkan` |
+
+`cropdetect_vulkan` is the filter of
+[cropdetect-vk](https://github.com/sohnyj/cropdetect-vk); both mpv and FFmpeg
+of those builds have it.
 
 ## Build scripts
 
