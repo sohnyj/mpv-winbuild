@@ -22,10 +22,10 @@ execute_process(
 file(MAKE_DIRECTORY "${CLANG_RESOURCE_DIR}")
 file(CREATE_LINK "${installed_resource_dir}/include" "${CLANG_RESOURCE_DIR}/include" SYMBOLIC)
 
-# add_toolchain_profile(<profile> <cpu flags>)
+# add_toolchain_profile(<profile> <cpu flags> <preprocessor flags>)
 #
-# Generates the profile for <cpu flags> in CMAKE_CURRENT_BINARY_DIR/<profile>
-# and sets in the calling directory:
+# Generates the profile for <cpu flags> and <preprocessor flags> in
+# CMAKE_CURRENT_BINARY_DIR/<profile> and sets in the calling directory:
 #
 #   EXEC               command prefix with the profile's tools first in PATH
 #                      and its autoconf site file
@@ -38,9 +38,10 @@ file(CREATE_LINK "${installed_resource_dir}/include" "${CLANG_RESOURCE_DIR}/incl
 #   MESON_NATIVE_FILE  Meson native file
 #   PROFILE_FILES      the generated files that the patch step of every
 #                      toolchain component and package depends on
-function(add_toolchain_profile profile cpu_flags)
+function(add_toolchain_profile profile cpu_flags preprocessor_flags)
     set(PROFILE "${profile}")
     set(CPU_FLAGS "${cpu_flags}")
+    set(PREPROCESSOR_FLAGS "${preprocessor_flags}")
     set(profile_dir "${CMAKE_CURRENT_BINARY_DIR}/${profile}")
     set(TOOLCHAIN_BIN_DIR "${profile_dir}/bin")
     set(CLANG_CONFIG_FILE "${profile_dir}/${TARGET_TRIPLE}.cfg")
