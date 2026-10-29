@@ -49,43 +49,43 @@ scripts/package.sh
 ## Information about packages
 
 - Git (Nightly)
-    - amf-headers
-    - brotli
-    - bzip2
-    - curl (with c-ares, libpsl, nghttp2, nghttp3, ngtcp2)
-    - dav1d
-    - ffmpeg
-    - freetype
-    - fribidi
-    - harfbuzz
-    - lcms
-    - libarchive
-    - libass
-    - libbluray (with libudfread)
-    - libjpeg-turbo
-    - libjxl (with highway)
-    - libplacebo (with fast_float, xxhash)
-    - libpng
-    - libsoxr
-    - libunibreak
-    - libvpl
-    - libxml2
-    - libzimg (with graphengine)
-    - luajit
-    - mpv
-    - nv-codec-headers
-    - openssl
-    - shaderc (with glslang, spirv-headers, spirv-tools)
-    - spirv-cross
-    - subrandr
-    - uchardet
-    - vulkan-loader (with vulkan-headers)
-    - xz
-    - zlib-ng
-    - zstd
+    - [amf-headers](https://github.com/GPUOpen-LibrariesAndSDKs/AMF)
+    - [brotli](https://github.com/google/brotli)
+    - [bzip2](https://gitlab.com/bzip2/bzip2)
+    - [curl](https://github.com/curl/curl) (with [c-ares](https://github.com/c-ares/c-ares), [libpsl](https://github.com/rockdaboot/libpsl), [nghttp2](https://github.com/nghttp2/nghttp2), [nghttp3](https://github.com/ngtcp2/nghttp3), [ngtcp2](https://github.com/ngtcp2/ngtcp2))
+    - [dav1d](https://code.videolan.org/videolan/dav1d)
+    - [ffmpeg](https://github.com/FFmpeg/FFmpeg)
+    - [freetype](https://github.com/freetype/freetype)
+    - [fribidi](https://github.com/fribidi/fribidi)
+    - [harfbuzz](https://github.com/harfbuzz/harfbuzz)
+    - [lcms](https://github.com/mm2/Little-CMS)
+    - [libarchive](https://github.com/libarchive/libarchive)
+    - [libass](https://github.com/libass/libass)
+    - [libbluray](https://code.videolan.org/videolan/libbluray) (with [libudfread](https://code.videolan.org/videolan/libudfread))
+    - [libjpeg-turbo](https://github.com/libjpeg-turbo/libjpeg-turbo)
+    - [libjxl](https://github.com/libjxl/libjxl) (with [highway](https://github.com/google/highway))
+    - [libplacebo](https://github.com/haasn/libplacebo) (with [fast_float](https://github.com/fastfloat/fast_float), [xxhash](https://github.com/Cyan4973/xxHash))
+    - [libpng](https://github.com/glennrp/libpng)
+    - [libsoxr](https://github.com/chirlu/soxr)
+    - [libunibreak](https://github.com/adah1972/libunibreak)
+    - [libvpl](https://github.com/intel/libvpl)
+    - [libxml2](https://github.com/GNOME/libxml2)
+    - [libzimg](https://github.com/sekrit-twc/zimg) (with [graphengine](https://github.com/sekrit-twc/graphengine))
+    - [luajit](https://github.com/LuaJIT/LuaJIT)
+    - [mpv](https://github.com/mpv-player/mpv)
+    - [nv-codec-headers](https://github.com/FFmpeg/nv-codec-headers)
+    - [openssl](https://github.com/openssl/openssl)
+    - [shaderc](https://github.com/google/shaderc) (with [glslang](https://github.com/KhronosGroup/glslang), [spirv-headers](https://github.com/KhronosGroup/SPIRV-Headers), [spirv-tools](https://github.com/KhronosGroup/SPIRV-Tools))
+    - [spirv-cross](https://github.com/KhronosGroup/SPIRV-Cross)
+    - [subrandr](https://github.com/afishhh/subrandr)
+    - [uchardet](https://gitlab.freedesktop.org/uchardet/uchardet)
+    - [vulkan-loader](https://github.com/KhronosGroup/Vulkan-Loader) (with [vulkan-headers](https://github.com/KhronosGroup/Vulkan-Headers))
+    - [xz](https://github.com/tukaani-project/xz)
+    - [zlib-ng](https://github.com/zlib-ng/zlib-ng)
+    - [zstd](https://github.com/facebook/zstd)
 
 - Tarball
-    - libiconv (1.19)
+    - [libiconv](https://ftp.gnu.org/pub/gnu/libiconv/) (1.19)
 
 ## Acknowledgements
 
