@@ -3,7 +3,7 @@
 ExternalProject_Add(libcxx
     DEPENDS
         compiler-rt
-        llvm-project
+        llvm
     DOWNLOAD_COMMAND ""
     SOURCE_SUBDIR runtimes
     LIST_SEPARATOR |

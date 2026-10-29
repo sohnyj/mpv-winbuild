@@ -13,7 +13,7 @@ set(packages
     fribidi
     glslang
     highway
-    lcms2
+    lcms
     libiconv
     libjpeg-turbo
     libpsl
@@ -45,7 +45,7 @@ set(packages
     shaderc
     vulkan-loader
     # depth 2
-    freetype2
+    freetype
     libplacebo
     ngtcp2
     # depth 3

@@ -5,7 +5,7 @@ add_toolchain_profile(runtime "${RUNTIME_CPU_FLAGS}" "")
 
 set(toolchain_components
     # depth 0
-    llvm-project
+    llvm
     mingw-w64
     rustup
     windows-rs

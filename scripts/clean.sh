@@ -12,7 +12,7 @@
 # Without --package and --toolchain, every git clone under sources/ is cleaned.
 #
 # Cleaning a component that builds from another's source, such as libcxx from
-# llvm-project, deletes that source; clean the source's component instead.
+# llvm, deletes that source; clean the source's component instead.
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }

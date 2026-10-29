@@ -1,6 +1,6 @@
 ExternalProject_Add(harfbuzz
     DEPENDS
-        freetype2
+        freetype
     GIT_REPOSITORY https://github.com/harfbuzz/harfbuzz.git
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"

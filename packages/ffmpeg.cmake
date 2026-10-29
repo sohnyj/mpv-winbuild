@@ -4,10 +4,10 @@ ExternalProject_Add(ffmpeg
         bzip2
         curl
         dav1d
-        freetype2
+        freetype
         fribidi
         harfbuzz
-        lcms2
+        lcms
         libass
         libbluray
         libiconv
