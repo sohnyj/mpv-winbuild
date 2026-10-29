@@ -2,9 +2,10 @@
 # calls must stay native code. Built without section splitting: most archive
 # members hold a single function.
 #
-# clang's MinGW driver links -lssp_nonshared -lssp for -fstack-protector*, but
-# mingw-w64 has those functions in libmingwex and installs no libssp, so empty
-# archives are installed under those names.
+# libbluray's meson.build requires libssp on MinGW (find_library('ssp')), and
+# clang's MinGW driver links -lssp_nonshared -lssp for -fstack-protector*.
+# mingw-w64 has the functions of libssp in libmingwex and installs no libssp,
+# so empty archives are installed under those names.
 ExternalProject_Add(mingw-w64-crt
     DEPENDS
         mingw-w64
