@@ -55,10 +55,10 @@ scripts/package.sh
     - curl (with c-ares, libpsl, nghttp2, nghttp3, ngtcp2)
     - dav1d
     - ffmpeg
-    - freetype2
+    - freetype
     - fribidi
     - harfbuzz
-    - lcms2
+    - lcms
     - libarchive
     - libass
     - libbluray (with libudfread)

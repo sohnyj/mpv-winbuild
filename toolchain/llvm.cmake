@@ -1,6 +1,6 @@
 # Sources of compiler-rt, libc++, libc++abi and libunwind, at the commit the
 # installed clang was built from.
-ExternalProject_Add(llvm-project
+ExternalProject_Add(llvm
     GIT_REPOSITORY https://github.com/llvm/llvm-project.git
     GIT_TAG release/${LLVM_VERSION}.x
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
@@ -38,7 +38,7 @@ ExternalProject_Add(llvm-project
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(llvm-project)
-add_cleanup_steps(llvm-project install)
+add_git_update_steps(llvm)
+add_cleanup_steps(llvm install)
 
 set(LLVM_SOURCE_DIR ${SOURCE_DIR})

@@ -2,7 +2,7 @@ ExternalProject_Add(libjxl
     DEPENDS
         brotli
         highway
-        lcms2
+        lcms
     GIT_REPOSITORY https://github.com/libjxl/libjxl.git
     GIT_TAG main
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"

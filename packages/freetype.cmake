@@ -1,12 +1,17 @@
-ExternalProject_Add(lcms2
-    GIT_REPOSITORY https://github.com/mm2/Little-CMS.git
+ExternalProject_Add(freetype
+    DEPENDS
+        brotli
+        libpng
+        zlib-ng
+    GIT_REPOSITORY https://github.com/freetype/freetype.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--sparse --filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
-        !/doc/
-        !/fuzzers/
-        !/testbed/"
+        !/devel/
+        !/docs/
+        !/tests/"
+    GIT_SUBMODULES ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -19,12 +24,16 @@ ExternalProject_Add(lcms2
         -Db_lto=true
         -Db_lto_mode=${LTO_MODE}
         -Db_ndebug=true
-        -Dtests=disabled
+        -Dbrotli=enabled
+        -Dbzip2=disabled
+        -Dharfbuzz=disabled
+        -Dpng=enabled
+        -Dzlib=system
     BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR>
     INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR>
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(lcms2)
-add_cleanup_steps(lcms2 install)
+add_git_update_steps(freetype)
+add_cleanup_steps(freetype install)

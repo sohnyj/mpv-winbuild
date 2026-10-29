@@ -1,6 +1,6 @@
 ExternalProject_Add(libass
     DEPENDS
-        freetype2
+        freetype
         fribidi
         harfbuzz
         libiconv

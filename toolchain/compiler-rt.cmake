@@ -4,7 +4,7 @@
 # lies outside the sysroot that the toolchain file searches.
 ExternalProject_Add(compiler-rt
     DEPENDS
-        llvm-project
+        llvm
         mingw-w64-crt
     DOWNLOAD_COMMAND ""
     SOURCE_SUBDIR compiler-rt/lib/builtins
