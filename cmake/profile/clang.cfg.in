@@ -10,6 +10,7 @@
 -fuse-ld=lld
 
 @CPU_FLAGS@
+@PREPROCESSOR_FLAGS@
 -mguard=cf
 -ffunction-sections
 -fdata-sections
