@@ -1,28 +1,33 @@
 # clang configuration of the @PROFILE@ toolchain profile. Options prefixed with
 # $ apply only to links, after the linker inputs.
 
---target=@TARGET_TRIPLE@
 --sysroot=@SYSROOT_DIR@
+--target=@TARGET_TRIPLE@
 -resource-dir=@CLANG_RESOURCE_DIR@
+
 -rtlib=compiler-rt
--unwindlib=libunwind
 -stdlib=libc++
+-unwindlib=libunwind
+
 -fuse-ld=lld
 
 @CPU_FLAGS@
 @PREPROCESSOR_FLAGS@
 @CODE_GENERATION_FLAGS@
--mguard=cf
--ffunction-sections
 -fdata-sections
+-ffunction-sections
+-mguard=cf
 
 $-static
-$-Wl,-s
-$-Wl,--lto-O3
+
 $-Wl,--gc-sections
 $-Wl,--icf=safe
+$-Wl,-s
+
 $-Wl,-Xlink=-cetcompat
 $-Wl,-Xlink=-release
-$-Wl,--thinlto-jobs=all
+
+$-Wl,--lto-O3
 $-Wl,--thinlto-cache-dir=@THINLTO_CACHE_DIR@
 $-Wl,--thinlto-cache-policy=cache_size_bytes=1g:prune_interval=1m
+$-Wl,--thinlto-jobs=all
