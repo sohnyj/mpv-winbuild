@@ -28,7 +28,6 @@ foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE PACKAGE_CPU_FLAGS PACKAGE_R
     endif()
 endforeach()
 
-# The architecture component of the triple.
 string(REGEX MATCH "^[^-]+" TARGET_PROCESSOR "${TARGET_TRIPLE}")
 set(RUST_TARGET "${TARGET_PROCESSOR}-pc-windows-gnullvm")
 # The triple of the build machine, for build scripts and procedural macros.
@@ -52,7 +51,6 @@ set_property(DIRECTORY PROPERTY EP_STEP_TARGETS download)
 add_subdirectory(toolchain)
 add_subdirectory(packages)
 
-# The toolchain components and packages, and those with a git source.
 set(external_projects ${TOOLCHAIN_COMPONENTS} ${PACKAGES})
 set(git_sources "")
 foreach(external_project IN LISTS external_projects)

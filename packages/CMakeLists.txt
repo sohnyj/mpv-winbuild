@@ -1,4 +1,3 @@
-# Packages, built with the package profile into the sysroot.
 add_toolchain_profile(package "${PACKAGE_CPU_FLAGS}" "-D_FORTIFY_SOURCE=3" "-fstack-protector-strong")
 
 # Packages by depth: the longest chain of DEPENDS below each package.

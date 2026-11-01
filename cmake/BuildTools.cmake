@@ -22,7 +22,6 @@ set(LLVM_CMAKE_PACKAGE_DIR "${llvm_prefix}/lib/cmake/llvm")
 # Reconfigure when apt upgrades clang, which can move the llvm-project commit.
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${clang_real_path}")
 
-# Compilers of the programs that run on the build machine.
 set(HOST_C_COMPILER "${LLVM_TOOLS_BINARY_DIR}/clang")
 set(HOST_CXX_COMPILER "${LLVM_TOOLS_BINARY_DIR}/clang++")
 
