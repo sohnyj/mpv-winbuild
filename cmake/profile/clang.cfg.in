@@ -11,6 +11,7 @@
 
 @CPU_FLAGS@
 @PREPROCESSOR_FLAGS@
+@CODE_GENERATION_FLAGS@
 -mguard=cf
 -ffunction-sections
 -fdata-sections

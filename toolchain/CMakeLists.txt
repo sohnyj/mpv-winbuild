@@ -1,7 +1,9 @@
 # Toolchain components: the runtimes of the target, built with the runtime
 # profile, and host tools. The runtime profile takes no _FORTIFY_SOURCE: built
-# with it, mingw-w64-crt's __memcpy_chk loops forever instead of copying.
-add_toolchain_profile(runtime "${RUNTIME_CPU_FLAGS}" "")
+# with it, mingw-w64-crt's __memcpy_chk loops forever instead of copying. It
+# takes no stack protector either, since mingw-w64-crt sets __stack_chk_guard
+# while frames of its own startup code have yet to return.
+add_toolchain_profile(runtime "${RUNTIME_CPU_FLAGS}" "" "")
 
 set(toolchain_components
     # depth 0
