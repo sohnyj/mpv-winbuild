@@ -21,6 +21,7 @@ $-Wl,-s
 $-Wl,--lto-O3
 $-Wl,--gc-sections
 $-Wl,--icf=safe
+$-Wl,-Xlink=-cetcompat
 $-Wl,-Xlink=-release
 $-Wl,--thinlto-jobs=all
 $-Wl,--thinlto-cache-dir=@THINLTO_CACHE_DIR@
