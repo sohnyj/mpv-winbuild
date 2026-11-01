@@ -15,8 +15,8 @@ ExternalProject_Add(mingw-w64-crt
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/mingw-w64-crt/configure
         --host=${TARGET_TRIPLE}
         --prefix=${SYSROOT_DIR}
-        --disable-lib32
         --enable-cfguard
+        --disable-lib32
         CPPFLAGS=-DNDEBUG
         "CFLAGS=-O3 -fno-data-sections -fno-function-sections"
     BUILD_COMMAND ${MAKE}

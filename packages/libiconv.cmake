@@ -10,8 +10,8 @@ ExternalProject_Add(libiconv
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/configure
         --host=${TARGET_TRIPLE}
         --prefix=${SYSROOT_DIR}
-        --disable-shared
         --enable-extra-encodings
+        --disable-shared
         CPPFLAGS=-DNDEBUG
         "CFLAGS=-O3 -flto=${LTO_MODE}"
     BUILD_COMMAND ${MAKE}
