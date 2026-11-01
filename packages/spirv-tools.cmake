@@ -1,4 +1,3 @@
-# Source only: shaderc builds it.
 ExternalProject_Add(spirv-tools
     GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Tools.git
     GIT_TAG main

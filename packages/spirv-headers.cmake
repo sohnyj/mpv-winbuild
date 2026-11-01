@@ -1,4 +1,3 @@
-# Also a source of shaderc.
 ExternalProject_Add(spirv-headers
     GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Headers.git
     GIT_TAG main

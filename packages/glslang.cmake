@@ -1,4 +1,3 @@
-# Source only: shaderc builds it.
 ExternalProject_Add(glslang
     GIT_REPOSITORY https://github.com/KhronosGroup/glslang.git
     GIT_TAG main
