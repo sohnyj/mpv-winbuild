@@ -19,12 +19,8 @@ Autobuild runs daily at UTC 00:00.
 | ----- | --- | ------------ |
 | `x86_64-v3` | x86-64-v3 (AVX2) | |
 | `x86_64-znver3` | AMD Zen 3 or newer | |
-| `x86_64-v3_cropdetect-vk` | x86-64-v3 (AVX2) | `cropdetect_vulkan` |
-| `x86_64-znver3_cropdetect-vk` | AMD Zen 3 or newer | `cropdetect_vulkan` |
-
-`cropdetect_vulkan` is the filter of
-[cropdetect-vk](https://github.com/sohnyj/cropdetect-vk); both mpv and FFmpeg
-of those builds have it.
+| `x86_64-v3_cropdetect-vk` | x86-64-v3 (AVX2) | [`cropdetect_vulkan`](https://github.com/sohnyj/cropdetect-vk) |
+| `x86_64-znver3_cropdetect-vk` | AMD Zen 3 or newer | [`cropdetect_vulkan`](https://github.com/sohnyj/cropdetect-vk) |
 
 ## Build scripts
 
