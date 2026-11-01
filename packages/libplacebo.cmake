@@ -1,7 +1,7 @@
 ExternalProject_Add(libplacebo
     DEPENDS
         fast_float
-        lcms
+        lcms2
         shaderc
         spirv-cross
         vulkan-loader

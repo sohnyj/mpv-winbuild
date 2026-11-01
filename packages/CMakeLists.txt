@@ -12,7 +12,7 @@ set(packages
     fribidi
     glslang
     highway
-    lcms
+    lcms2
     libiconv
     libjpeg-turbo
     libpsl

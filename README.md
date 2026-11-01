@@ -54,7 +54,7 @@ scripts/package.sh
     - [freetype](https://github.com/freetype/freetype)
     - [fribidi](https://github.com/fribidi/fribidi)
     - [harfbuzz](https://github.com/harfbuzz/harfbuzz)
-    - [lcms](https://github.com/mm2/Little-CMS)
+    - [lcms2](https://github.com/mm2/Little-CMS)
     - [libarchive](https://github.com/libarchive/libarchive)
     - [libass](https://github.com/libass/libass)
     - [libbluray](https://code.videolan.org/videolan/libbluray) (with [libudfread](https://code.videolan.org/videolan/libudfread))

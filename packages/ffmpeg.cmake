@@ -7,7 +7,7 @@ ExternalProject_Add(ffmpeg
         freetype
         fribidi
         harfbuzz
-        lcms
+        lcms2
         libass
         libbluray
         libiconv

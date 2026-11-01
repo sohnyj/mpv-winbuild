@@ -4,7 +4,7 @@ ExternalProject_Add(mpv
         cppwinrt
         curl
         ffmpeg
-        lcms
+        lcms2
         libarchive
         libass
         libbluray
