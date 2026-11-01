@@ -11,7 +11,7 @@ Autobuild runs daily at UTC 00:00.
 ## Minimum Requirements
 
 - **OS**: Windows 10 (x64)
-- **CPU**: that of the build, in the table below
+- **CPU**: see [Builds](#builds)
 
 ## Builds
 
