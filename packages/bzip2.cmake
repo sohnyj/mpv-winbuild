@@ -1,26 +1,20 @@
-# Only the library is built, and only the devel tag (library, header, .pc) is
-# installed: the alias script of the programs cannot handle Windows executable
-# names.
+# The Makefile has no install target for the library alone.
 ExternalProject_Add(bzip2
-    GIT_REPOSITORY https://gitlab.com/bzip2/bzip2.git
+    GIT_REPOSITORY https://sourceware.org/git/bzip2.git
     GIT_TAG master
     GIT_CLONE_FLAGS "--filter=tree:0"
-    GIT_SUBMODULES ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
-    CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
-        --buildtype=release
-        --cross-file=${MESON_CROSS_FILE}
-        --native-file=${MESON_NATIVE_FILE}
-        --default-library=static
-        --prefix=${SYSROOT_DIR}
-        --wrap-mode=nofallback
-        -Db_lto=true
-        -Db_lto_mode=${LTO_MODE}
-        -Db_ndebug=true
-    BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR> bz2
-    INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR> --no-rebuild --tags devel
-    LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ${MAKE} libbz2.a
+        AR=${TARGET_TRIPLE}-ar
+        CC=${TARGET_TRIPLE}-clang
+        RANLIB=${TARGET_TRIPLE}-ranlib
+        "CFLAGS=-D_FILE_OFFSET_BITS=64 -O3 -flto=${LTO_MODE}"
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/bzlib.h ${SYSROOT_DIR}/include/bzlib.h
+        COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/libbz2.a ${SYSROOT_DIR}/lib/libbz2.a
+    LOG_DOWNLOAD 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 

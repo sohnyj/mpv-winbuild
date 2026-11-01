@@ -47,7 +47,7 @@ scripts/package.sh
 - Git (Nightly)
     - [amf-headers](https://github.com/GPUOpen-LibrariesAndSDKs/AMF)
     - [brotli](https://github.com/google/brotli)
-    - [bzip2](https://gitlab.com/bzip2/bzip2)
+    - [bzip2](https://sourceware.org/git/bzip2.git)
     - [curl](https://github.com/curl/curl) (with [c-ares](https://github.com/c-ares/c-ares), [libpsl](https://github.com/rockdaboot/libpsl), [nghttp2](https://github.com/nghttp2/nghttp2), [nghttp3](https://github.com/ngtcp2/nghttp3), [ngtcp2](https://github.com/ngtcp2/ngtcp2))
     - [dav1d](https://code.videolan.org/videolan/dav1d)
     - [ffmpeg](https://github.com/FFmpeg/FFmpeg)
