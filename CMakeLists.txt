@@ -8,7 +8,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Inputs, passed by scripts/build.sh.
-set(LLVM_VERSION "" CACHE STRING "Major version of the apt.llvm.org toolchain")
+set(LLVM_VERSION "" CACHE STRING "Major version of the apt.llvm.org LLVM toolchain")
 set(TARGET_TRIPLE "" CACHE STRING "Target triple, such as x86_64-w64-mingw32")
 set(PACKAGE_CPU_FLAGS "" CACHE STRING "clang CPU flags of the packages, such as -march=x86-64-v3 -mtune=generic")
 set(PACKAGE_RUST_CPU_FLAGS "" CACHE STRING "rustc CPU flags of the packages, such as -C target-cpu=x86-64-v3")
