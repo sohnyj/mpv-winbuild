@@ -1,6 +1,8 @@
-# The Rust code is compiled to LLVM bitcode for the LTO of the final link
-# (-Clinker-plugin-lto). cargo xtask runs cargo again, so every setting goes
-# through the environment.
+# The Rust code is compiled to LLVM bitcode (-Clinker-plugin-lto) to take part
+# in the LTO of the final link, and with Control Flow Guard
+# (-Ccontrol-flow-guard) to have its indirect calls checked as -mguard=cf has
+# those of the C and C++ code. cargo xtask runs cargo again, so every setting
+# goes through the environment.
 ExternalProject_Add(subrandr
     GIT_REPOSITORY https://github.com/afishhh/subrandr.git
     GIT_TAG master
@@ -14,7 +16,7 @@ ExternalProject_Add(subrandr
         CARGO_PROFILE_RELEASE_LTO=thin
         CARGO_PROFILE_RELEASE_PANIC=abort
         CARGO_PROFILE_RELEASE_STRIP=true
-        "CARGO_TARGET_${RUST_TARGET_IDENTIFIER}_RUSTFLAGS=${PACKAGE_RUST_CPU_FLAGS} -Clinker-plugin-lto"
+        "CARGO_TARGET_${RUST_TARGET_IDENTIFIER}_RUSTFLAGS=${PACKAGE_RUST_CPU_FLAGS} -Ccontrol-flow-guard -Clinker-plugin-lto"
         cargo xtask install
         --prefix ${SYSROOT_DIR}
         --target ${RUST_TARGET}
