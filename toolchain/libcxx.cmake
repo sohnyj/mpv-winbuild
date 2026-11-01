@@ -1,5 +1,7 @@
 # libc++, libc++abi and libunwind, static, on the Win32 thread API. The
 # configure checks link without libunwind and libc++, which are built here.
+# The fast hardening mode makes an out-of-bounds element access in the C++
+# packages trap instead of going unchecked.
 ExternalProject_Add(libcxx
     DEPENDS
         compiler-rt
@@ -18,6 +20,7 @@ ExternalProject_Add(libcxx
         -DLIBCXXABI_USE_COMPILER_RT=ON
         -DLIBCXX_ENABLE_SHARED=OFF
         -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON
+        -DLIBCXX_HARDENING_MODE=fast
         -DLIBCXX_HAS_WIN32_THREAD_API=ON
         -DLIBCXX_USE_COMPILER_RT=ON
         -DLIBUNWIND_ENABLE_ASSERTIONS=OFF
