@@ -13,7 +13,7 @@ ExternalProject_Add(winpthreads
         --prefix=${SYSROOT_DIR}
         --disable-shared
         CPPFLAGS=-DNDEBUG
-        "CFLAGS=-O3 -fno-function-sections -fno-data-sections"
+        "CFLAGS=-O3 -fno-data-sections -fno-function-sections"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

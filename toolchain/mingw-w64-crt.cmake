@@ -18,7 +18,7 @@ ExternalProject_Add(mingw-w64-crt
         --disable-lib32
         --enable-cfguard
         CPPFLAGS=-DNDEBUG
-        "CFLAGS=-O3 -fno-function-sections -fno-data-sections"
+        "CFLAGS=-O3 -fno-data-sections -fno-function-sections"
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
         COMMAND ${LLVM_AR} rcs ${SYSROOT_DIR}/lib/libssp.a
