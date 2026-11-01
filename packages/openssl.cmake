@@ -86,7 +86,6 @@ ExternalProject_Add(openssl
         no-tls1_1-method
         no-ts
         no-whirlpool
-        no-winstore
         no-x942kdf
         no-x963kdf
     BUILD_COMMAND ${MAKE} build_sw
