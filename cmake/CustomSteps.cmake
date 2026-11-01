@@ -100,6 +100,7 @@ function(add_cleanup_steps name last_step)
 endfunction()
 
 function(add_git_update_steps name)
+    get_property(git_repository TARGET ${name} PROPERTY _EP_GIT_REPOSITORY)
     get_property(git_reset TARGET ${name} PROPERTY _EP_GIT_RESET)
     get_property(stamp_dir TARGET ${name} PROPERTY _EP_STAMP_DIR)
     get_property(source_dir TARGET ${name} PROPERTY _EP_SOURCE_DIR)
@@ -136,13 +137,14 @@ function(add_git_update_steps name)
     # Marks an existing checkout as cloned: the clone script clones again
     # unless gitclone-lastrun.txt is newer than gitinfo.txt. Checked at build
     # time, since a step added only when the source exists would rerun the
-    # download after the first clone.
+    # download after the first clone. A checkout of another repository than
+    # GIT_REPOSITORY is not marked, so that the source moves to the repository
+    # of the recipe; the clone script deletes the old checkout.
     ExternalProject_Add_Step(${name} mark-cloned
         DEPENDERS download
         INDEPENDENT TRUE
         WORKING_DIRECTORY ${stamp_dir}
-        COMMAND bash -c "[ ! -e <SOURCE_DIR>/.git ] || cp ${name}-gitinfo.txt ${name}-gitclone-lastrun.txt"
-        COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] || rm -f ${name}-gitclone-lastrun.txt"
+        COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] && git -C <SOURCE_DIR> config --get remote.origin.url | grep -qxF '${git_repository}' && cp ${name}-gitinfo.txt ${name}-gitclone-lastrun.txt || rm -f ${name}-gitclone-lastrun.txt"
         LOG 1
     )
 endfunction()
