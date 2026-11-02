@@ -15,7 +15,7 @@ ExternalProject_Add(libpng
 )
 
 add_git_steps(libpng
-    REPOSITORY https://github.com/glennrp/libpng.git
+    REPOSITORY https://github.com/pnggroup/libpng.git
     TAG master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
