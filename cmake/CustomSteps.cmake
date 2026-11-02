@@ -22,7 +22,7 @@
 #   Step target <name>-force-update: fetch, move the checkout to RESET, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch, and
 #   delete the stamps when the commit changed.
-#   Step write-head, which records the commit.
+#   Step write-head, after download: record the commit.
 #   Target property GIT_REPOSITORY: REPOSITORY.
 
 # The "<source> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions
@@ -137,6 +137,7 @@ function(add_git_steps name)
     ExternalProject_Add_StepTargets(${name} force-update)
 
     ExternalProject_Add_Step(${name} write-head
+        DEPENDEES download
         DEPENDERS patch
         INDEPENDENT TRUE
         WORKING_DIRECTORY <SOURCE_DIR>
