@@ -1,3 +1,5 @@
+# Only the library is built, and only the devel tag (library, header, .pc) is
+# installed: the psl tool is added unconditionally.
 ExternalProject_Add(libpsl
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
@@ -14,8 +16,8 @@ ExternalProject_Add(libpsl
         -Db_ndebug=true
         -Druntime=no
         -Dtests=false
-    BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR>
-    INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR>
+    BUILD_COMMAND ${MESON_EXECUTABLE} compile -C <BINARY_DIR> psl:static_library
+    INSTALL_COMMAND ${MESON_EXECUTABLE} install -C <BINARY_DIR> --no-rebuild --tags devel
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
