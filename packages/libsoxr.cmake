@@ -22,8 +22,7 @@ ExternalProject_Add(libsoxr
 )
 
 add_git_steps(libsoxr
-    REPOSITORY https://github.com/chirlu/soxr.git
+    REPOSITORY https://git.code.sf.net/p/soxr/code
     TAG master
-    CLONE_FLAGS "--filter=tree:0"
 )
 add_cleanup_steps(libsoxr install)

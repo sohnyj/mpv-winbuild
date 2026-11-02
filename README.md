@@ -62,7 +62,7 @@ scripts/package.sh
     - [libjxl](https://github.com/libjxl/libjxl) (with [highway](https://github.com/google/highway))
     - [libplacebo](https://github.com/haasn/libplacebo) (with [fast_float](https://github.com/fastfloat/fast_float), [xxhash](https://github.com/Cyan4973/xxHash))
     - [libpng](https://github.com/glennrp/libpng)
-    - [libsoxr](https://github.com/chirlu/soxr)
+    - [libsoxr](https://sourceforge.net/p/soxr/code)
     - [libunibreak](https://github.com/adah1972/libunibreak)
     - [libvpl](https://github.com/intel/libvpl)
     - [libxml2](https://github.com/GNOME/libxml2)
