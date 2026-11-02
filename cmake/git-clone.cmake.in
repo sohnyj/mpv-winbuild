@@ -33,7 +33,7 @@ file(REMOVE_RECURSE "${source_dir}")
 foreach(attempt RANGE 1 3)
     execute_process(
         COMMAND [==[@GIT_EXECUTABLE@]==] clone --no-checkout --single-branch --branch "${tag}"
-            ${clone_flags} --config advice.detachedHead=false "${repository}" "${source_dir}"
+            ${clone_flags} "${repository}" "${source_dir}"
         RESULT_VARIABLE result
     )
     if(result EQUAL 0)
