@@ -42,19 +42,17 @@ endif()
 function(add_cleanup_steps name last_step)
     get_property(build_in_source TARGET ${name} PROPERTY _EP_BUILD_IN_SOURCE)
     get_property(git_repository TARGET ${name} PROPERTY GIT_REPOSITORY)
-    get_property(stamp_dir TARGET ${name} PROPERTY _EP_STAMP_DIR)
-    get_property(source_dir TARGET ${name} PROPERTY _EP_SOURCE_DIR)
 
+    # Step commands do not expand <STAMP_DIR>; <LOG_DIR> is the same directory.
     if(git_repository)
         if(build_in_source)
             set(remove_command git -C <SOURCE_DIR> clean -dfx)
         else()
             set(remove_command bash -c "find <BINARY_DIR> -mindepth 1 -delete && git -C <SOURCE_DIR> clean -df")
         endif()
-        set(reset_checkout_commands COMMAND ${stamp_dir}/reset-head.sh)
+        set(reset_checkout_commands COMMAND <LOG_DIR>/reset-head.sh)
     endif()
 
-    # Step commands do not expand <STAMP_DIR>; <LOG_DIR> is the same directory.
     ExternalProject_Add_Step(${name} delete-stamps
         COMMAND find <LOG_DIR> -type f ! -iname *.cmake -size 0c -delete # the stamps are the empty files
         ${reset_checkout_commands}
@@ -97,7 +95,7 @@ function(add_cleanup_steps name last_step)
     endif()
 
     ExternalProject_Add_Step(${name} remove-prefix-and-source
-        COMMAND rm -rf <INSTALL_DIR> ${source_dir}
+        COMMAND rm -rf <INSTALL_DIR> <SOURCE_DIR>
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target rebuild_cache
         ALWAYS TRUE
         EXCLUDE_FROM_MAIN TRUE
