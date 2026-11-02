@@ -4,12 +4,9 @@
 #   Step targets:
 #     <name>-delete-stamps             delete the stamps and reset a git
 #                                      checkout
-#     <name>-delete-build-stamps       delete the build and install stamps
 #     <name>-remove-prefix-and-source  delete the prefix directory (build
 #                                      directory, stamps) and the source
 #   Only with a git source of its own, given to add_git_steps before:
-#     <name>-remove-build              <name>-delete-stamps, then empty the
-#                                      build directory
 #     step remove-build-after-install  after <last step>, empty the build
 #                                      directory and reset the checkout
 #
@@ -63,16 +60,6 @@ function(add_cleanup_steps name last_step)
         COMMENT "Deleting all stamp files of ${name}"
     )
 
-    ExternalProject_Add_Step(${name} delete-build-stamps
-        COMMAND rm -f <LOG_DIR>/${name}-build
-                      <LOG_DIR>/${name}-install
-        ALWAYS TRUE
-        EXCLUDE_FROM_MAIN TRUE
-        INDEPENDENT TRUE
-        LOG 1
-        COMMENT "Deleting the build and install stamp files of ${name}"
-    )
-
     if(git_repository)
         ExternalProject_Add_Step(${name} remove-build-after-install
             DEPENDEES ${last_step}
@@ -81,17 +68,6 @@ function(add_cleanup_steps name last_step)
             LOG 1
             COMMENT "Emptying the build directory of ${name} after install"
         )
-
-        ExternalProject_Add_Step(${name} remove-build
-            DEPENDEES delete-stamps
-            COMMAND ${remove_command}
-            ALWAYS TRUE
-            EXCLUDE_FROM_MAIN TRUE
-            INDEPENDENT TRUE
-            LOG 1
-            COMMENT "Emptying the build directory of ${name}"
-        )
-        ExternalProject_Add_StepTargets(${name} remove-build)
     endif()
 
     ExternalProject_Add_Step(${name} remove-prefix-and-source
@@ -103,7 +79,7 @@ function(add_cleanup_steps name last_step)
         LOG 1
         COMMENT "Deleting the prefix directory and the source of ${name}"
     )
-    ExternalProject_Add_StepTargets(${name} delete-stamps delete-build-stamps remove-prefix-and-source)
+    ExternalProject_Add_StepTargets(${name} delete-stamps remove-prefix-and-source)
 endfunction()
 
 function(add_git_steps name)

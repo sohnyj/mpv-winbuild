@@ -61,14 +61,11 @@ foreach(external_project IN LISTS external_projects)
 endforeach()
 list(TRANSFORM git_sources APPEND "-force-update" OUTPUT_VARIABLE update_targets)
 list(TRANSFORM external_projects APPEND "-download" OUTPUT_VARIABLE download_targets)
-list(TRANSFORM external_projects APPEND "-delete-stamps" OUTPUT_VARIABLE delete_stamps_targets)
 
 add_custom_target(update)
 add_dependencies(update ${update_targets})
 add_custom_target(download)
 add_dependencies(download ${download_targets})
-add_custom_target(delete-stamps)
-add_dependencies(delete-stamps ${delete_stamps_targets})
 
 # revisions writes the checked-out commit of every git source to
 # revisions.txt, in the form that SOURCE_REVISIONS_FILE reads.
