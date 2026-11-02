@@ -1,6 +1,7 @@
 #!/bin/bash
 # Aborts an unfinished git am and resets the checkout of @name@ to its target
-# commit. Deletes the stamps when the target commit or the download changed.
+# commit. Deletes the stamps when the checkout was patched and the target
+# commit or the download changed since.
 set -e
 [[ -e "@source_dir@/.git" ]] || exit 0
 git -C @source_dir@ am --abort 2> /dev/null || true
@@ -8,8 +9,10 @@ upstream=$(git -C @source_dir@ rev-parse -q --verify @{u}) || upstream=$(git -C 
 commit=$(git -C @source_dir@ rev-parse -q --verify @commit@^{commit})
 if [[ ! -f "@stamp_dir@/@name@-patch"  || "@stamp_dir@/@name@-download" -nt "@stamp_dir@/@name@-patch" || ! -f "@stamp_dir@/HEAD" || "$(cat @stamp_dir@/HEAD)" != "${commit}" ]]; then
     git -C @source_dir@ reset --hard ${commit} -q
-    find "@stamp_dir@" -type f  ! -iname '*.cmake' -size 0c -delete
-    echo "Removing @name@ stamp files."
+    if [[ -f "@stamp_dir@/@name@-patch" ]]; then
+        find "@stamp_dir@" -type f  ! -iname '*.cmake' -size 0c -delete
+        echo "Removing @name@ stamp files."
+    fi
     git -C @source_dir@ rev-parse HEAD > @stamp_dir@/HEAD
 else
     git -C @source_dir@ reset --hard -q
