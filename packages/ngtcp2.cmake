@@ -1,13 +1,7 @@
 ExternalProject_Add(ngtcp2
     DEPENDS
         openssl
-    GIT_REPOSITORY https://github.com/ngtcp2/ngtcp2.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/tests/"
-    GIT_SUBMODULES ""
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -23,5 +17,13 @@ ExternalProject_Add(ngtcp2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(ngtcp2)
+add_git_steps(ngtcp2
+    REPOSITORY https://github.com/ngtcp2/ngtcp2.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/tests/"
+    SUBMODULES ""
+)
 add_cleanup_steps(ngtcp2 install)

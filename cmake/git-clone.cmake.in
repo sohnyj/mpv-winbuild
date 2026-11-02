@@ -1,0 +1,67 @@
+# Clone script of @name@, run by its clone step. A checkout of the repository
+# is kept: the sources directory is shared between build directories and
+# restored from the sources cache of the workflow, and the force-update step
+# moves the checkout to its target commit.
+
+set(source_dir [==[@source_dir@]==])
+set(repository [==[@arg_REPOSITORY@]==])
+set(tag [==[@arg_TAG@]==])
+set(clone_flags [==[@clone_flags@]==])
+set(clone_post_command [==[@clone_post_command@]==])
+set(reset [==[@arg_RESET@]==])
+set(init_submodules @init_submodules@)
+set(submodules [==[@arg_SUBMODULES@]==])
+
+if(EXISTS "${source_dir}/.git")
+    execute_process(
+        COMMAND [==[@GIT_EXECUTABLE@]==] -C "${source_dir}" config --get remote.origin.url
+        OUTPUT_VARIABLE origin
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(origin STREQUAL repository)
+        return()
+    endif()
+endif()
+
+file(REMOVE_RECURSE "${source_dir}")
+
+foreach(attempt RANGE 1 3)
+    execute_process(
+        COMMAND [==[@GIT_EXECUTABLE@]==] clone --no-checkout ${clone_flags}
+            --config advice.detachedHead=false "${repository}" "${source_dir}"
+        RESULT_VARIABLE result
+    )
+    if(result EQUAL 0)
+        break()
+    endif()
+endforeach()
+if(NOT result EQUAL 0)
+    message(FATAL_ERROR "Failed to clone repository: '${repository}'")
+endif()
+
+execute_process(
+    COMMAND [==[@GIT_EXECUTABLE@]==] checkout "${tag}" --
+    WORKING_DIRECTORY "${source_dir}"
+    COMMAND_ERROR_IS_FATAL ANY
+)
+if(NOT clone_post_command STREQUAL "")
+    execute_process(
+        COMMAND [==[@GIT_EXECUTABLE@]==] ${clone_post_command}
+        WORKING_DIRECTORY "${source_dir}"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+endif()
+if(NOT reset STREQUAL "")
+    execute_process(
+        COMMAND [==[@GIT_EXECUTABLE@]==] reset --hard "${reset}"
+        WORKING_DIRECTORY "${source_dir}"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+endif()
+if(init_submodules)
+    execute_process(
+        COMMAND [==[@GIT_EXECUTABLE@]==] submodule update --recursive --init ${submodules}
+        WORKING_DIRECTORY "${source_dir}"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+endif()

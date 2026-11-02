@@ -1,12 +1,5 @@
 ExternalProject_Add(libvpl
-    GIT_REPOSITORY https://github.com/intel/libvpl.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/api/tests/
-        !/doc/
-        !/libvpl/test/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     PATCH_COMMAND git -C <SOURCE_DIR> restore .
         COMMAND git -C <SOURCE_DIR> apply ${CMAKE_CURRENT_LIST_DIR}/libvpl-avoid-wcscpy_s-defines-on-mingw.patch
@@ -23,5 +16,14 @@ ExternalProject_Add(libvpl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libvpl)
+add_git_steps(libvpl
+    REPOSITORY https://github.com/intel/libvpl.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/api/tests/
+        !/doc/
+        !/libvpl/test/"
+)
 add_cleanup_steps(libvpl install)

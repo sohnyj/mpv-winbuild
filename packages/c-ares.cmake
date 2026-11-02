@@ -1,7 +1,5 @@
 ExternalProject_Add(c-ares
-    GIT_REPOSITORY https://github.com/c-ares/c-ares.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -16,5 +14,9 @@ ExternalProject_Add(c-ares
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(c-ares)
+add_git_steps(c-ares
+    REPOSITORY https://github.com/c-ares/c-ares.git
+    TAG main
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(c-ares install)

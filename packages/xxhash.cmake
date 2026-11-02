@@ -1,13 +1,5 @@
 ExternalProject_Add(xxhash
-    GIT_REPOSITORY https://github.com/Cyan4973/xxHash.git
-    GIT_TAG dev
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/cli/
-        !/doc/
-        !/fuzz/
-        !/tests/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_SUBDIR build/cmake
     SOURCE_DIR ${SOURCE_DIR}
@@ -22,5 +14,15 @@ ExternalProject_Add(xxhash
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(xxhash)
+add_git_steps(xxhash
+    REPOSITORY https://github.com/Cyan4973/xxHash.git
+    TAG dev
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/cli/
+        !/doc/
+        !/fuzz/
+        !/tests/"
+)
 add_cleanup_steps(xxhash install)

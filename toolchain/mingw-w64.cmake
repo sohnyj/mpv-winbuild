@@ -1,8 +1,6 @@
 # Sources of the MinGW-w64 headers, CRT and winpthreads.
 ExternalProject_Add(mingw-w64
-    GIT_REPOSITORY https://github.com/mingw-w64/mingw-w64.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -12,7 +10,11 @@ ExternalProject_Add(mingw-w64
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(mingw-w64)
+add_git_steps(mingw-w64
+    REPOSITORY https://github.com/mingw-w64/mingw-w64.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(mingw-w64 install)
 
 set(MINGW_W64_SOURCE_DIR ${SOURCE_DIR})

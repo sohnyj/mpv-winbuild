@@ -3,13 +3,7 @@
 ExternalProject_Add(cppwinrt
     DEPENDS
         windows-rs
-    GIT_REPOSITORY https://github.com/microsoft/cppwinrt.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/docs
-        !/test"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -22,5 +16,13 @@ ExternalProject_Add(cppwinrt
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(cppwinrt)
+add_git_steps(cppwinrt
+    REPOSITORY https://github.com/microsoft/cppwinrt.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/docs
+        !/test"
+)
 add_cleanup_steps(cppwinrt install)

@@ -1,8 +1,5 @@
 ExternalProject_Add(nghttp2
-    GIT_REPOSITORY https://github.com/nghttp2/nghttp2.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
-    GIT_SUBMODULES ""
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -19,5 +16,10 @@ ExternalProject_Add(nghttp2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(nghttp2)
+add_git_steps(nghttp2
+    REPOSITORY https://github.com/nghttp2/nghttp2.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+    SUBMODULES ""
+)
 add_cleanup_steps(nghttp2 install)

@@ -20,13 +20,7 @@ ExternalProject_Add(mpv
         uchardet
         vulkan-loader
         zlib-ng
-    GIT_REPOSITORY https://github.com/mpv-player/mpv.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/fuzzers
-        !/test"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -80,5 +74,13 @@ ExternalProject_Add(mpv
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(mpv)
+add_git_steps(mpv
+    REPOSITORY https://github.com/mpv-player/mpv.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/fuzzers
+        !/test"
+)
 add_cleanup_steps(mpv install)

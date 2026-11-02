@@ -1,13 +1,5 @@
 ExternalProject_Add(zstd
-    GIT_REPOSITORY https://github.com/facebook/zstd.git
-    GIT_TAG dev
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/contrib/
-        !/doc/
-        !/examples/
-        !/tests/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>/build/meson
@@ -27,5 +19,15 @@ ExternalProject_Add(zstd
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(zstd)
+add_git_steps(zstd
+    REPOSITORY https://github.com/facebook/zstd.git
+    TAG dev
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/contrib/
+        !/doc/
+        !/examples/
+        !/tests/"
+)
 add_cleanup_steps(zstd install)

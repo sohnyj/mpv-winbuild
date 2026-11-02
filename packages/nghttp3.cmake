@@ -1,12 +1,5 @@
 ExternalProject_Add(nghttp3
-    GIT_REPOSITORY https://github.com/ngtcp2/nghttp3.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/tests/"
-    GIT_SUBMODULES
-        lib/sfparse
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -21,5 +14,14 @@ ExternalProject_Add(nghttp3
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(nghttp3)
+add_git_steps(nghttp3
+    REPOSITORY https://github.com/ngtcp2/nghttp3.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/tests/"
+    SUBMODULES
+        lib/sfparse
+)
 add_cleanup_steps(nghttp3 install)

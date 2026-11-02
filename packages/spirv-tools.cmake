@@ -1,12 +1,5 @@
 ExternalProject_Add(spirv-tools
-    GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Tools.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/android_test/
-        !/docs/
-        !/kokoro/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -16,7 +9,16 @@ ExternalProject_Add(spirv-tools
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(spirv-tools)
+add_git_steps(spirv-tools
+    REPOSITORY https://github.com/KhronosGroup/SPIRV-Tools.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/android_test/
+        !/docs/
+        !/kokoro/"
+)
 add_cleanup_steps(spirv-tools install)
 
 set(SPIRV_TOOLS_SOURCE_DIR ${SOURCE_DIR})

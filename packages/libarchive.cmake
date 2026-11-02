@@ -9,15 +9,7 @@ ExternalProject_Add(libarchive
         xz
         zlib-ng
         zstd
-    GIT_REPOSITORY https://github.com/libarchive/libarchive.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/contrib/
-        !/doc/
-        !/examples/
-        !/test_utils/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -44,5 +36,15 @@ ExternalProject_Add(libarchive
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libarchive)
+add_git_steps(libarchive
+    REPOSITORY https://github.com/libarchive/libarchive.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/contrib/
+        !/doc/
+        !/examples/
+        !/test_utils/"
+)
 add_cleanup_steps(libarchive install)

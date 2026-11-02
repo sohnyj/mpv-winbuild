@@ -1,8 +1,6 @@
 # The Makefile has no install target for the library alone.
 ExternalProject_Add(bzip2
-    GIT_REPOSITORY https://sourceware.org/git/bzip2.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -18,5 +16,9 @@ ExternalProject_Add(bzip2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(bzip2)
+add_git_steps(bzip2
+    REPOSITORY https://sourceware.org/git/bzip2.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(bzip2 install)

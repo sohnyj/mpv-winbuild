@@ -1,7 +1,5 @@
 ExternalProject_Add(libudfread
-    GIT_REPOSITORY https://code.videolan.org/videolan/libudfread.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -20,5 +18,9 @@ ExternalProject_Add(libudfread
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libudfread)
+add_git_steps(libudfread
+    REPOSITORY https://code.videolan.org/videolan/libudfread.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(libudfread install)

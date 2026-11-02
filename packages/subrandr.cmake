@@ -3,9 +3,7 @@
 # (-Ccontrol-flow-guard) to have its indirect calls checked as -mguard=cf has
 # those of the C and C++ code.
 ExternalProject_Add(subrandr
-    GIT_REPOSITORY https://github.com/afishhh/subrandr.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -28,5 +26,9 @@ ExternalProject_Add(subrandr
 )
 
 ExternalProject_Add_StepDependencies(subrandr patch ${CARGO_EXEC})
-add_git_update_steps(subrandr)
+add_git_steps(subrandr
+    REPOSITORY https://github.com/afishhh/subrandr.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(subrandr install)

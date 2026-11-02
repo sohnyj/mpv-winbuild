@@ -1,11 +1,5 @@
 ExternalProject_Add(zlib-ng
-    GIT_REPOSITORY https://github.com/zlib-ng/zlib-ng.git
-    GIT_TAG develop
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/doc/
-        !/test/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -20,5 +14,13 @@ ExternalProject_Add(zlib-ng
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(zlib-ng)
+add_git_steps(zlib-ng
+    REPOSITORY https://github.com/zlib-ng/zlib-ng.git
+    TAG develop
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/doc/
+        !/test/"
+)
 add_cleanup_steps(zlib-ng install)

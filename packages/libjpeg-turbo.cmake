@@ -1,12 +1,5 @@
 ExternalProject_Add(libjpeg-turbo
-    GIT_REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/fuzz/
-        !/test/
-        !/testimages/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -24,5 +17,14 @@ ExternalProject_Add(libjpeg-turbo
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libjpeg-turbo)
+add_git_steps(libjpeg-turbo
+    REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/fuzz/
+        !/test/
+        !/testimages/"
+)
 add_cleanup_steps(libjpeg-turbo install)

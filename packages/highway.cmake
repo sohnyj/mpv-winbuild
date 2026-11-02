@@ -1,9 +1,7 @@
 # meson.build requires gtest even with the tests disabled, unless
 # test_standalone is set.
 ExternalProject_Add(highway
-    GIT_REPOSITORY https://github.com/google/highway.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -26,5 +24,9 @@ ExternalProject_Add(highway
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(highway)
+add_git_steps(highway
+    REPOSITORY https://github.com/google/highway.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(highway install)

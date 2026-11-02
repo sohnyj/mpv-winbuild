@@ -1,17 +1,7 @@
 ExternalProject_Add(libxml2
     DEPENDS
         libiconv
-    GIT_REPOSITORY https://github.com/GNOME/libxml2.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/doc/
-        !/example/
-        !/fuzz/
-        !/python/
-        !/result/
-        !/test/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -37,5 +27,17 @@ ExternalProject_Add(libxml2
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libxml2)
+add_git_steps(libxml2
+    REPOSITORY https://github.com/GNOME/libxml2.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/doc/
+        !/example/
+        !/fuzz/
+        !/python/
+        !/result/
+        !/test/"
+)
 add_cleanup_steps(libxml2 install)

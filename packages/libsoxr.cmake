@@ -2,9 +2,7 @@
 # CMake 4 accepts, and predates policy CMP0069, so CMake ignores
 # CMAKE_INTERPROCEDURAL_OPTIMIZATION unless the policy default is NEW.
 ExternalProject_Add(libsoxr
-    GIT_REPOSITORY https://github.com/chirlu/soxr.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -23,5 +21,9 @@ ExternalProject_Add(libsoxr
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libsoxr)
+add_git_steps(libsoxr
+    REPOSITORY https://github.com/chirlu/soxr.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(libsoxr install)

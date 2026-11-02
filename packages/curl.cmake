@@ -9,13 +9,7 @@ ExternalProject_Add(curl
         openssl
         zlib-ng
         zstd
-    GIT_REPOSITORY https://github.com/curl/curl.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/docs/
-        !/tests/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -74,5 +68,13 @@ ExternalProject_Add(curl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(curl)
+add_git_steps(curl
+    REPOSITORY https://github.com/curl/curl.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/docs/
+        !/tests/"
+)
 add_cleanup_steps(curl install)

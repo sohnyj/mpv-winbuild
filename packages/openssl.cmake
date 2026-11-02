@@ -5,17 +5,7 @@ ExternalProject_Add(openssl
         brotli
         zlib-ng
         zstd
-    GIT_REPOSITORY https://github.com/openssl/openssl.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/VMS/
-        !/demos/
-        !/dev/
-        !/os-dep/
-        !/test/"
-    GIT_SUBMODULES ""
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/Configure
@@ -95,5 +85,17 @@ ExternalProject_Add(openssl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(openssl)
+add_git_steps(openssl
+    REPOSITORY https://github.com/openssl/openssl.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/VMS/
+        !/demos/
+        !/dev/
+        !/os-dep/
+        !/test/"
+    SUBMODULES ""
+)
 add_cleanup_steps(openssl install)

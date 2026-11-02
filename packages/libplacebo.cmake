@@ -6,12 +6,7 @@ ExternalProject_Add(libplacebo
         spirv-cross
         vulkan-loader
         xxhash
-    GIT_REPOSITORY https://github.com/haasn/libplacebo.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
-    GIT_SUBMODULES
-        3rdparty/jinja
-        3rdparty/markupsafe
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -40,5 +35,12 @@ ExternalProject_Add(libplacebo
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libplacebo)
+add_git_steps(libplacebo
+    REPOSITORY https://github.com/haasn/libplacebo.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+    SUBMODULES
+        3rdparty/jinja
+        3rdparty/markupsafe
+)
 add_cleanup_steps(libplacebo install)

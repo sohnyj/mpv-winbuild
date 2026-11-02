@@ -1,7 +1,5 @@
 ExternalProject_Add(dav1d
-    GIT_REPOSITORY https://code.videolan.org/videolan/dav1d.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -22,5 +20,9 @@ ExternalProject_Add(dav1d
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(dav1d)
+add_git_steps(dav1d
+    REPOSITORY https://code.videolan.org/videolan/dav1d.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(dav1d install)

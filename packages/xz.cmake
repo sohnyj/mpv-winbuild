@@ -1,16 +1,5 @@
 ExternalProject_Add(xz
-    GIT_REPOSITORY https://github.com/tukaani-project/xz.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/cmake/
-        !/doc/
-        !/dos/
-        !/doxygen/
-        !/extra/
-        !/po4a/
-        !/windows/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${EXEC} autoreconf -fi <SOURCE_DIR>
@@ -34,5 +23,18 @@ ExternalProject_Add(xz
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(xz)
+add_git_steps(xz
+    REPOSITORY https://github.com/tukaani-project/xz.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/cmake/
+        !/doc/
+        !/dos/
+        !/doxygen/
+        !/extra/
+        !/po4a/
+        !/windows/"
+)
 add_cleanup_steps(xz install)

@@ -1,7 +1,5 @@
 ExternalProject_Add(libunibreak
-    GIT_REPOSITORY https://github.com/adah1972/libunibreak.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${EXEC} autoreconf -fi <SOURCE_DIR>
@@ -17,5 +15,9 @@ ExternalProject_Add(libunibreak
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libunibreak)
+add_git_steps(libunibreak
+    REPOSITORY https://github.com/adah1972/libunibreak.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(libunibreak install)

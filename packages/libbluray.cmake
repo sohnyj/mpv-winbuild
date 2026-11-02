@@ -3,13 +3,7 @@ ExternalProject_Add(libbluray
         freetype
         libudfread
         libxml2
-    GIT_REPOSITORY https://code.videolan.org/videolan/libbluray.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/contrib/"
-    GIT_SUBMODULES ""
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -32,5 +26,13 @@ ExternalProject_Add(libbluray
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libbluray)
+add_git_steps(libbluray
+    REPOSITORY https://code.videolan.org/videolan/libbluray.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/contrib/"
+    SUBMODULES ""
+)
 add_cleanup_steps(libbluray install)

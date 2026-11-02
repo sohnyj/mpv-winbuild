@@ -3,14 +3,7 @@ ExternalProject_Add(libjxl
         brotli
         highway
         lcms2
-    GIT_REPOSITORY https://github.com/libjxl/libjxl.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/doc/
-        !/examples/"
-    GIT_SUBMODULES ""
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -36,5 +29,14 @@ ExternalProject_Add(libjxl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libjxl)
+add_git_steps(libjxl
+    REPOSITORY https://github.com/libjxl/libjxl.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/doc/
+        !/examples/"
+    SUBMODULES ""
+)
 add_cleanup_steps(libjxl install)

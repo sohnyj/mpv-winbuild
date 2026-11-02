@@ -1,7 +1,5 @@
 ExternalProject_Add(nv-codec-headers
-    GIT_REPOSITORY https://github.com/FFmpeg/nv-codec-headers.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -11,5 +9,9 @@ ExternalProject_Add(nv-codec-headers
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(nv-codec-headers)
+add_git_steps(nv-codec-headers
+    REPOSITORY https://github.com/FFmpeg/nv-codec-headers.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(nv-codec-headers install)

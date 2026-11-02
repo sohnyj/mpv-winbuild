@@ -1,10 +1,6 @@
 # zimg's configure defines NDEBUG unless --enable-debug is given.
 ExternalProject_Add(libzimg
-    GIT_REPOSITORY https://github.com/sekrit-twc/zimg.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
-    GIT_SUBMODULES
-        graphengine
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${EXEC} autoreconf -fi <SOURCE_DIR>
@@ -19,5 +15,11 @@ ExternalProject_Add(libzimg
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libzimg)
+add_git_steps(libzimg
+    REPOSITORY https://github.com/sekrit-twc/zimg.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+    SUBMODULES
+        graphengine
+)
 add_cleanup_steps(libzimg install)

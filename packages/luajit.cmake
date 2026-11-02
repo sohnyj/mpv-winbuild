@@ -16,12 +16,7 @@ set(luajit_make_variables
 )
 
 ExternalProject_Add(luajit
-    GIT_REPOSITORY https://github.com/LuaJIT/LuaJIT.git
-    GIT_TAG v2.1
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/doc/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -33,5 +28,12 @@ ExternalProject_Add(luajit
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(luajit)
+add_git_steps(luajit
+    REPOSITORY https://github.com/LuaJIT/LuaJIT.git
+    TAG v2.1
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/doc/"
+)
 add_cleanup_steps(luajit install)

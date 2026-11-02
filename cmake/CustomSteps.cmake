@@ -7,17 +7,26 @@
 #     <name>-delete-build-stamps       delete the build and install stamps
 #     <name>-remove-prefix-and-source  delete the prefix directory (build
 #                                      directory, stamps) and the source
-#   Only with a git source of its own:
+#   Only with a git source of its own, given to add_git_steps before:
 #     <name>-remove-build              <name>-delete-stamps, then empty the
 #                                      build directory
 #     step remove-build-after-install  after <last step>, empty the build
 #                                      directory and reset the checkout
 #
-# add_git_update_steps(<name>)
-#   Step target <name>-force-update: fetch, move the checkout to GIT_RESET, else
+# add_git_steps(<name> REPOSITORY <url> TAG <branch> [CLONE_FLAGS <flags>]
+#               [CLONE_POST_COMMAND <git arguments>] [RESET <commit>]
+#               [SUBMODULES <path>...])
+#   For an external project with DOWNLOAD_COMMAND "".
+#   Step clone, before download: clone REPOSITORY with CLONE_FLAGS, check out
+#   TAG, run git with CLONE_POST_COMMAND, reset to RESET and update SUBMODULES
+#   (all of them when not given, none when given as ""). Runs again when
+#   REPOSITORY, the source directory or the submodules change. A changed TAG
+#   or RESET reaches the checkout through force-update.
+#   Step target <name>-force-update: fetch, move the checkout to RESET, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch, and
 #   delete the stamps when the commit changed.
-#   Steps write-head, which records the commit, and mark-cloned.
+#   Step write-head, which records the commit.
+#   Target property GIT_REPOSITORY: REPOSITORY.
 
 # The "<source> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions
 # target writes them.
@@ -32,7 +41,7 @@ endif()
 
 function(add_cleanup_steps name last_step)
     get_property(build_in_source TARGET ${name} PROPERTY _EP_BUILD_IN_SOURCE)
-    get_property(git_repository TARGET ${name} PROPERTY _EP_GIT_REPOSITORY)
+    get_property(git_repository TARGET ${name} PROPERTY GIT_REPOSITORY)
     get_property(stamp_dir TARGET ${name} PROPERTY _EP_STAMP_DIR)
     get_property(source_dir TARGET ${name} PROPERTY _EP_SOURCE_DIR)
 
@@ -99,22 +108,49 @@ function(add_cleanup_steps name last_step)
     ExternalProject_Add_StepTargets(${name} delete-stamps delete-build-stamps remove-prefix-and-source)
 endfunction()
 
-function(add_git_update_steps name)
-    get_property(git_repository TARGET ${name} PROPERTY _EP_GIT_REPOSITORY)
-    get_property(git_reset TARGET ${name} PROPERTY _EP_GIT_RESET)
+function(add_git_steps name)
+    cmake_parse_arguments(PARSE_ARGV 1 arg ""
+        "REPOSITORY;TAG;CLONE_FLAGS;CLONE_POST_COMMAND;RESET" "SUBMODULES")
+    if(arg_UNPARSED_ARGUMENTS OR arg_KEYWORDS_MISSING_VALUES OR NOT arg_REPOSITORY OR NOT arg_TAG)
+        message(FATAL_ERROR "add_git_steps(${name}): give REPOSITORY and TAG, and a value after each keyword")
+    endif()
     get_property(stamp_dir TARGET ${name} PROPERTY _EP_STAMP_DIR)
     get_property(source_dir TARGET ${name} PROPERTY _EP_SOURCE_DIR)
     get_property(revision GLOBAL PROPERTY "SOURCE_REVISION_${name}")
 
-    if(NOT "${git_reset}" STREQUAL "")
-        set(commit "${git_reset}")
+    separate_arguments(clone_flags UNIX_COMMAND "${arg_CLONE_FLAGS}")
+    separate_arguments(clone_post_command UNIX_COMMAND "${arg_CLONE_POST_COMMAND}")
+    if(DEFINED arg_SUBMODULES AND "${arg_SUBMODULES}" STREQUAL "")
+        set(init_submodules FALSE)
+    else()
+        set(init_submodules TRUE)
+    endif()
+    set_property(TARGET ${name} PROPERTY GIT_REPOSITORY "${arg_REPOSITORY}")
+
+    if(NOT "${arg_RESET}" STREQUAL "")
+        set(commit "${arg_RESET}")
     elseif(revision)
         set(commit "${revision}")
     else()
         set(commit "\${upstream}")
     endif()
 
+    configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/git-clone.cmake.in" "${stamp_dir}/${name}-gitclone.cmake" @ONLY)
+    file(CONFIGURE
+        OUTPUT "${stamp_dir}/${name}-gitsource.txt"
+        CONTENT "repository=@arg_REPOSITORY@\nsource_dir=@source_dir@\ninit_submodules=@init_submodules@\nsubmodules=@arg_SUBMODULES@\n"
+        @ONLY
+    )
     configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/reset-head.sh.in" "${stamp_dir}/reset-head.sh" @ONLY)
+
+    ExternalProject_Add_Step(${name} clone
+        DEPENDEES mkdir
+        DEPENDERS download
+        DEPENDS "${stamp_dir}/${name}-gitsource.txt"
+        INDEPENDENT TRUE
+        COMMAND ${CMAKE_COMMAND} -P "${stamp_dir}/${name}-gitclone.cmake"
+        LOG 1
+    )
 
     ExternalProject_Add_Step(${name} force-update
         ALWAYS TRUE
@@ -131,20 +167,6 @@ function(add_git_update_steps name)
         INDEPENDENT TRUE
         WORKING_DIRECTORY <SOURCE_DIR>
         COMMAND bash -c "git rev-parse HEAD > ${stamp_dir}/HEAD"
-        LOG 1
-    )
-
-    # Marks an existing checkout as cloned: the clone script clones again
-    # unless gitclone-lastrun.txt is newer than gitinfo.txt. Checked at build
-    # time, since a step added only when the source exists would rerun the
-    # download after the first clone. A checkout of another repository than
-    # GIT_REPOSITORY is not marked, so that the source moves to the repository
-    # of the recipe; the clone script deletes the old checkout.
-    ExternalProject_Add_Step(${name} mark-cloned
-        DEPENDERS download
-        INDEPENDENT TRUE
-        WORKING_DIRECTORY ${stamp_dir}
-        COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] && git -C <SOURCE_DIR> config --get remote.origin.url | grep -qxF '${git_repository}' && cp ${name}-gitinfo.txt ${name}-gitclone-lastrun.txt || rm -f ${name}-gitclone-lastrun.txt"
         LOG 1
     )
 endfunction()

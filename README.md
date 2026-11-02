@@ -85,6 +85,7 @@ scripts/package.sh
 
 ## Acknowledgements
 
-`cmake/ExternalProject-git-options.patch`, which adds the `GIT_CLONE_FLAGS`,
-`GIT_CLONE_POST_COMMAND` and `GIT_RESET` options to ExternalProject, is by
-[shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake).
+The `CLONE_FLAGS`, `CLONE_POST_COMMAND` and `RESET` options of `add_git_steps`
+in `cmake/CustomSteps.cmake` follow the `GIT_CLONE_FLAGS`,
+`GIT_CLONE_POST_COMMAND` and `GIT_RESET` options that the ExternalProject patch
+of [shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake) added.

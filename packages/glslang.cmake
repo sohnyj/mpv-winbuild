@@ -1,10 +1,5 @@
 ExternalProject_Add(glslang
-    GIT_REPOSITORY https://github.com/KhronosGroup/glslang.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/Test/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -14,7 +9,14 @@ ExternalProject_Add(glslang
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(glslang)
+add_git_steps(glslang
+    REPOSITORY https://github.com/KhronosGroup/glslang.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/Test/"
+)
 add_cleanup_steps(glslang install)
 
 set(GLSLANG_SOURCE_DIR ${SOURCE_DIR})

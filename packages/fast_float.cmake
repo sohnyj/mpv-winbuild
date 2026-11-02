@@ -1,7 +1,5 @@
 ExternalProject_Add(fast_float
-    GIT_REPOSITORY https://github.com/fastfloat/fast_float.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -12,5 +10,9 @@ ExternalProject_Add(fast_float
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(fast_float)
+add_git_steps(fast_float
+    REPOSITORY https://github.com/fastfloat/fast_float.git
+    TAG main
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(fast_float install)

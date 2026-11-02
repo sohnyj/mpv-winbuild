@@ -3,15 +3,7 @@ ExternalProject_Add(freetype
         brotli
         libpng
         zlib-ng
-    GIT_REPOSITORY https://github.com/freetype/freetype.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/devel/
-        !/docs/
-        !/tests/"
-    GIT_SUBMODULES ""
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -35,5 +27,15 @@ ExternalProject_Add(freetype
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(freetype)
+add_git_steps(freetype
+    REPOSITORY https://github.com/freetype/freetype.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/devel/
+        !/docs/
+        !/tests/"
+    SUBMODULES ""
+)
 add_cleanup_steps(freetype install)

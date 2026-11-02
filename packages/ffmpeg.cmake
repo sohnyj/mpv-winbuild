@@ -23,12 +23,7 @@ ExternalProject_Add(ffmpeg
         vulkan-loader
         xz
         zlib-ng
-    GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/tests/ref/fate/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/configure
@@ -96,5 +91,12 @@ ExternalProject_Add(ffmpeg
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(ffmpeg)
+add_git_steps(ffmpeg
+    REPOSITORY https://github.com/FFmpeg/FFmpeg.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/tests/ref/fate/"
+)
 add_cleanup_steps(ffmpeg install)

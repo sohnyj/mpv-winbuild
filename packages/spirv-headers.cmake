@@ -1,7 +1,5 @@
 ExternalProject_Add(spirv-headers
-    GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Headers.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -13,7 +11,11 @@ ExternalProject_Add(spirv-headers
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(spirv-headers)
+add_git_steps(spirv-headers
+    REPOSITORY https://github.com/KhronosGroup/SPIRV-Headers.git
+    TAG main
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(spirv-headers install)
 
 set(SPIRV_HEADERS_SOURCE_DIR ${SOURCE_DIR})

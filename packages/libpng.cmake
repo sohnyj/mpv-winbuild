@@ -1,14 +1,7 @@
 ExternalProject_Add(libpng
     DEPENDS
         zlib-ng
-    GIT_REPOSITORY https://github.com/glennrp/libpng.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/contrib/
-        !/projects/
-        !/tests/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -21,5 +14,14 @@ ExternalProject_Add(libpng
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libpng)
+add_git_steps(libpng
+    REPOSITORY https://github.com/glennrp/libpng.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/contrib/
+        !/projects/
+        !/tests/"
+)
 add_cleanup_steps(libpng install)

@@ -1,9 +1,5 @@
 ExternalProject_Add(amf-headers
-    GIT_REPOSITORY https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /amf/public/include/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -14,5 +10,11 @@ ExternalProject_Add(amf-headers
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(amf-headers)
+add_git_steps(amf-headers
+    REPOSITORY https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /amf/public/include/"
+)
 add_cleanup_steps(amf-headers install)

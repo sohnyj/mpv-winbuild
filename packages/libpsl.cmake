@@ -1,13 +1,5 @@
 ExternalProject_Add(libpsl
-    GIT_REPOSITORY https://github.com/rockdaboot/libpsl.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/fuzz/
-        !/tests/"
-    GIT_SUBMODULES
-        list
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -28,5 +20,15 @@ ExternalProject_Add(libpsl
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libpsl)
+add_git_steps(libpsl
+    REPOSITORY https://github.com/rockdaboot/libpsl.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/fuzz/
+        !/tests/"
+    SUBMODULES
+        list
+)
 add_cleanup_steps(libpsl install)

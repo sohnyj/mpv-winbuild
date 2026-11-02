@@ -5,9 +5,7 @@ ExternalProject_Add(libass
         harfbuzz
         libiconv
         libunibreak
-    GIT_REPOSITORY https://github.com/libass/libass.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -30,5 +28,9 @@ ExternalProject_Add(libass
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(libass)
+add_git_steps(libass
+    REPOSITORY https://github.com/libass/libass.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(libass install)

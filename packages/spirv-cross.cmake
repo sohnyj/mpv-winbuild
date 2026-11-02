@@ -2,15 +2,7 @@
 # installs only with its shared C library, so the install step writes it for
 # the static libraries.
 ExternalProject_Add(spirv-cross
-    GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Cross.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/reference/
-        !/samples/
-        !/shaders*
-        !/tests-other/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -29,5 +21,15 @@ ExternalProject_Add(spirv-cross
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(spirv-cross)
+add_git_steps(spirv-cross
+    REPOSITORY https://github.com/KhronosGroup/SPIRV-Cross.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/reference/
+        !/samples/
+        !/shaders*
+        !/tests-other/"
+)
 add_cleanup_steps(spirv-cross install)

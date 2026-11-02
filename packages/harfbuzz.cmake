@@ -1,15 +1,7 @@
 ExternalProject_Add(harfbuzz
     DEPENDS
         freetype
-    GIT_REPOSITORY https://github.com/harfbuzz/harfbuzz.git
-    GIT_TAG main
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /*
-        !/docs/
-        !/perf/
-        !/test/
-        !/util/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ${MESON_EXECUTABLE} setup --reconfigure <BINARY_DIR> <SOURCE_DIR>
@@ -36,5 +28,15 @@ ExternalProject_Add(harfbuzz
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(harfbuzz)
+add_git_steps(harfbuzz
+    REPOSITORY https://github.com/harfbuzz/harfbuzz.git
+    TAG main
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/docs/
+        !/perf/
+        !/test/
+        !/util/"
+)
 add_cleanup_steps(harfbuzz install)

@@ -1,9 +1,5 @@
 ExternalProject_Add(windows-rs
-    GIT_REPOSITORY https://github.com/microsoft/windows-rs.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone
-        /crates/libs/default/"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -13,7 +9,13 @@ ExternalProject_Add(windows-rs
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(windows-rs)
+add_git_steps(windows-rs
+    REPOSITORY https://github.com/microsoft/windows-rs.git
+    TAG master
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /crates/libs/default/"
+)
 add_cleanup_steps(windows-rs install)
 
 set(WINDOWS_RS_SOURCE_DIR ${SOURCE_DIR})

@@ -1,9 +1,7 @@
 # The project's minimum CMake version predates policy CMP0069, so CMake ignores
 # CMAKE_INTERPROCEDURAL_OPTIMIZATION unless the policy default is NEW.
 ExternalProject_Add(uchardet
-    GIT_REPOSITORY https://gitlab.freedesktop.org/uchardet/uchardet.git
-    GIT_TAG master
-    GIT_CLONE_FLAGS "--filter=tree:0"
+    DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${SOURCE_DIR}
     CMAKE_ARGS
@@ -18,5 +16,9 @@ ExternalProject_Add(uchardet
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_git_update_steps(uchardet)
+add_git_steps(uchardet
+    REPOSITORY https://gitlab.freedesktop.org/uchardet/uchardet.git
+    TAG master
+    CLONE_FLAGS "--filter=tree:0"
+)
 add_cleanup_steps(uchardet install)
