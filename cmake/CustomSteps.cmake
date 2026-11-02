@@ -14,11 +14,12 @@
 #               [CLONE_POST_COMMAND <git arguments>] [RESET <commit>]
 #               [SUBMODULES <path>...])
 #   For an external project with DOWNLOAD_COMMAND "".
-#   Step clone, before download: clone REPOSITORY with CLONE_FLAGS, check out
-#   TAG, run git with CLONE_POST_COMMAND, reset to RESET and update SUBMODULES
-#   (all of them when not given, none when given as ""). Runs again when
-#   REPOSITORY, the source directory or the submodules change. A changed TAG
-#   or RESET reaches the checkout through force-update.
+#   Step clone, before download: clone the branch TAG of REPOSITORY with
+#   CLONE_FLAGS, run git with CLONE_POST_COMMAND, reset to RESET and update
+#   SUBMODULES (all of them when not given, none when given as ""). Runs again
+#   when REPOSITORY, TAG, the source directory or the submodules change, and
+#   clones again when the checkout has another origin or branch. A changed
+#   RESET reaches the checkout through force-update.
 #   Step target <name>-force-update: fetch, move the checkout to RESET, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch, and
 #   delete the stamps when the commit changed.
@@ -112,7 +113,7 @@ function(add_git_steps name)
     configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/git-clone.cmake.in" "${stamp_dir}/${name}-gitclone.cmake" @ONLY)
     file(CONFIGURE
         OUTPUT "${stamp_dir}/${name}-gitsource.txt"
-        CONTENT "repository=@arg_REPOSITORY@\nsource_dir=@source_dir@\ninit_submodules=@init_submodules@\nsubmodules=@arg_SUBMODULES@\n"
+        CONTENT "repository=@arg_REPOSITORY@\ntag=@arg_TAG@\nsource_dir=@source_dir@\ninit_submodules=@init_submodules@\nsubmodules=@arg_SUBMODULES@\n"
         @ONLY
     )
     configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/reset-head.sh.in" "${stamp_dir}/reset-head.sh" @ONLY)
