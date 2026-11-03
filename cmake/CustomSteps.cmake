@@ -22,7 +22,8 @@
 #   RESET reaches the checkout through force-update.
 #   Step target <name>-force-update: fetch, move the checkout to RESET, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch, and
-#   delete the stamps when the commit changed.
+#   delete the stamps when the checkout was patched and the commit or the
+#   download changed since.
 #   Step write-head, after download: record the commit.
 #   Target property GIT_REPOSITORY: REPOSITORY.
 
