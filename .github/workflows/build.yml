@@ -260,7 +260,7 @@ jobs:
         run: |
           revision() { awk -v source="$1" '$1 == source { print substr($2, 1, 9) }' revisions.txt; }
           tag="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
-          notes="**LLVM**: ${{ needs.build.outputs.clang_version }}
+          notes="**LLVM**: [${{ needs.build.outputs.clang_version }}](https://github.com/llvm/llvm-project/commit/$(revision llvm))
           **mpv**: [$(revision mpv)](https://github.com/mpv-player/mpv/commit/$(revision mpv))
           **FFmpeg**: [$(revision ffmpeg)](https://github.com/FFmpeg/FFmpeg/commit/$(revision ffmpeg))
           **libplacebo**: [$(revision libplacebo)](https://github.com/haasn/libplacebo/commit/$(revision libplacebo))
