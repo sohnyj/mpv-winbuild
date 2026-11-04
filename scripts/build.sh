@@ -16,8 +16,8 @@
 #                           revisions.txt instead of the tips of their branches
 #   --sources-only          stop after updating the sources and writing
 #                           revisions.txt
-#   workdir                 location of the sources/, rustup/, ccache/ and
-#                           build/ directories (default: the repository root)
+#   workdir                 location of the sources/, ccache/ and build/
+#                           directories (default: the repository root)
 set -euo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
@@ -63,10 +63,10 @@ configure() {
     -DRUNTIME_CPU_FLAGS="-march=${RUNTIME_MARCH} -mtune=${RUNTIME_MTUNE}" \
     -DLTO_MODE="${LTO_MODE}" \
     -DMAKE_JOBS="$(nproc)" \
-    -DSYSROOT_DIR="${build_dir}/sysroot" \
-    -DSOURCES_DIR="${workdir}/sources" \
-    -DRUSTUP_DIR="${workdir}/rustup" \
     -DCCACHE_DIR="${workdir}/ccache" \
+    -DSOURCES_DIR="${workdir}/sources" \
+    -DRUSTUP_DIR="${build_dir}/rustup" \
+    -DSYSROOT_DIR="${build_dir}/sysroot" \
     -DSOURCE_REVISIONS_FILE="${revisions_file}"
 }
 

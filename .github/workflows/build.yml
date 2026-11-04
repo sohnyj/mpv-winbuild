@@ -146,9 +146,7 @@ jobs:
         if: ${{ !inputs.fresh_build }}
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            ${{ env.BUILD_DIR }}
-            !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
+          path: ${{ env.BUILD_DIR }}
           key: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-${{ github.run_id }}
           restore-keys: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-
 
@@ -169,7 +167,7 @@ jobs:
         id: toolchain
         run: |
           . scripts/defaults.env
-          rustc_info="$(RUSTUP_HOME=rustup/.rustup CARGO_HOME=rustup/.cargo rustup/.cargo/bin/rustc -vV)"
+          rustc_info="$(RUSTUP_HOME="${BUILD_DIR}/rustup/.rustup" CARGO_HOME="${BUILD_DIR}/rustup/.cargo" "${BUILD_DIR}/rustup/.cargo/bin/rustc" -vV)"
           echo "clang_version=$("clang-${LLVM_VERSION}" -dumpversion)" >> "${GITHUB_OUTPUT}"
           echo "rust_version=$(awk '$1 == "release:" { print $2 }' <<< "${rustc_info}")" >> "${GITHUB_OUTPUT}"
           echo "rust_commit=$(awk '$1 == "commit-hash:" { print substr($2, 1, 9) }' <<< "${rustc_info}")" >> "${GITHUB_OUTPUT}"
@@ -211,9 +209,7 @@ jobs:
         if: ${{ always() && steps.build.conclusion != 'skipped' }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            ${{ env.BUILD_DIR }}
-            !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
+          path: ${{ env.BUILD_DIR }}
           key: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-${{ github.run_id }}
 
       - name: Save ccache

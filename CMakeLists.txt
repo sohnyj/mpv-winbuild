@@ -15,14 +15,14 @@ set(PACKAGE_RUST_CPU_FLAGS "" CACHE STRING "rustc CPU flags of the packages, suc
 set(RUNTIME_CPU_FLAGS "" CACHE STRING "clang CPU flags of the runtimes")
 set(LTO_MODE "" CACHE STRING "clang -flto mode of the packages, such as thin")
 set(MAKE_JOBS "" CACHE STRING "Parallel jobs of the make builds")
-set(SYSROOT_DIR "" CACHE PATH "Directory the runtimes and packages are installed into")
-set(SOURCES_DIR "" CACHE PATH "Directory holding the source checkouts, shared between build directories")
-set(RUSTUP_DIR "" CACHE PATH "Directory of the Rust toolchain, shared between build directories")
 set(CCACHE_DIR "" CACHE PATH "ccache directory of the compiler wrappers")
+set(SOURCES_DIR "" CACHE PATH "Directory holding the source checkouts, shared between build directories")
+set(RUSTUP_DIR "" CACHE PATH "Directory of the Rust toolchain")
+set(SYSROOT_DIR "" CACHE PATH "Directory the runtimes and packages are installed into")
 # Empty moves the git sources to the tips of their branches.
 set(SOURCE_REVISIONS_FILE "" CACHE FILEPATH "File of <source> <commit> lines that the git sources are moved to")
 
-foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE PACKAGE_CPU_FLAGS PACKAGE_RUST_CPU_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS SYSROOT_DIR SOURCES_DIR RUSTUP_DIR CCACHE_DIR)
+foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE PACKAGE_CPU_FLAGS PACKAGE_RUST_CPU_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS CCACHE_DIR SOURCES_DIR RUSTUP_DIR SYSROOT_DIR)
     if(NOT ${variable})
         message(FATAL_ERROR "Set ${variable}; scripts/build.sh passes it.")
     endif()
