@@ -109,7 +109,9 @@ jobs:
       BUILD_DIR: build/${{ matrix.march }}
       LOGS_DIR: ${{ needs.sources.outputs.target_triple }}-logs-${{ matrix.march }}
     outputs:
-      clang_version: ${{ steps.clang.outputs.version }}
+      clang_version: ${{ steps.toolchain.outputs.clang_version }}
+      rust_version: ${{ steps.toolchain.outputs.rust_version }}
+      rust_commit: ${{ steps.toolchain.outputs.rust_commit }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -119,12 +121,6 @@ jobs:
         run: |
           scripts/install-dependencies.sh
           echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-
-      - name: Record the clang version
-        id: clang
-        run: |
-          . scripts/defaults.env
-          echo "version=$("clang-${LLVM_VERSION}" -dumpversion)" >> "${GITHUB_OUTPUT}"
 
       - name: Restore sources
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -168,6 +164,15 @@ jobs:
         run: |
           ccache --dir ccache --zero-stats
           scripts/build.sh --march ${{ matrix.march }} --mtune ${{ matrix.mtune }} --revisions revisions.txt
+
+      - name: Record the toolchain versions
+        id: toolchain
+        run: |
+          . scripts/defaults.env
+          rustc_info="$(RUSTUP_HOME=rustup/.rustup CARGO_HOME=rustup/.cargo rustup/.cargo/bin/rustc -vV)"
+          echo "clang_version=$("clang-${LLVM_VERSION}" -dumpversion)" >> "${GITHUB_OUTPUT}"
+          echo "rust_version=$(awk '$1 == "release:" { print $2 }' <<< "${rustc_info}")" >> "${GITHUB_OUTPUT}"
+          echo "rust_commit=$(awk '$1 == "commit-hash:" { print substr($2, 1, 9) }' <<< "${rustc_info}")" >> "${GITHUB_OUTPUT}"
 
       - name: Show the ccache statistics
         if: ${{ always() && steps.build.conclusion != 'skipped' }}
@@ -260,7 +265,8 @@ jobs:
         run: |
           revision() { awk -v source="$1" '$1 == source { print substr($2, 1, 9) }' revisions.txt; }
           tag="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
-          notes="**LLVM**: ${{ needs.build.outputs.clang_version }}
+          notes="**LLVM**: ${{ needs.build.outputs.clang_version }} ([$(revision llvm)](https://github.com/llvm/llvm-project/commit/$(revision llvm)))
+          **Rust**: ${{ needs.build.outputs.rust_version }} ([${{ needs.build.outputs.rust_commit }}](https://github.com/rust-lang/rust/commit/${{ needs.build.outputs.rust_commit }}))
           **mpv**: [$(revision mpv)](https://github.com/mpv-player/mpv/commit/$(revision mpv))
           **FFmpeg**: [$(revision ffmpeg)](https://github.com/FFmpeg/FFmpeg/commit/$(revision ffmpeg))
           **libplacebo**: [$(revision libplacebo)](https://github.com/haasn/libplacebo/commit/$(revision libplacebo))
