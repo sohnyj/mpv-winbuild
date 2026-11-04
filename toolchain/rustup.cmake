@@ -1,5 +1,4 @@
-# The Rust toolchain of the packages written in Rust, in RUSTUP_DIR, which the
-# build directories share.
+# The Rust toolchain of the packages written in Rust, in RUSTUP_DIR.
 ExternalProject_Add(rustup
     DOWNLOAD_COMMAND ""
     CONFIGURE_COMMAND ${CARGO_EXEC} sh -c "curl -sSf https://sh.rustup.rs | sh -s -- -y --default-host ${RUST_HOST} --target ${RUST_TARGET} --no-modify-path --profile minimal"

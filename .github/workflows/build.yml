@@ -150,9 +150,7 @@ jobs:
         if: ${{ !inputs.fresh_build }}
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            ${{ env.BUILD_DIR }}
-            !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
+          path: ${{ env.BUILD_DIR }}
           key: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-${{ github.run_id }}
           restore-keys: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-
 
@@ -206,9 +204,7 @@ jobs:
         if: ${{ always() && steps.build.conclusion != 'skipped' }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            ${{ env.BUILD_DIR }}
-            !${{ env.BUILD_DIR }}/toolchain/rustup-prefix
+          path: ${{ env.BUILD_DIR }}
           key: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-${{ github.run_id }}
 
       - name: Save ccache
