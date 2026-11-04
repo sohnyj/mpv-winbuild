@@ -81,7 +81,7 @@ scripts/package.sh
     - [zstd](https://github.com/facebook/zstd)
 
 - Tarball
-    - [libiconv](https://ftp.gnu.org/pub/gnu/libiconv/) (1.19)
+    - [libiconv](https://ftp.gnu.org/pub/gnu/libiconv/) (1.19.1)
 
 ## Acknowledgements
 
