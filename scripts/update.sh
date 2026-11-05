@@ -3,32 +3,32 @@
 # sources to the tips of their branches, or to the commits of the --revisions
 # file the directory was last configured with.
 #
-# Usage: update.sh [workdir]
-#   workdir  location of the build/ directory (default: the repository root)
+# Usage: update.sh [base_dir]
+#   base_dir  location of the build/ directory (default: the repository root)
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
 
 repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 
-workdir="${repo_root}"
+base_dir="${repo_root}"
 while (( $# > 0 )); do
   case "$1" in
     -h|--help) usage 0 ;;
     -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
-    *) workdir="$1"; shift ;;
+    *) base_dir="$1"; shift ;;
   esac
 done
-if [[ ! -d "${workdir}" ]]; then
-  echo "No such directory: ${workdir}" >&2
+if [[ ! -d "${base_dir}" ]]; then
+  echo "No such directory: ${base_dir}" >&2
   exit 1
 fi
-workdir="$(cd "${workdir}" && pwd)"
+base_dir="$(cd "${base_dir}" && pwd)"
 
 shopt -s nullglob
 status=0
 found=0
-for dir in "${workdir}"/build/*/; do
+for dir in "${base_dir}"/build/*/; do
   [[ -f "${dir}build.ninja" ]] || continue
   found=1
   echo ">> Update $(basename "${dir}")"
@@ -36,7 +36,7 @@ for dir in "${workdir}"/build/*/; do
 done
 
 if (( found == 0 )); then
-  echo "No configured build directory under ${workdir}/build" >&2
+  echo "No configured build directory under ${base_dir}/build" >&2
   exit 1
 fi
 exit "${status}"

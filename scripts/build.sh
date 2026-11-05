@@ -5,7 +5,7 @@
 # is emptied first.
 #
 # Usage: build.sh [--march <cpu>] [--mtune <cpu>] [--llvm-version <major>]
-#                 [--revisions <file>] [--sources-only] [workdir]
+#                 [--revisions <file>] [--sources-only] [base_dir]
 #   --march <cpu>           clang -march of the packages (default: PACKAGE_MARCH
 #                           of defaults.env; e.g. x86-64-v3, znver3)
 #   --mtune <cpu>           clang -mtune of the packages (default: PACKAGE_MTUNE
@@ -16,7 +16,7 @@
 #                           revisions.txt instead of the tips of their branches
 #   --sources-only          stop after updating the sources and writing
 #                           revisions.txt
-#   workdir                 location of the sources/, ccache/ and build/
+#   base_dir                location of the sources/, ccache/ and build/
 #                           directories (default: the repository root)
 set -euo pipefail
 
@@ -31,7 +31,7 @@ march="${PACKAGE_MARCH}"
 mtune="${PACKAGE_MTUNE}"
 revisions_file=""
 sources_only=false
-workdir="${repo_root}"
+base_dir="${repo_root}"
 while (( $# > 0 )); do
   case "$1" in
     --march) march="$2"; shift 2 ;;
@@ -45,12 +45,12 @@ while (( $# > 0 )); do
     --sources-only) sources_only=true; shift ;;
     -h|--help) usage 0 ;;
     -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
-    *) workdir="$1"; shift ;;
+    *) base_dir="$1"; shift ;;
   esac
 done
-mkdir -p "${workdir}"
-workdir="$(cd "${workdir}" && pwd)"
-build_dir="${workdir}/build/${march}"
+mkdir -p "${base_dir}"
+base_dir="$(cd "${base_dir}" && pwd)"
+build_dir="${base_dir}/build/${march}"
 build_inputs_file="${build_dir}/build-inputs.txt"
 
 configure() {
@@ -63,8 +63,8 @@ configure() {
     -DRUNTIME_CPU_FLAGS="-march=${RUNTIME_MARCH} -mtune=${RUNTIME_MTUNE}" \
     -DLTO_MODE="${LTO_MODE}" \
     -DMAKE_JOBS="$(nproc)" \
-    -DCCACHE_DIR="${workdir}/ccache" \
-    -DSOURCES_DIR="${workdir}/sources" \
+    -DCCACHE_DIR="${base_dir}/ccache" \
+    -DSOURCES_DIR="${base_dir}/sources" \
     -DRUSTUP_DIR="${build_dir}/rustup" \
     -DSYSROOT_DIR="${build_dir}/sysroot" \
     -DSOURCE_REVISIONS_FILE="${revisions_file}"
@@ -89,7 +89,7 @@ fi
 # The inputs include trees of the mingw-w64 checkout, so they are read after
 # the update.
 build_inputs="$("${repo_root}/scripts/build-inputs.sh" \
-  --llvm-version "${llvm_version}" "${workdir}")"
+  --llvm-version "${llvm_version}" "${base_dir}")"
 if [[ "${configured}" == true ]] && [[ ! -f "${build_inputs_file}" \
   || "$(< "${build_inputs_file}")" != "${build_inputs}" ]]; then
   echo ">> Start from an empty build directory: build-inputs.sh output changed"
@@ -100,5 +100,5 @@ fi
 echo "${build_inputs}" > "${build_inputs_file}"
 
 echo ">> Build"
-ccache --dir "${workdir}/ccache" --max-size "${CCACHE_MAXSIZE}"
+ccache --dir "${base_dir}/ccache" --max-size "${CCACHE_MAXSIZE}"
 ninja -C "${build_dir}"

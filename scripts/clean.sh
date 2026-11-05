@@ -4,10 +4,10 @@
 # runs <name>-delete-stamps and <name>-remove-prefix-and-source.
 #
 # Usage: clean.sh [--package <package>]... [--toolchain <component>]...
-#                 [workdir]
+#                 [base_dir]
 #   --package <package>      package to clean (repeatable)
 #   --toolchain <component>  toolchain component to clean (repeatable)
-#   workdir                  location of the sources/ and build/ directories
+#   base_dir                 location of the sources/ and build/ directories
 #                            (default: the repository root)
 # Without --package and --toolchain, every git clone under sources/ is cleaned.
 #
@@ -19,7 +19,7 @@ usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
 
 repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 
-workdir="${repo_root}"
+base_dir="${repo_root}"
 packages=()
 toolchain_components=()
 while (( $# > 0 )); do
@@ -30,29 +30,29 @@ while (( $# > 0 )); do
     --toolchain=*) toolchain_components+=("${1#*=}"); shift ;;
     -h|--help) usage 0 ;;
     -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
-    *) workdir="$1"; shift ;;
+    *) base_dir="$1"; shift ;;
   esac
 done
-if [[ ! -d "${workdir}" ]]; then
-  echo "No such directory: ${workdir}" >&2
+if [[ ! -d "${base_dir}" ]]; then
+  echo "No such directory: ${base_dir}" >&2
   exit 1
 fi
-workdir="$(cd "${workdir}" && pwd)"
+base_dir="$(cd "${base_dir}" && pwd)"
 
-sources_dir="${workdir}/sources"
+sources_dir="${base_dir}/sources"
 if [[ ! -d "${sources_dir}" ]]; then
-  echo "No sources directory under ${workdir}" >&2
+  echo "No sources directory under ${base_dir}" >&2
   exit 1
 fi
 
 shopt -s nullglob
 
 build_dirs=()
-for dir in "${workdir}"/build/*/; do
+for dir in "${base_dir}"/build/*/; do
   [[ -f "${dir}build.ninja" ]] && build_dirs+=("${dir}")
 done
 if (( ${#build_dirs[@]} == 0 )); then
-  echo "No configured build directory under ${workdir}/build" >&2
+  echo "No configured build directory under ${base_dir}/build" >&2
   exit 1
 fi
 

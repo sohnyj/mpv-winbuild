@@ -3,10 +3,10 @@
 # archives, named after the architecture, the CPU without x86-64- (v3, znver3),
 # the UTC date and the mpv and FFmpeg commits of its revisions.txt.
 #
-# Usage: package.sh [--march <cpu>] [workdir]
+# Usage: package.sh [--march <cpu>] [base_dir]
 #   --march <cpu>  build directory build/<cpu> (default: PACKAGE_MARCH of
 #                  defaults.env)
-#   workdir        location of the build/ directory; the archives are written to
+#   base_dir       location of the build/ directory; the archives are written to
 #                  its release/ (default: the repository root)
 set -euo pipefail
 
@@ -17,19 +17,19 @@ repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 . "${repo_root}/scripts/defaults.env"
 
 march="${PACKAGE_MARCH}"
-workdir="${repo_root}"
+base_dir="${repo_root}"
 while (( $# > 0 )); do
   case "$1" in
     --march) march="$2"; shift 2 ;;
     --march=*) march="${1#*=}"; shift ;;
     -h|--help) usage 0 ;;
     -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
-    *) workdir="$1"; shift ;;
+    *) base_dir="$1"; shift ;;
   esac
 done
-workdir="$(cd "${workdir}" && pwd)"
-build_dir="${workdir}/build/${march}"
-release_dir="${workdir}/release"
+base_dir="$(cd "${base_dir}" && pwd)"
+build_dir="${base_dir}/build/${march}"
+release_dir="${base_dir}/release"
 
 # The first nine characters of the commit of <source> in revisions.txt.
 revision() {

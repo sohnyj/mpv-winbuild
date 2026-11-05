@@ -3,10 +3,10 @@
 # directory do not track. build.sh starts from an empty build directory when
 # they change, and the workflow puts their hash in its build cache key.
 #
-# Usage: build-inputs.sh [--llvm-version <major>] [workdir]
+# Usage: build-inputs.sh [--llvm-version <major>] [base_dir]
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
 #                           defaults.env)
-#   workdir                 location of the sources/ directory (default: the
+#   base_dir                location of the sources/ directory (default: the
 #                           repository root)
 set -euo pipefail
 
@@ -17,17 +17,17 @@ repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 . "${repo_root}/scripts/defaults.env"
 
 llvm_version="${LLVM_VERSION}"
-workdir="${repo_root}"
+base_dir="${repo_root}"
 while (( $# > 0 )); do
   case "$1" in
     --llvm-version) llvm_version="$2"; shift 2 ;;
     --llvm-version=*) llvm_version="${1#*=}"; shift ;;
     -h|--help) usage 0 ;;
     -*) echo "Unknown option: $1" >&2; usage 1 >&2 ;;
-    *) workdir="$1"; shift ;;
+    *) base_dir="$1"; shift ;;
   esac
 done
-mingw_w64_source="${workdir}/sources/mingw-w64"
+mingw_w64_source="${base_dir}/sources/mingw-w64"
 
 package_version() { dpkg-query --show --showformat='${Version}' "$1"; }
 
