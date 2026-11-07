@@ -97,12 +97,12 @@ jobs:
             mtune: generic
           - march: znver3
             mtune: znver3
-          - march: x86-64-v3_cropdetect-vk
+          - march: x86-64-v3_cropdetect
             mtune: generic
-            ref: cropdetect-vk
-          - march: znver3_cropdetect-vk
+            ref: cropdetect
+          - march: znver3_cropdetect
             mtune: znver3
-            ref: cropdetect-vk
+            ref: cropdetect
     continue-on-error: ${{ matrix.ref != null }}
     env:
       GH_TOKEN: ${{ github.token }}

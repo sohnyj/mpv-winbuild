@@ -15,12 +15,12 @@ Autobuild runs daily at UTC 00:00.
 
 ## Builds
 
-| Build | CPU | Extra filter |
-| ----- | --- | ------------ |
+| Build | CPU | Extra filters |
+| ----- | --- | ------------- |
 | `x86_64-v3` | AVX2 required | |
 | `x86_64-znver3` | AMD Zen 3 or newer | |
-| `x86_64-v3_cropdetect-vk` | AVX2 required | [`cropdetect_vulkan`](https://github.com/sohnyj/cropdetect-vk) |
-| `x86_64-znver3_cropdetect-vk` | AMD Zen 3 or newer | [`cropdetect_vulkan`](https://github.com/sohnyj/cropdetect-vk) |
+| `x86_64-v3_cropdetect` | AVX2 required | [`cropdetect_filters`](https://github.com/sohnyj/cropdetect-filters) |
+| `x86_64-znver3_cropdetect` | AMD Zen 3 or newer | [`cropdetect_filters`](https://github.com/sohnyj/cropdetect-filters) |
 
 ## Build scripts
 
