@@ -8,7 +8,7 @@ on:
         type: boolean
         default: true
       fresh_build:
-        description: Ignore build cache and build from scratch
+        description: Ignore sources and build caches and build from scratch
         type: boolean
         default: false
 
@@ -50,6 +50,7 @@ jobs:
           echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
 
       - name: Restore sources
+        if: ${{ !inputs.fresh_build }}
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: sources
