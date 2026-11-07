@@ -28,6 +28,8 @@ add_git_steps(zstd
         !/contrib/
         !/doc/
         !/examples/
-        !/tests/"
+        !/programs/
+        !/tests/
+        !/zlibWrapper/"
 )
 add_cleanup_steps(zstd install)

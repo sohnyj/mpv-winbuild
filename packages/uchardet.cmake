@@ -22,6 +22,9 @@ ExternalProject_Add(uchardet
 add_git_steps(uchardet
     REPOSITORY https://gitlab.freedesktop.org/uchardet/uchardet.git
     TAG master
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/script/"
 )
 add_cleanup_steps(uchardet install)

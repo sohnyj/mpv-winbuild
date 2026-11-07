@@ -18,7 +18,11 @@ ExternalProject_Add(libzimg
 add_git_steps(libzimg
     REPOSITORY https://github.com/sekrit-twc/zimg.git
     TAG master
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/_msvc/
+        !/test/"
     SUBMODULES
         graphengine
 )

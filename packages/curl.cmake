@@ -75,6 +75,7 @@ add_git_steps(curl
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
         !/docs/
+        !/projects/
         !/tests/"
 )
 add_cleanup_steps(curl install)

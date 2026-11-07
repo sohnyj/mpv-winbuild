@@ -80,7 +80,8 @@ add_git_steps(mpv
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
-        !/fuzzers
-        !/test"
+        !/DOCS/
+        !/fuzzers/
+        !/test/"
 )
 add_cleanup_steps(mpv install)

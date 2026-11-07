@@ -19,6 +19,8 @@ add_git_steps(brotli
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
+        !/csharp/
+        !/go/
         !/java/
         !/js/
         !/research/

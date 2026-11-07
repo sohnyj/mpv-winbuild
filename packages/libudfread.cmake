@@ -21,6 +21,9 @@ ExternalProject_Add(libudfread
 add_git_steps(libudfread
     REPOSITORY https://code.videolan.org/videolan/libudfread.git
     TAG master
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/tests/"
 )
 add_cleanup_steps(libudfread install)

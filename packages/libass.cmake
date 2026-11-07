@@ -31,6 +31,9 @@ ExternalProject_Add(libass
 add_git_steps(libass
     REPOSITORY https://github.com/libass/libass.git
     TAG master
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/compare/"
 )
 add_cleanup_steps(libass install)

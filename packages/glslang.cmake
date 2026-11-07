@@ -15,7 +15,8 @@ add_git_steps(glslang
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
-        !/Test/"
+        !/Test/
+        !/gtests/"
 )
 add_cleanup_steps(glslang install)
 

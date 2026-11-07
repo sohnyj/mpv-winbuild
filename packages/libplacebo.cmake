@@ -38,7 +38,11 @@ ExternalProject_Add(libplacebo
 add_git_steps(libplacebo
     REPOSITORY https://github.com/haasn/libplacebo.git
     TAG master
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/demos/
+        !/docs/"
     SUBMODULES
         3rdparty/jinja
         3rdparty/markupsafe

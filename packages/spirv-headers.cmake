@@ -14,7 +14,10 @@ ExternalProject_Add(spirv-headers
 add_git_steps(spirv-headers
     REPOSITORY https://github.com/KhronosGroup/SPIRV-Headers.git
     TAG main
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/tools/"
 )
 add_cleanup_steps(spirv-headers install)
 

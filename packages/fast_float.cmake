@@ -13,6 +13,9 @@ ExternalProject_Add(fast_float
 add_git_steps(fast_float
     REPOSITORY https://github.com/fastfloat/fast_float.git
     TAG main
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/tests/"
 )
 add_cleanup_steps(fast_float install)

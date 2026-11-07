@@ -22,7 +22,10 @@ add_git_steps(cppwinrt
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
-        !/docs
-        !/test"
+        !/docs/
+        !/natvis/
+        !/nuget/
+        !/test/
+        !/vsix/"
 )
 add_cleanup_steps(cppwinrt install)

@@ -23,6 +23,7 @@ add_git_steps(ngtcp2
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
+        !/examples/
         !/tests/"
     SUBMODULES ""
 )

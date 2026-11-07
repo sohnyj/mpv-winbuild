@@ -97,6 +97,6 @@ add_git_steps(ffmpeg
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
-        !/tests/ref/fate/"
+        !/tests/ref/"
 )
 add_cleanup_steps(ffmpeg install)

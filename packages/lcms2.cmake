@@ -25,8 +25,10 @@ add_git_steps(lcms2
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
+        !/Projects/
         !/doc/
         !/fuzzers/
-        !/testbed/"
+        !/testbed/
+        !/utils/"
 )
 add_cleanup_steps(lcms2 install)

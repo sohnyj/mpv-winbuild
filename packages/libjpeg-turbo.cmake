@@ -28,6 +28,7 @@ add_git_steps(libjpeg-turbo
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
         !/fuzz/
+        !/jna/
         !/test/
         !/testimages/"
 )

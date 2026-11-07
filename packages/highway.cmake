@@ -28,6 +28,9 @@ ExternalProject_Add(highway
 add_git_steps(highway
     REPOSITORY https://github.com/google/highway.git
     TAG master
-    CLONE_FLAGS "--filter=tree:0"
+    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_POST_COMMAND "sparse-checkout set --no-cone
+        /*
+        !/g3doc/"
 )
 add_cleanup_steps(highway install)
