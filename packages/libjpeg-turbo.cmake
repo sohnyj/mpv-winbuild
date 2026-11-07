@@ -1,3 +1,5 @@
+# Only the library is built: simdcoverage is added whenever the SIMD extensions
+# and the static library are.
 ExternalProject_Add(libjpeg-turbo
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
@@ -13,6 +15,8 @@ ExternalProject_Add(libjpeg-turbo
         -DWITH_ARITH_ENC=OFF
         -DWITH_TOOLS=OFF
         -DWITH_TURBOJPEG=OFF
+    BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --target jpeg-static
+    INSTALL_COMMAND ${CMAKE_COMMAND} --install <BINARY_DIR>
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
