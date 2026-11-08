@@ -58,7 +58,6 @@ sudo apt-get install -y \
   7zip \
   autoconf \
   automake \
-  autopoint \
   build-essential \
   ca-certificates \
   ccache \
