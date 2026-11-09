@@ -34,6 +34,7 @@ jobs:
     outputs:
       target_triple: ${{ steps.defaults.outputs.target_triple }}
       llvm_version: ${{ steps.defaults.outputs.llvm_version }}
+      llvm_full_version: ${{ steps.llvm.outputs.version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -48,6 +49,10 @@ jobs:
         run: |
           scripts/install-dependencies.sh
           echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Record the LLVM version
+        id: llvm
+        run: echo "version=$("llvm-config-${{ steps.defaults.outputs.llvm_version }}" --version)" >> "${GITHUB_OUTPUT}"
 
       - name: Restore sources
         if: ${{ !inputs.fresh_build }}
@@ -109,8 +114,6 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       BUILD_DIR: build/${{ matrix.march }}
       LOGS_DIR: ${{ needs.sources.outputs.target_triple }}-logs-${{ matrix.march }}
-    outputs:
-      clang_version: ${{ steps.clang.outputs.version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -120,12 +123,6 @@ jobs:
         run: |
           scripts/install-dependencies.sh
           echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-
-      - name: Record the clang version
-        id: clang
-        run: |
-          . scripts/defaults.env
-          echo "version=$("clang-${LLVM_VERSION}" -dumpversion)" >> "${GITHUB_OUTPUT}"
 
       - name: Restore sources
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -257,7 +254,7 @@ jobs:
         run: |
           revision() { awk -v source="$1" '$1 == source { print substr($2, 1, 9) }' revisions.txt; }
           tag="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
-          notes="**LLVM**: [${{ needs.build.outputs.clang_version }}](https://github.com/llvm/llvm-project/commit/$(revision llvm))
+          notes="**LLVM**: [${{ needs.sources.outputs.llvm_full_version }}](https://github.com/llvm/llvm-project/commit/$(revision llvm))
           **mpv**: [$(revision mpv)](https://github.com/mpv-player/mpv/commit/$(revision mpv))
           **FFmpeg**: [$(revision ffmpeg)](https://github.com/FFmpeg/FFmpeg/commit/$(revision ffmpeg))
           **libplacebo**: [$(revision libplacebo)](https://github.com/haasn/libplacebo/commit/$(revision libplacebo))
