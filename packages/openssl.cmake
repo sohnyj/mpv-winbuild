@@ -1,5 +1,3 @@
-# Built inside the source tree: with no-apps, Configure fails in a separate
-# build directory, which lacks apps/include.
 ExternalProject_Add(openssl
     DEPENDS
         brotli
@@ -79,7 +77,6 @@ ExternalProject_Add(openssl
         no-x942kdf
         no-x963kdf
     BUILD_COMMAND ${MAKE} build_sw
-    BUILD_IN_SOURCE 1
     INSTALL_COMMAND ${MAKE} install_sw
     LOG_DOWNLOAD 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
