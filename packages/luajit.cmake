@@ -1,6 +1,6 @@
 # LuaJIT builds only inside its source tree. The install step removes the
-# Libs.private line of luajit.pc, whose -Wl,-E and -ldl MinGW lacks. CCOPT and
-# XCFLAGS also apply to the build tools, so -flto goes into TARGET_CFLAGS.
+# Libs.private line of luajit.pc, whose -Wl,-E and -ldl MinGW lacks. CCOPT also
+# applies to the build tools, so -flto goes into TARGET_CFLAGS.
 set(luajit_make_variables
     CROSS=${TARGET_TRIPLE}-
     CC=clang
@@ -9,7 +9,6 @@ set(luajit_make_variables
     TARGET_SYS=Windows
     "CCOPT=-O3 -fomit-frame-pointer"
     TARGET_CFLAGS=-flto=${LTO_MODE}
-    "XCFLAGS=-DLUAJIT_ENABLE_LUA52COMPAT -DNDEBUG"
     BUILDMODE=static
     FILE_T=luajit.exe
     INSTALL_DEP=src/luajit.exe
