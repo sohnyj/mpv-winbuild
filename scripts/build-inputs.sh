@@ -34,7 +34,6 @@ package_version() { dpkg-query --show --showformat='${Version}' "$1"; }
 # Each value is assigned first, so that a failing command stops the script.
 clang_version="$(package_version "clang-${llvm_version}")"
 cmake_version="$(cmake --version | awk 'NR == 1 { print $3 }')"
-glslang_version="$(package_version glslang-tools)"
 meson_version="$(meson --version)"
 nasm_version="$(package_version nasm)"
 rust_channel_url=https://static.rust-lang.org/dist/channel-rust-stable.toml
@@ -52,7 +51,6 @@ recipes_hash="$(cd "${repo_root}" \
 
 echo "clang ${clang_version}"
 echo "cmake ${cmake_version}"
-echo "glslang ${glslang_version}"
 echo "meson ${meson_version}"
 echo "nasm ${nasm_version}"
 echo "rust ${rust_version}"

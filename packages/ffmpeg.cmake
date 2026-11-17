@@ -6,6 +6,7 @@ ExternalProject_Add(ffmpeg
         dav1d
         freetype
         fribidi
+        glslang
         harfbuzz
         lcms2
         libass

@@ -29,7 +29,7 @@ Autobuild runs daily at UTC 00:00.
 
 | Script | Purpose |
 | ------ | ------- |
-| `install-dependencies.sh` | Install the build tools: the LLVM toolchain from apt.llvm.org, nasm, glslang and ccache, and CMake and Meson through pipx. |
+| `install-dependencies.sh` | Install the build tools: the LLVM toolchain from apt.llvm.org, nasm and ccache, and CMake and Meson through pipx. |
 | `build.sh` | Update the sources and build the runtimes and packages for a CPU into `build/<march>/sysroot`, from an empty build directory when the output of `build-inputs.sh` changed. |
 | `build-inputs.sh` | Print the inputs that the stamps do not track: the versions of the build tools and Rust, the mingw-w64 runtime trees and a hash of the recipes. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` of a build into `release/*.7z`. |

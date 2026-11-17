@@ -64,7 +64,6 @@ sudo apt-get install -y \
   "clang-${llvm_version}" \
   curl \
   git \
-  glslang-tools \
   "libclang-common-${llvm_version}-dev" \
   libtool \
   "lld-${llvm_version}" \

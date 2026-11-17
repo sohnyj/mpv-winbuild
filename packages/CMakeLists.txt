@@ -10,7 +10,6 @@ set(packages
     dav1d
     fast_float
     fribidi
-    glslang
     highway
     lcms2
     libiconv

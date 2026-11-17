@@ -7,6 +7,7 @@ add_toolchain_profile(runtime "${RUNTIME_CPU_FLAGS}" "" "")
 
 set(toolchain_components
     # depth 0
+    glslang
     llvm
     mingw-w64
     rustup
@@ -33,3 +34,5 @@ foreach(toolchain_component IN LISTS toolchain_components)
 endforeach()
 
 set(TOOLCHAIN_COMPONENTS ${toolchain_components} PARENT_SCOPE)
+set(GLSLANG_EXECUTABLE ${GLSLANG_EXECUTABLE} PARENT_SCOPE)
+set(GLSLANG_SOURCE_DIR ${GLSLANG_SOURCE_DIR} PARENT_SCOPE)
