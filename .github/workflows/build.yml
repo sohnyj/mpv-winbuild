@@ -11,6 +11,10 @@ on:
         description: Ignore sources and build caches
         type: boolean
         default: false
+      fresh_ccache:
+        description: Ignore ccache
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}
@@ -153,6 +157,7 @@ jobs:
           restore-keys: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-
 
       - name: Restore ccache
+        if: ${{ !inputs.fresh_ccache }}
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ccache
