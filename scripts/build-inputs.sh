@@ -32,8 +32,8 @@ mingw_w64_source="${base_dir}/sources/mingw-w64"
 package_version() { dpkg-query --show --showformat='${Version}' "$1"; }
 
 # Each value is assigned first, so that a failing command stops the script.
-clang_version="$(package_version "clang-${llvm_version}")"
 cmake_version="$(cmake --version | awk 'NR == 1 { print $3 }')"
+llvm_package_version="$(package_version "llvm-${llvm_version}")"
 meson_version="$(meson --version)"
 nasm_version="$(package_version nasm)"
 rust_channel_url=https://static.rust-lang.org/dist/channel-rust-stable.toml
@@ -49,8 +49,8 @@ recipes_hash="$(cd "${repo_root}" \
     -- CMakeLists.txt cmake toolchain packages \
   | xargs -0 sha256sum | sha256sum | cut -d ' ' -f 1)"
 
-echo "clang ${clang_version}"
 echo "cmake ${cmake_version}"
+echo "llvm ${llvm_package_version}"
 echo "meson ${meson_version}"
 echo "nasm ${nasm_version}"
 echo "rust ${rust_version}"

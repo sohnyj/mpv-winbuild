@@ -36,16 +36,16 @@ find_program(NASM_EXECUTABLE NAMES nasm REQUIRED)
 find_program(CCACHE_EXECUTABLE NAMES ccache REQUIRED)
 find_package(Git REQUIRED)
 
-# The runtimes are built at the commit of the installed clang, which its
+# The runtimes are built at the commit of the installed LLVM, which its
 # apt.llvm.org package version records:
 # 1:23.1.3~++20260922084409+67f4a076a097-1~exp1~20260922084419.77
 execute_process(
-    COMMAND dpkg-query --show "--showformat=\${Version}" "clang-${LLVM_VERSION}"
-    OUTPUT_VARIABLE clang_package_version
+    COMMAND dpkg-query --show "--showformat=\${Version}" "llvm-${LLVM_VERSION}"
+    OUTPUT_VARIABLE llvm_package_version
     COMMAND_ERROR_IS_FATAL ANY
 )
-if(NOT clang_package_version MATCHES "^[0-9]+:${LLVM_VERSION}\\.[0-9]+\\.[0-9]+~\\+\\+[0-9]+\\+([0-9a-f]+)-")
-    message(FATAL_ERROR "clang-${LLVM_VERSION} ${clang_package_version} is not from an apt.llvm.org release suite")
+if(NOT llvm_package_version MATCHES "^[0-9]+:${LLVM_VERSION}\\.[0-9]+\\.[0-9]+~\\+\\+[0-9]+\\+([0-9a-f]+)-")
+    message(FATAL_ERROR "llvm-${LLVM_VERSION} ${llvm_package_version} is not from an apt.llvm.org release suite")
 endif()
 set(LLVM_COMMIT "${CMAKE_MATCH_1}")
-message(STATUS "clang-${LLVM_VERSION} ${clang_package_version}")
+message(STATUS "llvm-${LLVM_VERSION} ${llvm_package_version}")
