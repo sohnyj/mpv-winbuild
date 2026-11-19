@@ -71,8 +71,8 @@ add_dependencies(download ${download_targets})
 # revisions.txt, in the form that SOURCE_REVISIONS_FILE reads.
 set(git_source_lines "")
 foreach(git_source IN LISTS git_sources)
-    get_property(source_dir TARGET ${git_source} PROPERTY _EP_SOURCE_DIR)
-    string(APPEND git_source_lines "${git_source} ${source_dir}\n")
+    ExternalProject_Get_Property(${git_source} SOURCE_DIR)
+    string(APPEND git_source_lines "${git_source} ${SOURCE_DIR}\n")
 endforeach()
 file(WRITE "${PROJECT_BINARY_DIR}/git-sources.txt" "${git_source_lines}")
 add_custom_target(revisions
