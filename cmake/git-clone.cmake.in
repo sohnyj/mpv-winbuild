@@ -8,7 +8,7 @@ set(repository [==[@arg_REPOSITORY@]==])
 set(tag [==[@arg_TAG@]==])
 set(clone_flags [==[@clone_flags@]==])
 set(clone_post_command [==[@clone_post_command@]==])
-set(reset [==[@arg_RESET@]==])
+set(commit [==[@arg_COMMIT@]==])
 set(init_submodules @init_submodules@)
 set(submodules [==[@arg_SUBMODULES@]==])
 
@@ -56,9 +56,9 @@ if(NOT clone_post_command STREQUAL "")
         COMMAND_ERROR_IS_FATAL ANY
     )
 endif()
-if(NOT reset STREQUAL "")
+if(NOT commit STREQUAL "")
     execute_process(
-        COMMAND [==[@GIT_EXECUTABLE@]==] reset --hard "${reset}"
+        COMMAND [==[@GIT_EXECUTABLE@]==] reset --hard "${commit}"
         WORKING_DIRECTORY "${source_dir}"
         COMMAND_ERROR_IS_FATAL ANY
     )
