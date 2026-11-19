@@ -3,13 +3,15 @@
 # toolchain components, so that the next build downloads and builds them again:
 # runs <name>-delete-stamps and <name>-remove-prefix-and-source.
 #
-# Usage: clean.sh [--package <package>]... [--toolchain <component>]...
-#                 [base_dir]
+# Usage: clean.sh [--fresh-ccache] [--package <package>]...
+#                 [--toolchain <component>]... [base_dir]
+#   --fresh-ccache           clear the ccache
 #   --package <package>      package to clean (repeatable)
 #   --toolchain <component>  toolchain component to clean (repeatable)
-#   base_dir                 location of the sources/ and build/ directories
-#                            (default: the repository root)
-# Without --package and --toolchain, every git clone under sources/ is cleaned.
+#   base_dir                 location of the sources/, build/ and ccache/
+#                            directories (default: the repository root)
+# Without --fresh-ccache, --package and --toolchain, every git clone under
+# sources/ is cleaned.
 #
 # Cleaning a component that builds from another's source, such as libcxx from
 # llvm, deletes that source; clean the source's component instead.
@@ -20,10 +22,12 @@ usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
 repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 
 base_dir="${repo_root}"
+fresh_ccache=false
 packages=()
 toolchain_components=()
 while (( $# > 0 )); do
   case "$1" in
+    --fresh-ccache) fresh_ccache=true; shift ;;
     --package) packages+=("$2"); shift 2 ;;
     --package=*) packages+=("${1#*=}"); shift ;;
     --toolchain) toolchain_components+=("$2"); shift 2 ;;
@@ -38,6 +42,24 @@ if [[ ! -d "${base_dir}" ]]; then
   exit 1
 fi
 base_dir="$(cd "${base_dir}" && pwd)"
+
+# clear_ccache: empty <base_dir>/ccache. --clear keeps ccache.conf, which holds
+# the size limit that build.sh writes.
+clear_ccache() {
+  local ccache_dir="${base_dir}/ccache"
+  if [[ ! -d "${ccache_dir}" ]]; then
+    echo "No ccache directory under ${base_dir}" >&2
+    return 0
+  fi
+  echo ">> Clear ${ccache_dir}"
+  ccache --dir "${ccache_dir}" --clear
+}
+
+if [[ "${fresh_ccache}" == true ]] \
+  && (( ${#packages[@]} == 0 && ${#toolchain_components[@]} == 0 )); then
+  clear_ccache
+  exit
+fi
 
 sources_dir="${base_dir}/sources"
 if [[ ! -d "${sources_dir}" ]]; then
@@ -106,6 +128,10 @@ for name in "${names[@]}"; do
     ninja -C "${dir}" "${name}-remove-prefix-and-source" || status=1
   done
 done
+
+if [[ "${fresh_ccache}" == true ]]; then
+  clear_ccache || status=1
+fi
 
 echo ">> Done."
 exit "${status}"
