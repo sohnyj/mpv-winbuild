@@ -100,3 +100,7 @@ Parts of `cmake/CustomSteps.cmake` are modeled on
   and `GIT_RESET` options that its ExternalProject patch added.
 - The steps that clean an external project and move a git checkout to its target
   commit are modeled on those of its `cmake/custom_steps.cmake`.
+
+## License
+
+Licensed under the GNU General Public License v3.0 or later.
