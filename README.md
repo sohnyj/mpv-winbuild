@@ -29,12 +29,12 @@ Autobuild runs daily at UTC 00:00.
 
 | Script | Purpose |
 | ------ | ------- |
-| `install-dependencies.sh` | Install the build tools: the LLVM toolchain from apt.llvm.org, nasm and ccache, and CMake and Meson through pipx. |
+| `install-dependencies.sh` | Install the build tools: the LLVM toolchain and the other tools through apt, and CMake and Meson through pipx. |
 | `build.sh` | Update the sources and build the runtimes and packages for a CPU into `build/<march>/sysroot`, from an empty build directory when the output of `build-inputs.sh` changed. |
 | `build-inputs.sh` | Print the inputs that the stamps do not track: the versions of the build tools and Rust, the mingw-w64 runtime trees and a hash of the recipes. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` of a build into `release/*.7z`. |
-| `update.sh` | Move the git sources to the tips of their branches, or to the commits of the `--revisions` file of the last build. |
-| `clean.sh` | Delete `sources/` and `build/`, or the build directories, stamps and sources of the given packages and toolchain components, so that the next build downloads and builds them again. It can also clear the ccache. |
+| `update.sh` | Move the git sources to the tips of their branches, or to the commits of the `--revisions` file that each build directory was last configured with. |
+| `clean.sh` | Delete `sources/` and `build/`, or the build directories, stamps and sources of the given packages and toolchain components. It can also clear the ccache. |
 
 ```bash
 scripts/install-dependencies.sh
