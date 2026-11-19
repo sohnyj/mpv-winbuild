@@ -24,8 +24,10 @@
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch, and
 #   delete the stamps when the checkout was patched and the commit or the
 #   download changed since.
-#   Step write-head, after download: record the commit.
+#   Step record-commit, after download: record the commit for force-update.
 #   Target property GIT_REPOSITORY: REPOSITORY.
+#   Target property GIT_RESET_COMMAND: the command that discards the changes
+#   to the checkout and checks out the target commit, for add_cleanup_steps.
 
 # The "<source> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions
 # target writes them.
@@ -39,41 +41,52 @@ if(SOURCE_REVISIONS_FILE)
 endif()
 
 function(add_cleanup_steps name last_step)
-    get_property(build_in_source TARGET ${name} PROPERTY _EP_BUILD_IN_SOURCE)
+    ExternalProject_Get_Property(${name} BINARY_DIR INSTALL_DIR SOURCE_DIR STAMP_DIR)
     get_property(git_repository TARGET ${name} PROPERTY GIT_REPOSITORY)
+    get_property(reset_command TARGET ${name} PROPERTY GIT_RESET_COMMAND)
 
-    # Step commands do not expand <STAMP_DIR>; <LOG_DIR> is the same directory.
+    set(reset_commands "")
     if(git_repository)
-        if(build_in_source)
-            set(remove_command git -C <SOURCE_DIR> clean -dfx)
-        else()
-            set(remove_command bash -c "find <BINARY_DIR> -mindepth 1 -delete && git -C <SOURCE_DIR> clean -df")
-        endif()
-        set(reset_checkout_commands COMMAND <LOG_DIR>/reset-head.sh)
+        set(reset_commands COMMAND ${reset_command})
     endif()
 
     ExternalProject_Add_Step(${name} delete-stamps
-        COMMAND find <LOG_DIR> -type f ! -iname *.cmake -size 0c -delete # the stamps are the empty files
-        ${reset_checkout_commands}
+        COMMAND ${CMAKE_COMMAND} -D "STAMP_DIR=${STAMP_DIR}"
+            -P "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/DeleteStamps.cmake"
+        ${reset_commands}
         ALWAYS TRUE
         EXCLUDE_FROM_MAIN TRUE
         INDEPENDENT TRUE
         LOG 1
-        COMMENT "Deleting all stamp files of ${name}"
+        COMMENT "Deleting the stamps of ${name}"
     )
 
     if(git_repository)
+        # A build directory in the checkout leaves its outputs, which
+        # .gitignore lists, there.
+        cmake_path(IS_PREFIX SOURCE_DIR "${BINARY_DIR}" build_in_checkout)
+        if(build_in_checkout)
+            set(empty_build_commands COMMAND git -C ${SOURCE_DIR} clean -d --force -x)
+        else()
+            set(empty_build_commands
+                COMMAND ${CMAKE_COMMAND} -E rm -rf ${BINARY_DIR}
+                COMMAND ${CMAKE_COMMAND} -E make_directory ${BINARY_DIR}
+                COMMAND git -C ${SOURCE_DIR} clean -d --force
+            )
+        endif()
         ExternalProject_Add_Step(${name} remove-build-after-install
             DEPENDEES ${last_step}
-            COMMAND ${remove_command}
-            ${reset_checkout_commands}
+            ${empty_build_commands}
+            ${reset_commands}
             LOG 1
             COMMENT "Emptying the build directory of ${name} after install"
         )
     endif()
 
+    # Configuring writes the clone script and its inputs into the stamp
+    # directory, which the prefix directory holds.
     ExternalProject_Add_Step(${name} remove-prefix-and-source
-        COMMAND rm -rf <INSTALL_DIR> <SOURCE_DIR>
+        COMMAND ${CMAKE_COMMAND} -E rm -rf ${INSTALL_DIR} ${SOURCE_DIR}
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target rebuild_cache
         ALWAYS TRUE
         EXCLUDE_FROM_MAIN TRUE
@@ -90,8 +103,9 @@ function(add_git_steps name)
     if(arg_UNPARSED_ARGUMENTS OR arg_KEYWORDS_MISSING_VALUES OR NOT arg_REPOSITORY OR NOT arg_TAG)
         message(FATAL_ERROR "add_git_steps(${name}): give REPOSITORY and TAG, and a value after each keyword")
     endif()
-    get_property(stamp_dir TARGET ${name} PROPERTY _EP_STAMP_DIR)
-    get_property(source_dir TARGET ${name} PROPERTY _EP_SOURCE_DIR)
+    ExternalProject_Get_Property(${name} SOURCE_DIR STAMP_DIR)
+    set(stamp_dir "${STAMP_DIR}")
+    set(source_dir "${SOURCE_DIR}")
     get_property(revision GLOBAL PROPERTY "SOURCE_REVISION_${name}")
 
     separate_arguments(clone_flags UNIX_COMMAND "${arg_CLONE_FLAGS}")
@@ -103,13 +117,23 @@ function(add_git_steps name)
     endif()
     set_property(TARGET ${name} PROPERTY GIT_REPOSITORY "${arg_REPOSITORY}")
 
+    # An empty target commit is the tip of the upstream branch.
     if(NOT "${arg_RESET}" STREQUAL "")
-        set(commit "${arg_RESET}")
+        set(target_commit "${arg_RESET}")
     elseif(revision)
-        set(commit "${revision}")
+        set(target_commit "${revision}")
     else()
-        set(commit "\${upstream}")
+        set(target_commit "")
     endif()
+    set(checkout_definitions
+        -D "NAME=${name}"
+        -D "SOURCE_DIR=${source_dir}"
+        -D "STAMP_DIR=${stamp_dir}"
+        -D "TARGET_COMMIT=${target_commit}"
+    )
+    set(checkout_script "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/GitCheckout.cmake")
+    set_property(TARGET ${name} PROPERTY GIT_RESET_COMMAND
+        ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=reset -P ${checkout_script})
 
     configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/git-clone.cmake.in" "${stamp_dir}/${name}-gitclone.cmake" @ONLY)
     file(CONFIGURE
@@ -117,7 +141,6 @@ function(add_git_steps name)
         CONTENT "repository=@arg_REPOSITORY@\ntag=@arg_TAG@\nsource_dir=@source_dir@\ninit_submodules=@init_submodules@\nsubmodules=@arg_SUBMODULES@\n"
         @ONLY
     )
-    configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/reset-head.sh.in" "${stamp_dir}/reset-head.sh" @ONLY)
 
     ExternalProject_Add_Step(${name} clone
         DEPENDEES mkdir
@@ -132,18 +155,15 @@ function(add_git_steps name)
         ALWAYS TRUE
         EXCLUDE_FROM_MAIN TRUE
         INDEPENDENT TRUE
-        WORKING_DIRECTORY <SOURCE_DIR>
-        COMMAND bash -c "[ -e <SOURCE_DIR>/.git ] && git fetch --filter=tree:0 --no-recurse-submodules || true"
-        COMMAND ${stamp_dir}/reset-head.sh
+        COMMAND ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=update -P ${checkout_script}
     )
     ExternalProject_Add_StepTargets(${name} force-update)
 
-    ExternalProject_Add_Step(${name} write-head
+    ExternalProject_Add_Step(${name} record-commit
         DEPENDEES download
         DEPENDERS patch
         INDEPENDENT TRUE
-        WORKING_DIRECTORY <SOURCE_DIR>
-        COMMAND bash -c "git rev-parse HEAD > ${stamp_dir}/HEAD"
+        COMMAND ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=record -P ${checkout_script}
         LOG 1
     )
 endfunction()

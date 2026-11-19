@@ -93,7 +93,10 @@ scripts/package.sh
 
 ## Acknowledgements
 
-The `CLONE_FLAGS`, `CLONE_POST_COMMAND` and `RESET` options of `add_git_steps`
-in `cmake/CustomSteps.cmake` follow the `GIT_CLONE_FLAGS`,
-`GIT_CLONE_POST_COMMAND` and `GIT_RESET` options that the ExternalProject patch
-of [shinchiro](https://github.com/shinchiro/mpv-winbuild-cmake) added.
+The steps of `cmake/CustomSteps.cmake` are modeled on those of
+[shinchiro/mpv-winbuild-cmake](https://github.com/shinchiro/mpv-winbuild-cmake):
+the `CLONE_FLAGS`, `CLONE_POST_COMMAND` and `RESET` options of `add_git_steps`
+on the `GIT_CLONE_FLAGS`, `GIT_CLONE_POST_COMMAND` and `GIT_RESET` options that
+its ExternalProject patch added, and the steps that clean an external project
+and move a git checkout to its target commit on the steps of its
+`cmake/custom_steps.cmake`.
