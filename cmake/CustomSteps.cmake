@@ -66,12 +66,12 @@ function(add_cleanup_steps name last_step)
         # .gitignore lists, there.
         cmake_path(IS_PREFIX SOURCE_DIR "${BINARY_DIR}" build_in_checkout)
         if(build_in_checkout)
-            set(empty_build_commands COMMAND git -C ${SOURCE_DIR} clean -d --force -x)
+            set(empty_build_commands COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force -x)
         else()
             set(empty_build_commands
                 COMMAND ${CMAKE_COMMAND} -E rm -rf ${BINARY_DIR}
                 COMMAND ${CMAKE_COMMAND} -E make_directory ${BINARY_DIR}
-                COMMAND git -C ${SOURCE_DIR} clean -d --force
+                COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force
             )
         endif()
         ExternalProject_Add_Step(${name} remove-build-after-install
@@ -126,6 +126,7 @@ function(add_git_steps name)
         set(target_commit "")
     endif()
     set(checkout_definitions
+        -D "GIT_EXECUTABLE=${GIT_EXECUTABLE}"
         -D "NAME=${name}"
         -D "SOURCE_DIR=${source_dir}"
         -D "STAMP_DIR=${stamp_dir}"

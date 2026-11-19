@@ -74,7 +74,7 @@ function(add_toolchain_profile profile cpu_flags preprocessor_flags code_generat
 
     set(EXEC "${EXEC}" PARENT_SCOPE)
     set(CARGO_EXEC "${profile_dir}/cargo-exec" PARENT_SCOPE)
-    set(MAKE "${EXEC}" make "-j${MAKE_JOBS}" PARENT_SCOPE)
+    set(MAKE "${EXEC}" "${MAKE_EXECUTABLE}" "-j${MAKE_JOBS}" PARENT_SCOPE)
     set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_BIN_DIR}" PARENT_SCOPE)
     set(TOOLCHAIN_FILE "${profile_dir}/toolchain.cmake" PARENT_SCOPE)
     set(MESON_CROSS_FILE "${profile_dir}/meson-cross.ini" PARENT_SCOPE)
