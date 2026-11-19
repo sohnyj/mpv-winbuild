@@ -1,4 +1,4 @@
-# cmake -D ACTION=<record|reset|update> -D NAME=<name>
+# cmake -D ACTION=<record|reset|update> -D GIT_EXECUTABLE=<git> -D NAME=<name>
 #       -D SOURCE_DIR=<directory> -D STAMP_DIR=<directory>
 #       [-D TARGET_COMMIT=<commit>] -P GitCheckout.cmake
 #
@@ -21,7 +21,7 @@ set(commit_file "${STAMP_DIR}/${NAME}-commit.txt")
 # checkout, or an empty string when git fails.
 function(git_output variable)
     execute_process(
-        COMMAND git ${ARGN}
+        COMMAND "${GIT_EXECUTABLE}" ${ARGN}
         WORKING_DIRECTORY "${SOURCE_DIR}"
         OUTPUT_VARIABLE output
         OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -43,7 +43,7 @@ endif()
 if(ACTION STREQUAL "update")
     # An unreachable remote leaves the checkout at the commits it has.
     execute_process(
-        COMMAND git fetch --filter=tree:0 --no-recurse-submodules
+        COMMAND "${GIT_EXECUTABLE}" fetch --filter=tree:0 --no-recurse-submodules
         WORKING_DIRECTORY "${SOURCE_DIR}"
         RESULT_VARIABLE result
     )
@@ -85,7 +85,7 @@ if(EXISTS "${patch_stamp}")
 endif()
 
 execute_process(
-    COMMAND git reset --hard --quiet "${commit}"
+    COMMAND "${GIT_EXECUTABLE}" reset --hard --quiet "${commit}"
     WORKING_DIRECTORY "${SOURCE_DIR}"
     COMMAND_ERROR_IS_FATAL ANY
 )
@@ -99,7 +99,7 @@ if(source_changed)
 endif()
 file(WRITE "${commit_file}" "${commit}\n")
 execute_process(
-    COMMAND git submodule --quiet update --recursive
+    COMMAND "${GIT_EXECUTABLE}" submodule --quiet update --recursive
     WORKING_DIRECTORY "${SOURCE_DIR}"
     COMMAND_ERROR_IS_FATAL ANY
 )

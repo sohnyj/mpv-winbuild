@@ -34,6 +34,7 @@ endforeach()
 find_program(PKGCONF_EXECUTABLE NAMES pkgconf REQUIRED)
 find_program(NASM_EXECUTABLE NAMES nasm REQUIRED)
 find_program(CCACHE_EXECUTABLE NAMES ccache REQUIRED)
+find_program(MAKE_EXECUTABLE NAMES make REQUIRED)
 find_package(Git REQUIRED)
 
 # The runtimes are built at the commit of the installed LLVM, which its

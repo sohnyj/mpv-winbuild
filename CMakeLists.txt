@@ -77,6 +77,7 @@ endforeach()
 file(WRITE "${PROJECT_BINARY_DIR}/git-sources.txt" "${git_source_lines}")
 add_custom_target(revisions
     COMMAND ${CMAKE_COMMAND}
+        -D "GIT_EXECUTABLE=${GIT_EXECUTABLE}"
         -D "GIT_SOURCES_FILE=${PROJECT_BINARY_DIR}/git-sources.txt"
         -D "REVISIONS_FILE=${PROJECT_BINARY_DIR}/revisions.txt"
         -P "${PROJECT_SOURCE_DIR}/cmake/WriteRevisions.cmake"
