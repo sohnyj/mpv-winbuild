@@ -1,20 +1,24 @@
 #!/bin/bash
-# Delete the build directories, stamps and sources of the given packages and
-# toolchain components, so that the next build downloads and builds them again:
-# runs <name>-delete-stamps and <name>-remove-prefix-and-source.
+# Delete what the next build would reuse, so that it downloads and builds again.
 #
-# Usage: clean.sh [--fresh-ccache] [--package <package>]...
+# Usage: clean.sh [--fresh-build] [--fresh-ccache] [--package <package>]...
 #                 [--toolchain <component>]... [base_dir]
-#   --fresh-ccache           clear the ccache
+#   --fresh-build            delete sources/ and build/, as the fresh_build
+#                            input of the workflow ignores their caches
+#   --fresh-ccache           clear the ccache, as the fresh_ccache input of the
+#                            workflow ignores its cache
 #   --package <package>      package to clean (repeatable)
 #   --toolchain <component>  toolchain component to clean (repeatable)
 #   base_dir                 location of the sources/, build/ and ccache/
 #                            directories (default: the repository root)
-# Without --fresh-ccache, --package and --toolchain, every git clone under
-# sources/ is cleaned.
+# Without --fresh-build, --fresh-ccache, --package and --toolchain, print this
+# help.
 #
-# Cleaning a component that builds from another's source, such as libcxx from
-# llvm, deletes that source; clean the source's component instead.
+# Cleaning a package or toolchain component deletes its build directories,
+# stamps and source: runs <name>-delete-stamps and
+# <name>-remove-prefix-and-source. Cleaning a component that builds from
+# another's source, such as libcxx from llvm, deletes that source; clean the
+# source's component instead.
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
@@ -22,11 +26,13 @@ usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
 repo_root="$(cd "$(dirname "$(realpath "$0")")/.." && pwd)"
 
 base_dir="${repo_root}"
+fresh_build=false
 fresh_ccache=false
 packages=()
 toolchain_components=()
 while (( $# > 0 )); do
   case "$1" in
+    --fresh-build) fresh_build=true; shift ;;
     --fresh-ccache) fresh_ccache=true; shift ;;
     --package) packages+=("$2"); shift 2 ;;
     --package=*) packages+=("${1#*=}"); shift ;;
@@ -37,11 +43,81 @@ while (( $# > 0 )); do
     *) base_dir="$1"; shift ;;
   esac
 done
+clean_components=false
+if (( ${#packages[@]} > 0 || ${#toolchain_components[@]} > 0 )); then
+  clean_components=true
+fi
+if [[ "${fresh_build}" == false && "${fresh_ccache}" == false \
+  && "${clean_components}" == false ]]; then
+  usage 0
+fi
+if [[ "${fresh_build}" == true && "${clean_components}" == true ]]; then
+  echo "--fresh-build deletes every package and toolchain component:" \
+    "drop --package and --toolchain" >&2
+  exit 1
+fi
 if [[ ! -d "${base_dir}" ]]; then
   echo "No such directory: ${base_dir}" >&2
   exit 1
 fi
 base_dir="$(cd "${base_dir}" && pwd)"
+
+ninja_targets=""
+
+# has_clean_target <directory> <name>: the recipe <name> of toolchain/ or
+# packages/ has the clean targets.
+has_clean_target() {
+  awk -F: -v target="$1/$2-delete-stamps" \
+    '$1 == target { found = 1 } END { exit !found }' <<< "${ninja_targets}"
+}
+
+# clean_named_components: run the clean targets of the packages and toolchain
+# components in every configured build directory. Every name is checked before
+# anything is deleted.
+clean_named_components() {
+  local sources_dir="${base_dir}/sources"
+  if [[ ! -d "${sources_dir}" ]]; then
+    echo "No sources directory under ${base_dir}" >&2
+    exit 1
+  fi
+
+  local build_dirs=() dir
+  shopt -s nullglob
+  for dir in "${base_dir}"/build/*/; do
+    [[ -f "${dir}build.ninja" ]] && build_dirs+=("${dir}")
+  done
+  shopt -u nullglob
+  if (( ${#build_dirs[@]} == 0 )); then
+    echo "No configured build directory under ${base_dir}/build" >&2
+    exit 1
+  fi
+
+  ninja_targets="$(ninja -C "${build_dirs[0]}" -t targets all)" || exit 1
+
+  local package toolchain_component
+  for package in "${packages[@]}"; do
+    if ! has_clean_target packages "${package}"; then
+      echo "No clean target for ${package}: not a package of this checkout" >&2
+      exit 1
+    fi
+  done
+  for toolchain_component in "${toolchain_components[@]}"; do
+    if ! has_clean_target toolchain "${toolchain_component}"; then
+      echo "No clean target for ${toolchain_component}: not a toolchain component of this checkout" >&2
+      exit 1
+    fi
+  done
+
+  local name result=0
+  for name in "${packages[@]}" "${toolchain_components[@]}"; do
+    echo ">> Clean ${name}"
+    for dir in "${build_dirs[@]}"; do
+      ninja -C "${dir}" "${name}-delete-stamps" || result=1
+      ninja -C "${dir}" "${name}-remove-prefix-and-source" || result=1
+    done
+  done
+  return "${result}"
+}
 
 # clear_ccache: empty <base_dir>/ccache. --clear keeps ccache.conf, which holds
 # the size limit that build.sh writes.
@@ -55,80 +131,16 @@ clear_ccache() {
   ccache --dir "${ccache_dir}" --clear
 }
 
-if [[ "${fresh_ccache}" == true ]] \
-  && (( ${#packages[@]} == 0 && ${#toolchain_components[@]} == 0 )); then
-  clear_ccache
-  exit
-fi
-
-sources_dir="${base_dir}/sources"
-if [[ ! -d "${sources_dir}" ]]; then
-  echo "No sources directory under ${base_dir}" >&2
-  exit 1
-fi
-
-shopt -s nullglob
-
-build_dirs=()
-for dir in "${base_dir}"/build/*/; do
-  [[ -f "${dir}build.ninja" ]] && build_dirs+=("${dir}")
-done
-if (( ${#build_dirs[@]} == 0 )); then
-  echo "No configured build directory under ${base_dir}/build" >&2
-  exit 1
-fi
-
-ninja_targets="$(ninja -C "${build_dirs[0]}" -t targets all)" || exit 1
-
-# has_clean_target <directory> <name>: the recipe <name> of toolchain/ or
-# packages/ has the clean targets.
-has_clean_target() {
-  awk -F: -v target="$1/$2-delete-stamps" \
-    '$1 == target { found = 1 } END { exit !found }' <<< "${ninja_targets}"
-}
-
-names=()
-if (( ${#packages[@]} == 0 && ${#toolchain_components[@]} == 0 )); then
-  for dir in "${sources_dir}"/*/; do
-    name="$(basename "${dir}")"
-    [[ -d "${dir}.git" ]] || continue
-    if ! has_clean_target packages "${name}" \
-      && ! has_clean_target toolchain "${name}"; then
-      echo "Skip ${name}: not a package or toolchain component of this checkout" >&2
-      continue
-    fi
-    names+=("${name}")
-  done
-else
-  for package in "${packages[@]}"; do
-    if ! has_clean_target packages "${package}"; then
-      echo "No clean target for ${package}: not a package of this checkout" >&2
-      exit 1
-    fi
-    names+=("${package}")
-  done
-  for toolchain_component in "${toolchain_components[@]}"; do
-    if ! has_clean_target toolchain "${toolchain_component}"; then
-      echo "No clean target for ${toolchain_component}: not a toolchain component of this checkout" >&2
-      exit 1
-    fi
-    names+=("${toolchain_component}")
-  done
-fi
-if (( ${#names[@]} == 0 )); then
-  echo "Nothing to clean under ${sources_dir}" >&2
-  exit 1
-fi
-
 status=0
-for name in "${names[@]}"; do
-  echo ">> Clean ${name}"
-  for dir in "${build_dirs[@]}"; do
-    ninja -C "${dir}" "${name}-delete-stamps" || status=1
-    ninja -C "${dir}" "${name}-remove-prefix-and-source" || status=1
-  done
-done
-
+if [[ "${fresh_build}" == true ]]; then
+  # The stamps of every build directory refer to the shared sources, so both
+  # are deleted together.
+  echo ">> Delete ${base_dir}/sources and ${base_dir}/build"
+  rm -rf -- "${base_dir}/sources" "${base_dir}/build" || status=1
+fi
+if [[ "${clean_components}" == true ]]; then
+  clean_named_components || status=1
+fi
 if [[ "${fresh_ccache}" == true ]]; then
   clear_ccache || status=1
 fi
