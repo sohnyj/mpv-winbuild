@@ -3,6 +3,14 @@
 Windows builds of mpv and FFmpeg, cross-compiled on Linux with the apt.llvm.org
 LLVM toolchain.
 
+- Every git source of the packages and the toolchain is built from the latest
+  commit of its branch at build time.
+- The runtimes and the packages are built with optimization flags for the target
+  CPU, through toolchain profiles and the build options of each package.
+- The build system uses CMake's ExternalProject module as shipped, extended only
+  through its public step API, so that packages and features are added as
+  recipes.
+
 Autobuild runs daily at UTC 00:00.
 
 - updater: [sohnyj/app-updater](https://github.com/sohnyj/app-updater)
