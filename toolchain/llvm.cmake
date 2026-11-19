@@ -39,7 +39,7 @@ add_git_steps(llvm
         !/polly/
         !/utils/
         /llvm/cmake/"
-    RESET ${LLVM_COMMIT}
+    COMMIT ${LLVM_COMMIT}
 )
 add_cleanup_steps(llvm install)
 

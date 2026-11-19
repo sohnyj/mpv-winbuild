@@ -11,16 +11,16 @@
 #                                      directory and reset the checkout
 #
 # add_git_steps(<name> REPOSITORY <url> TAG <branch> [CLONE_FLAGS <flags>]
-#               [CLONE_POST_COMMAND <git arguments>] [RESET <commit>]
+#               [CLONE_POST_COMMAND <git arguments>] [COMMIT <commit>]
 #               [SUBMODULES <path>...])
 #   For an external project with DOWNLOAD_COMMAND "".
 #   Step clone, before download: clone the branch TAG of REPOSITORY with
-#   CLONE_FLAGS, run git with CLONE_POST_COMMAND, reset to RESET and update
+#   CLONE_FLAGS, run git with CLONE_POST_COMMAND, reset to COMMIT and update
 #   SUBMODULES (all of them when not given, none when given as ""). Runs again
 #   when REPOSITORY, TAG, the source directory or the submodules change, and
 #   clones again when the checkout has another origin or branch. A changed
-#   RESET reaches the checkout through force-update.
-#   Step target <name>-force-update: fetch, move the checkout to RESET, else
+#   COMMIT reaches the checkout through force-update.
+#   Step target <name>-force-update: fetch, move the checkout to COMMIT, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch, and
 #   delete the stamps when the checkout was patched and the commit or the
 #   download changed since.
@@ -99,7 +99,7 @@ endfunction()
 
 function(add_git_steps name)
     cmake_parse_arguments(PARSE_ARGV 1 arg ""
-        "REPOSITORY;TAG;CLONE_FLAGS;CLONE_POST_COMMAND;RESET" "SUBMODULES")
+        "REPOSITORY;TAG;CLONE_FLAGS;CLONE_POST_COMMAND;COMMIT" "SUBMODULES")
     if(arg_UNPARSED_ARGUMENTS OR arg_KEYWORDS_MISSING_VALUES OR NOT arg_REPOSITORY OR NOT arg_TAG)
         message(FATAL_ERROR "add_git_steps(${name}): give REPOSITORY and TAG, and a value after each keyword")
     endif()
@@ -118,8 +118,8 @@ function(add_git_steps name)
     set_property(TARGET ${name} PROPERTY GIT_REPOSITORY "${arg_REPOSITORY}")
 
     # An empty target commit is the tip of the upstream branch.
-    if(NOT "${arg_RESET}" STREQUAL "")
-        set(target_commit "${arg_RESET}")
+    if(NOT "${arg_COMMIT}" STREQUAL "")
+        set(target_commit "${arg_COMMIT}")
     elseif(revision)
         set(target_commit "${revision}")
     else()
