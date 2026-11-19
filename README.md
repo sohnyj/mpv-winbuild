@@ -100,3 +100,7 @@ on the `GIT_CLONE_FLAGS`, `GIT_CLONE_POST_COMMAND` and `GIT_RESET` options that
 its ExternalProject patch added, and the steps that clean an external project
 and move a git checkout to its target commit on the steps of its
 `cmake/custom_steps.cmake`.
+
+## License
+
+Licensed under the GNU General Public License v3.0 or later.
