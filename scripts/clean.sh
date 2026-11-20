@@ -43,15 +43,15 @@ while (( $# > 0 )); do
     *) base_dir="$1"; shift ;;
   esac
 done
-clean_components=false
+external_projects_given=false
 if (( ${#packages[@]} > 0 || ${#toolchain_components[@]} > 0 )); then
-  clean_components=true
+  external_projects_given=true
 fi
 if [[ "${fresh_build}" == false && "${fresh_ccache}" == false \
-  && "${clean_components}" == false ]]; then
+  && "${external_projects_given}" == false ]]; then
   usage 0
 fi
-if [[ "${fresh_build}" == true && "${clean_components}" == true ]]; then
+if [[ "${fresh_build}" == true && "${external_projects_given}" == true ]]; then
   echo "--fresh-build deletes every package and toolchain component:" \
     "drop --package and --toolchain" >&2
   exit 1
@@ -64,17 +64,25 @@ base_dir="$(cd "${base_dir}" && pwd)"
 
 ninja_targets=""
 
-# has_clean_target <directory> <name>: the recipe <name> of toolchain/ or
-# packages/ has the clean targets.
+# has_clean_target <directory> <name>: the external project <name> of
+# toolchain/ or packages/ has the clean targets.
 has_clean_target() {
   awk -F: -v target="$1/$2-delete-stamps" \
     '$1 == target { found = 1 } END { exit !found }' <<< "${ninja_targets}"
 }
 
-# clean_named_components: run the clean targets of the packages and toolchain
+# delete_sources_and_build: delete <base_dir>/sources and <base_dir>/build. The
+# stamps of every build directory refer to the shared sources, so both are
+# deleted together.
+delete_sources_and_build() {
+  echo ">> Delete ${base_dir}/sources and ${base_dir}/build"
+  rm -rf -- "${base_dir}/sources" "${base_dir}/build"
+}
+
+# clean_external_projects: run the clean targets of the packages and toolchain
 # components in every configured build directory. Every name is checked before
 # anything is deleted.
-clean_named_components() {
+clean_external_projects() {
   local sources_dir="${base_dir}/sources"
   if [[ ! -d "${sources_dir}" ]]; then
     echo "No sources directory under ${base_dir}" >&2
@@ -133,13 +141,10 @@ clear_ccache() {
 
 status=0
 if [[ "${fresh_build}" == true ]]; then
-  # The stamps of every build directory refer to the shared sources, so both
-  # are deleted together.
-  echo ">> Delete ${base_dir}/sources and ${base_dir}/build"
-  rm -rf -- "${base_dir}/sources" "${base_dir}/build" || status=1
+  delete_sources_and_build || status=1
 fi
-if [[ "${clean_components}" == true ]]; then
-  clean_named_components || status=1
+if [[ "${external_projects_given}" == true ]]; then
+  clean_external_projects || status=1
 fi
 if [[ "${fresh_ccache}" == true ]]; then
   clear_ccache || status=1
