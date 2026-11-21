@@ -13,7 +13,8 @@
 #
 # add_git_steps(<name> REPOSITORY <url> BRANCH <branch>
 #               [CLONE_FLAGS <flags>] [CLONE_POST_COMMAND <git arguments>]
-#               [COMMIT <commit>] [SUBMODULES <path>...])
+#               [COMMIT <commit>] [SUBMODULES <path>...]
+#               [PATCHES <file>...] [PATCH_FLAGS <flags>])
 #   For an external project with DOWNLOAD_COMMAND "".
 #   Step clone, before download: clone BRANCH of REPOSITORY with
 #   CLONE_FLAGS, run git with CLONE_POST_COMMAND, reset to COMMIT and update
@@ -24,13 +25,18 @@
 #   checkout through force-update.
 #   Step target <name>-force-update: fetch, move the checkout to COMMIT, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch,
-#   update SUBMODULES and deinitialize the other submodules as clone does, and
+#   update SUBMODULES and deinitialize the other submodules as clone does,
 #   delete the stamps when the checkout was patched and its commit changed
-#   since.
+#   since, and apply PATCHES as apply-patches does.
 #   Step record-commit, after download: record the commit for force-update.
+#   Step apply-patches, after record-commit and before patch: discard the
+#   changes to the checkout and apply PATCHES with git apply and PATCH_FLAGS,
+#   in order. A relative path is relative to the current source directory.
+#   Runs again when the patches or PATCH_FLAGS change.
 #   Target property GIT_REPOSITORY: REPOSITORY.
 #   Target property GIT_RESET_COMMAND: the command that discards the changes
-#   to the checkout and checks out the target commit, for add_cleanup_steps.
+#   to the checkout, checks out the target commit and applies PATCHES, for
+#   add_cleanup_steps.
 
 # The "<source> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions
 # target writes them.
@@ -106,7 +112,7 @@ endfunction()
 
 function(add_git_steps name)
     cmake_parse_arguments(PARSE_ARGV 1 arg ""
-        "REPOSITORY;BRANCH;CLONE_FLAGS;CLONE_POST_COMMAND;COMMIT" "SUBMODULES")
+        "REPOSITORY;BRANCH;CLONE_FLAGS;CLONE_POST_COMMAND;COMMIT;PATCH_FLAGS" "SUBMODULES;PATCHES")
     if(arg_UNPARSED_ARGUMENTS OR arg_KEYWORDS_MISSING_VALUES OR NOT arg_REPOSITORY OR NOT arg_BRANCH)
         message(FATAL_ERROR "add_git_steps(${name}): give REPOSITORY and BRANCH, and a value after each keyword")
     endif()
@@ -117,11 +123,17 @@ function(add_git_steps name)
 
     separate_arguments(clone_flags UNIX_COMMAND "${arg_CLONE_FLAGS}")
     separate_arguments(clone_post_command UNIX_COMMAND "${arg_CLONE_POST_COMMAND}")
+    separate_arguments(patch_flags UNIX_COMMAND "${arg_PATCH_FLAGS}")
     if(DEFINED arg_SUBMODULES AND "${arg_SUBMODULES}" STREQUAL "")
         set(init_submodules FALSE)
     else()
         set(init_submodules TRUE)
     endif()
+    set(patches "")
+    foreach(patch IN LISTS arg_PATCHES)
+        cmake_path(ABSOLUTE_PATH patch NORMALIZE)
+        list(APPEND patches "${patch}")
+    endforeach()
     set_property(TARGET ${name} PROPERTY GIT_REPOSITORY "${arg_REPOSITORY}")
 
     # An empty target commit is the tip of the upstream branch.
@@ -149,6 +161,15 @@ function(add_git_steps name)
     file(CONFIGURE
         OUTPUT "${submodules_file}"
         CONTENT "set(init_submodules @init_submodules@)\nset(submodules [==[@arg_SUBMODULES@]==])\n"
+        @ONLY
+    )
+
+    # The patches and patch flags of the configuration, which GitCheckout.cmake
+    # reads.
+    set(patches_file "${stamp_dir}/${name}-gitpatches.cmake")
+    file(CONFIGURE
+        OUTPUT "${patches_file}"
+        CONTENT "set(patches [==[@patches@]==])\nset(patch_flags [==[@patch_flags@]==])\n"
         @ONLY
     )
 
@@ -182,6 +203,15 @@ function(add_git_steps name)
         DEPENDERS patch
         INDEPENDENT TRUE
         COMMAND ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=record -P ${checkout_script}
+        LOG 1
+    )
+
+    ExternalProject_Add_Step(${name} apply-patches
+        DEPENDEES record-commit
+        DEPENDERS patch
+        DEPENDS "${patches_file}" ${patches}
+        INDEPENDENT TRUE
+        COMMAND ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=patch -P ${checkout_script}
         LOG 1
     )
 endfunction()
