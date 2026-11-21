@@ -88,8 +88,10 @@ function(add_cleanup_steps name last_step)
         )
     endif()
 
-    # Configuring writes the clone script and its inputs into the stamp
-    # directory, which the prefix directory holds.
+    # INSTALL_DIR is the prefix directory: ExternalProject defaults it to the
+    # prefix, which it does not expose, and no recipe gives PREFIX or
+    # INSTALL_DIR. Configuring writes the clone script and its inputs into the
+    # stamp directory, which the prefix directory holds.
     ExternalProject_Add_Step(${name} remove-prefix-and-source
         COMMAND ${CMAKE_COMMAND} -E rm -rf ${INSTALL_DIR} ${SOURCE_DIR}
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target rebuild_cache
