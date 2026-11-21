@@ -67,8 +67,8 @@ else()
     endif()
 endif()
 
-# The steps after patch saw the recorded commit as it was downloaded. They are
-# invalid when no commit is recorded or the target commit is another one;
+# The steps after patch ran on the recorded commit as it was downloaded. They
+# are invalid when no commit is recorded or the target commit is another one;
 # deletion_reason holds the case. A download that runs again, as the clone step
 # makes it do when the repository, branch, source directory or submodules
 # change, reruns them through their dependencies.

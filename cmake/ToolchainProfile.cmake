@@ -5,7 +5,7 @@
 #   build systems        CMake toolchain file, Meson cross and native files,
 #                        autoconf site file, command wrapper, cargo wrapper
 #   dependencies         pkg-config wrapper for static linking from the sysroot
-# Switches of a single package stay in its recipe.
+# Options of a single package are set in its recipe.
 
 include_guard(GLOBAL)
 
@@ -81,7 +81,7 @@ function(add_toolchain_profile profile cpu_flags preprocessor_flags code_generat
     set(MESON_NATIVE_FILE "${profile_dir}/meson-native.ini" PARENT_SCOPE)
 
     # configure_file() rewrites a file only when its content changes, so only
-    # a changed file rebuilds what depends on it.
+    # what depends on a changed file is rebuilt.
     set(PROFILE_FILES
         "${CLANG_CONFIG_FILE}"
         "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-clang"

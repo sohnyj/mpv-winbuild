@@ -19,7 +19,7 @@ set(CCACHE_DIR "" CACHE PATH "ccache directory of the compiler wrappers")
 set(SOURCES_DIR "" CACHE PATH "Directory of the source checkouts and downloads, shared between build directories")
 set(RUSTUP_DIR "" CACHE PATH "Directory of the Rust toolchain")
 set(SYSROOT_DIR "" CACHE PATH "Directory the runtimes and packages are installed into")
-# Empty moves the git sources to the tips of their branches.
+# When it is empty, the git sources are moved to the tips of their branches.
 set(SOURCE_REVISIONS_FILE "" CACHE FILEPATH "File of <source> <commit> lines that the git sources are moved to")
 
 foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE PACKAGE_CPU_FLAGS PACKAGE_RUST_CPU_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS CCACHE_DIR SOURCES_DIR RUSTUP_DIR SYSROOT_DIR)

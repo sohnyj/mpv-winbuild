@@ -20,8 +20,8 @@
 #   SUBMODULES (all of them when not given, none when given as ""), and
 #   deinitialize the other submodules. Runs again when REPOSITORY, BRANCH, the
 #   source directory or the submodules change, and clones again when the
-#   checkout has another origin or branch. A changed COMMIT reaches the
-#   checkout through force-update.
+#   checkout has another origin or branch. force-update checks out a changed
+#   COMMIT.
 #   Step target <name>-force-update: fetch, move the checkout to COMMIT, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch,
 #   update SUBMODULES and deinitialize the other submodules as clone does, and
@@ -67,8 +67,9 @@ function(add_cleanup_steps name last_step)
     )
 
     if(git_repository)
-        # A build directory in the checkout leaves its outputs, which
-        # .gitignore lists, there.
+        # With the build directory in the checkout, the outputs of the build are
+        # in the checkout and listed in .gitignore, so clean removes ignored
+        # files too.
         cmake_path(IS_PREFIX SOURCE_DIR "${BINARY_DIR}" build_in_checkout)
         if(build_in_checkout)
             set(empty_build_commands COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force -x)
