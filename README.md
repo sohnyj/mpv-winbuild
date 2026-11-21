@@ -5,10 +5,10 @@ LLVM toolchain.
 
 - Every git source of the packages and the toolchain is built from the latest
   commit of its branch at build time.
-- The `-march` and `-mtune` values, set in `scripts/defaults.env`, are applied to
-  the runtimes and the packages through the toolchain profiles.
-- The build system uses CMake's ExternalProject module as shipped, extended only
-  through its public step API.
+- The `-march` and `-mtune` values in `scripts/defaults.env` are applied to the
+  runtimes and the packages.
+- The build system uses CMake's ExternalProject module as shipped, extended
+  through its public API.
 
 Autobuild runs daily at UTC 00:00.
 
@@ -36,9 +36,9 @@ Autobuild runs daily at UTC 00:00.
 
 | Script | Purpose |
 | ------ | ------- |
-| `install-dependencies.sh` | Install the build tools through apt and pipx. |
+| `install-dependencies.sh` | Install the build tools. |
 | `build.sh` | Update the sources and build the runtimes and packages for a CPU into `build/<march>/sysroot`. |
-| `build-inputs.sh` | Print the inputs that the stamps do not track. When they change, `build.sh` empties the build directory first. |
+| `build-inputs.sh` | Print the inputs that stamps do not track. `build.sh` empties the build directory when they change. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` into `release/*.7z`. |
 | `update.sh` | Move the git sources to the tips of their branches, or to the commits that `build.sh --revisions` set. |
 | `clean.sh` | Delete build directories, stamps and sources, or clear the ccache. |
@@ -92,14 +92,10 @@ scripts/package.sh
 
 ## Acknowledgements
 
-Parts of `cmake/CustomSteps.cmake` are modeled on
-[shinchiro/mpv-winbuild-cmake](https://github.com/shinchiro/mpv-winbuild-cmake):
-
-- The `CLONE_FLAGS`, `CLONE_POST_COMMAND` and `COMMIT` options of
-  `add_git_steps` are modeled on the `GIT_CLONE_FLAGS`, `GIT_CLONE_POST_COMMAND`
-  and `GIT_RESET` options that its ExternalProject patch added.
-- The steps that clean an external project and move a git checkout to its target
-  commit are modeled on those of its `cmake/custom_steps.cmake`.
+The `CLONE_FLAGS`, `CLONE_POST_COMMAND` and `COMMIT` options of `add_git_steps`
+and the steps that clean an external project and move a git checkout to its
+target commit are modeled on
+[shinchiro/mpv-winbuild-cmake](https://github.com/shinchiro/mpv-winbuild-cmake).
 
 ## License
 
