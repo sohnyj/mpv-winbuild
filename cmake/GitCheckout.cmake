@@ -1,14 +1,16 @@
-# cmake -D ACTION=<record|reset|update> -D GIT_EXECUTABLE=<git> -D NAME=<name>
-#       -D SOURCE_DIR=<directory> -D STAMP_DIR=<directory>
+# cmake -D ACTION=<patch|record|reset|update> -D GIT_EXECUTABLE=<git>
+#       -D NAME=<name> -D SOURCE_DIR=<directory> -D STAMP_DIR=<directory>
 #       [-D TARGET_COMMIT=<commit>] -P GitCheckout.cmake
 #
 # Keeps the git checkout of the external project NAME at its target commit:
 # TARGET_COMMIT, or the tip of its upstream branch when TARGET_COMMIT is empty.
+#   patch   discard the changes to the checkout and apply the patches of
+#           <STAMP_DIR>/<NAME>-gitpatches.cmake with its patch flags
 #   record  write the checked-out commit to <STAMP_DIR>/<NAME>-commit.txt
-#   reset   discard the changes to the checkout and check out the target
-#           commit; when the source was patched without a recorded commit or
-#           at another commit, delete the stamps; bring the submodules to
-#           <STAMP_DIR>/<NAME>-gitsubmodules.cmake
+#   reset   discard the changes to the checkout, check out the target commit,
+#           delete the stamps when the source was patched without a recorded
+#           commit or at another commit, bring the submodules to
+#           <STAMP_DIR>/<NAME>-gitsubmodules.cmake, and apply the patches
 #   update  fetch, then reset
 # Without a checkout, nothing is done: the clone step makes one.
 
@@ -34,6 +36,30 @@ function(git_output variable)
     endif()
     set(${variable} "${output}" PARENT_SCOPE)
 endfunction()
+
+# apply_patches(): applies the patches with the patch flags, in order, to the
+# checkout, which has no changes. They are applied to the index too, so that
+# resetting the checkout also deletes the files they add.
+function(apply_patches)
+    include("${STAMP_DIR}/${NAME}-gitpatches.cmake")
+    foreach(patch IN LISTS patches)
+        execute_process(
+            COMMAND "${GIT_EXECUTABLE}" apply --index ${patch_flags} "${patch}"
+            WORKING_DIRECTORY "${SOURCE_DIR}"
+            COMMAND_ERROR_IS_FATAL ANY
+        )
+    endforeach()
+endfunction()
+
+if(ACTION STREQUAL "patch")
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" reset --hard --quiet
+        WORKING_DIRECTORY "${SOURCE_DIR}"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+    apply_patches()
+    return()
+endif()
 
 if(ACTION STREQUAL "record")
     git_output(commit rev-parse HEAD)
@@ -103,3 +129,4 @@ file(WRITE "${commit_file}" "${commit}\n")
 include("${CMAKE_CURRENT_LIST_DIR}/GitSubmodules.cmake")
 include("${STAMP_DIR}/${NAME}-gitsubmodules.cmake")
 git_update_submodules("${GIT_EXECUTABLE}" "${SOURCE_DIR}" ${init_submodules} ${submodules})
+apply_patches()
