@@ -16,7 +16,7 @@ ExternalProject_Add(c-ares
 
 add_git_steps(c-ares
     REPOSITORY https://github.com/c-ares/c-ares.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

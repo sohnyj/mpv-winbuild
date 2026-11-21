@@ -19,7 +19,7 @@ ExternalProject_Add(ngtcp2
 
 add_git_steps(ngtcp2
     REPOSITORY https://github.com/ngtcp2/ngtcp2.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

@@ -11,7 +11,7 @@ ExternalProject_Add(windows-rs
 
 add_git_steps(windows-rs
     REPOSITORY https://github.com/microsoft/windows-rs.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /crates/libs/default/"

@@ -16,7 +16,7 @@ ExternalProject_Add(glslang
 
 add_git_steps(glslang
     REPOSITORY https://github.com/KhronosGroup/glslang.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

@@ -12,7 +12,7 @@ ExternalProject_Add(amf-headers
 
 add_git_steps(amf-headers
     REPOSITORY https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /amf/public/include/"

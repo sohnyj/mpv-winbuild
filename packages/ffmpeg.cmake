@@ -94,7 +94,7 @@ ExternalProject_Add(ffmpeg
 
 add_git_steps(ffmpeg
     REPOSITORY https://github.com/FFmpeg/FFmpeg.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

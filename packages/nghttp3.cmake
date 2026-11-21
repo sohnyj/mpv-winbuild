@@ -16,7 +16,7 @@ ExternalProject_Add(nghttp3
 
 add_git_steps(nghttp3
     REPOSITORY https://github.com/ngtcp2/nghttp3.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

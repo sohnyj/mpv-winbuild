@@ -13,7 +13,7 @@ ExternalProject_Add(llvm
 
 add_git_steps(llvm
     REPOSITORY https://github.com/llvm/llvm-project.git
-    TAG release/${LLVM_VERSION}.x
+    BRANCH release/${LLVM_VERSION}.x
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

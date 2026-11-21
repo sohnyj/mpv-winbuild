@@ -23,7 +23,7 @@ ExternalProject_Add(spirv-cross
 
 add_git_steps(spirv-cross
     REPOSITORY https://github.com/KhronosGroup/SPIRV-Cross.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

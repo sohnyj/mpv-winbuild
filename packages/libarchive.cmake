@@ -38,7 +38,7 @@ ExternalProject_Add(libarchive
 
 add_git_steps(libarchive
     REPOSITORY https://github.com/libarchive/libarchive.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

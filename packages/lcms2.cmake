@@ -21,7 +21,7 @@ ExternalProject_Add(lcms2
 
 add_git_steps(lcms2
     REPOSITORY https://github.com/mm2/Little-CMS.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

@@ -11,7 +11,7 @@ ExternalProject_Add(spirv-tools
 
 add_git_steps(spirv-tools
     REPOSITORY https://github.com/KhronosGroup/SPIRV-Tools.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

@@ -26,7 +26,7 @@ ExternalProject_Add(xz
 
 add_git_steps(xz
     REPOSITORY https://github.com/tukaani-project/xz.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

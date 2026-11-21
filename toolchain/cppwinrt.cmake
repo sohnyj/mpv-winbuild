@@ -18,7 +18,7 @@ ExternalProject_Add(cppwinrt
 
 add_git_steps(cppwinrt
     REPOSITORY https://github.com/microsoft/cppwinrt.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

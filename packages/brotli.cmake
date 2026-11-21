@@ -15,7 +15,7 @@ ExternalProject_Add(brotli
 
 add_git_steps(brotli
     REPOSITORY https://github.com/google/brotli.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

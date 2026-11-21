@@ -29,7 +29,7 @@ ExternalProject_Add(luajit
 
 add_git_steps(luajit
     REPOSITORY https://github.com/LuaJIT/LuaJIT.git
-    TAG v2.1
+    BRANCH v2.1
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

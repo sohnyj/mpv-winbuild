@@ -76,7 +76,7 @@ ExternalProject_Add(mpv
 
 add_git_steps(mpv
     REPOSITORY https://github.com/mpv-player/mpv.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

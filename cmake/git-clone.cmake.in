@@ -9,7 +9,7 @@ include([==[@submodules_file@]==])
 
 set(source_dir [==[@source_dir@]==])
 set(repository [==[@arg_REPOSITORY@]==])
-set(tag [==[@arg_TAG@]==])
+set(branch [==[@arg_BRANCH@]==])
 set(clone_flags [==[@clone_flags@]==])
 set(clone_post_command [==[@clone_post_command@]==])
 set(commit [==[@arg_COMMIT@]==])
@@ -22,10 +22,10 @@ if(EXISTS "${source_dir}/.git")
     )
     execute_process(
         COMMAND [==[@GIT_EXECUTABLE@]==] -C "${source_dir}" symbolic-ref --short -q HEAD
-        OUTPUT_VARIABLE branch
+        OUTPUT_VARIABLE checked_out_branch
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    if(origin STREQUAL repository AND branch STREQUAL tag)
+    if(origin STREQUAL repository AND checked_out_branch STREQUAL branch)
         git_update_submodules([==[@GIT_EXECUTABLE@]==] "${source_dir}" ${init_submodules} ${submodules})
         return()
     endif()
@@ -35,7 +35,7 @@ file(REMOVE_RECURSE "${source_dir}")
 
 foreach(attempt RANGE 1 3)
     execute_process(
-        COMMAND [==[@GIT_EXECUTABLE@]==] clone --no-checkout --single-branch --branch "${tag}"
+        COMMAND [==[@GIT_EXECUTABLE@]==] clone --no-checkout --single-branch --branch "${branch}"
             ${clone_flags} "${repository}" "${source_dir}"
         RESULT_VARIABLE result
     )
@@ -48,7 +48,7 @@ if(NOT result EQUAL 0)
 endif()
 
 execute_process(
-    COMMAND [==[@GIT_EXECUTABLE@]==] checkout "${tag}" --
+    COMMAND [==[@GIT_EXECUTABLE@]==] checkout "${branch}" --
     WORKING_DIRECTORY "${source_dir}"
     COMMAND_ERROR_IS_FATAL ANY
 )

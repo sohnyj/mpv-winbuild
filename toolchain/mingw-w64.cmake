@@ -12,7 +12,7 @@ ExternalProject_Add(mingw-w64
 
 add_git_steps(mingw-w64
     REPOSITORY https://github.com/mingw-w64/mingw-w64.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

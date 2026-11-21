@@ -28,7 +28,7 @@ ExternalProject_Add(subrandr
 ExternalProject_Add_StepDependencies(subrandr patch ${CARGO_EXEC})
 add_git_steps(subrandr
     REPOSITORY https://github.com/afishhh/subrandr.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
 add_cleanup_steps(subrandr install)

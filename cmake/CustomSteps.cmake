@@ -10,14 +10,14 @@
 #     step remove-build-after-install  after <last step>, empty the build
 #                                      directory and reset the checkout
 #
-# add_git_steps(<name> REPOSITORY <url> TAG <branch> [CLONE_FLAGS <flags>]
-#               [CLONE_POST_COMMAND <git arguments>] [COMMIT <commit>]
-#               [SUBMODULES <path>...])
+# add_git_steps(<name> REPOSITORY <url> BRANCH <branch>
+#               [CLONE_FLAGS <flags>] [CLONE_POST_COMMAND <git arguments>]
+#               [COMMIT <commit>] [SUBMODULES <path>...])
 #   For an external project with DOWNLOAD_COMMAND "".
-#   Step clone, before download: clone the branch TAG of REPOSITORY with
+#   Step clone, before download: clone BRANCH of REPOSITORY with
 #   CLONE_FLAGS, run git with CLONE_POST_COMMAND, reset to COMMIT and update
 #   SUBMODULES (all of them when not given, none when given as ""), and
-#   deinitialize the other submodules. Runs again when REPOSITORY, TAG, the
+#   deinitialize the other submodules. Runs again when REPOSITORY, BRANCH, the
 #   source directory or the submodules change, and clones again when the
 #   checkout has another origin or branch. A changed COMMIT reaches the
 #   checkout through force-update.
@@ -101,9 +101,9 @@ endfunction()
 
 function(add_git_steps name)
     cmake_parse_arguments(PARSE_ARGV 1 arg ""
-        "REPOSITORY;TAG;CLONE_FLAGS;CLONE_POST_COMMAND;COMMIT" "SUBMODULES")
-    if(arg_UNPARSED_ARGUMENTS OR arg_KEYWORDS_MISSING_VALUES OR NOT arg_REPOSITORY OR NOT arg_TAG)
-        message(FATAL_ERROR "add_git_steps(${name}): give REPOSITORY and TAG, and a value after each keyword")
+        "REPOSITORY;BRANCH;CLONE_FLAGS;CLONE_POST_COMMAND;COMMIT" "SUBMODULES")
+    if(arg_UNPARSED_ARGUMENTS OR arg_KEYWORDS_MISSING_VALUES OR NOT arg_REPOSITORY OR NOT arg_BRANCH)
+        message(FATAL_ERROR "add_git_steps(${name}): give REPOSITORY and BRANCH, and a value after each keyword")
     endif()
     ExternalProject_Get_Property(${name} SOURCE_DIR STAMP_DIR)
     set(stamp_dir "${STAMP_DIR}")
@@ -151,7 +151,7 @@ function(add_git_steps name)
     configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/git-clone.cmake.in" "${stamp_dir}/${name}-gitclone.cmake" @ONLY)
     file(CONFIGURE
         OUTPUT "${stamp_dir}/${name}-gitsource.txt"
-        CONTENT "repository=@arg_REPOSITORY@\ntag=@arg_TAG@\nsource_dir=@source_dir@\ninit_submodules=@init_submodules@\nsubmodules=@arg_SUBMODULES@\n"
+        CONTENT "repository=@arg_REPOSITORY@\nbranch=@arg_BRANCH@\nsource_dir=@source_dir@\ninit_submodules=@init_submodules@\nsubmodules=@arg_SUBMODULES@\n"
         @ONLY
     )
 

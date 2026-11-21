@@ -30,7 +30,7 @@ ExternalProject_Add(harfbuzz
 
 add_git_steps(harfbuzz
     REPOSITORY https://github.com/harfbuzz/harfbuzz.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

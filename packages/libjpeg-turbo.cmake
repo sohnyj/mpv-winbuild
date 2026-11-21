@@ -23,7 +23,7 @@ ExternalProject_Add(libjpeg-turbo
 
 add_git_steps(libjpeg-turbo
     REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

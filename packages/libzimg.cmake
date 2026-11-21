@@ -17,7 +17,7 @@ ExternalProject_Add(libzimg
 
 add_git_steps(libzimg
     REPOSITORY https://github.com/sekrit-twc/zimg.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

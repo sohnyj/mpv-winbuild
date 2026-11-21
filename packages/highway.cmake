@@ -19,7 +19,7 @@ ExternalProject_Add(highway
 
 add_git_steps(highway
     REPOSITORY https://github.com/google/highway.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

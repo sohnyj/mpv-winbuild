@@ -18,7 +18,7 @@ ExternalProject_Add(nghttp2
 
 add_git_steps(nghttp2
     REPOSITORY https://github.com/nghttp2/nghttp2.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

@@ -11,7 +11,7 @@ ExternalProject_Add(nv-codec-headers
 
 add_git_steps(nv-codec-headers
     REPOSITORY https://github.com/FFmpeg/nv-codec-headers.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
 add_cleanup_steps(nv-codec-headers install)

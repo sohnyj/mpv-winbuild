@@ -23,7 +23,7 @@ ExternalProject_Add(fribidi
 
 add_git_steps(fribidi
     REPOSITORY https://github.com/fribidi/fribidi.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

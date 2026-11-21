@@ -21,7 +21,7 @@ ExternalProject_Add(zlib-ng
 
 add_git_steps(zlib-ng
     REPOSITORY https://github.com/zlib-ng/zlib-ng.git
-    TAG develop
+    BRANCH develop
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

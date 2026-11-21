@@ -16,7 +16,7 @@ ExternalProject_Add(xxhash
 
 add_git_steps(xxhash
     REPOSITORY https://github.com/Cyan4973/xxHash.git
-    TAG dev
+    BRANCH dev
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

@@ -24,7 +24,7 @@ ExternalProject_Add(libpsl
 
 add_git_steps(libpsl
     REPOSITORY https://github.com/rockdaboot/libpsl.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

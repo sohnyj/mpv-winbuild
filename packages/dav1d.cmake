@@ -22,7 +22,7 @@ ExternalProject_Add(dav1d
 
 add_git_steps(dav1d
     REPOSITORY https://code.videolan.org/videolan/dav1d.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
 add_cleanup_steps(dav1d install)

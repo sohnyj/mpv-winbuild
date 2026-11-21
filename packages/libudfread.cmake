@@ -20,7 +20,7 @@ ExternalProject_Add(libudfread
 
 add_git_steps(libudfread
     REPOSITORY https://code.videolan.org/videolan/libudfread.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

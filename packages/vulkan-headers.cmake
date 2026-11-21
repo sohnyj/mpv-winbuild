@@ -13,7 +13,7 @@ ExternalProject_Add(vulkan-headers
 
 add_git_steps(vulkan-headers
     REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--filter=tree:0"
 )
 add_cleanup_steps(vulkan-headers install)

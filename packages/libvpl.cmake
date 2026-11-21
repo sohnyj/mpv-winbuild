@@ -16,7 +16,7 @@ ExternalProject_Add(libvpl
 
 add_git_steps(libvpl
     REPOSITORY https://github.com/intel/libvpl.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

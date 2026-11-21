@@ -29,7 +29,7 @@ ExternalProject_Add(freetype
 
 add_git_steps(freetype
     REPOSITORY https://github.com/freetype/freetype.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

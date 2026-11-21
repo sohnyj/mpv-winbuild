@@ -21,7 +21,7 @@ ExternalProject_Add(zstd
 
 add_git_steps(zstd
     REPOSITORY https://github.com/facebook/zstd.git
-    TAG dev
+    BRANCH dev
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

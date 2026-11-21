@@ -17,7 +17,7 @@ ExternalProject_Add(libunibreak
 
 add_git_steps(libunibreak
     REPOSITORY https://github.com/adah1972/libunibreak.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
 add_cleanup_steps(libunibreak install)

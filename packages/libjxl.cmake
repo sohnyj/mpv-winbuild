@@ -31,7 +31,7 @@ ExternalProject_Add(libjxl
 
 add_git_steps(libjxl
     REPOSITORY https://github.com/libjxl/libjxl.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

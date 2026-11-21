@@ -70,7 +70,7 @@ ExternalProject_Add(curl
 
 add_git_steps(curl
     REPOSITORY https://github.com/curl/curl.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

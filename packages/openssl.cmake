@@ -84,7 +84,7 @@ ExternalProject_Add(openssl
 
 add_git_steps(openssl
     REPOSITORY https://github.com/openssl/openssl.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

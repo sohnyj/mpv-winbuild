@@ -23,7 +23,7 @@ ExternalProject_Add(libsoxr
 
 add_git_steps(libsoxr
     REPOSITORY https://git.code.sf.net/p/soxr/code
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

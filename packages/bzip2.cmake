@@ -18,7 +18,7 @@ ExternalProject_Add(bzip2
 
 add_git_steps(bzip2
     REPOSITORY https://sourceware.org/git/bzip2.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
 add_cleanup_steps(bzip2 install)

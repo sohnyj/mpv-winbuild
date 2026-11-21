@@ -30,7 +30,7 @@ ExternalProject_Add(libass
 
 add_git_steps(libass
     REPOSITORY https://github.com/libass/libass.git
-    TAG master
+    BRANCH master
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

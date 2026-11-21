@@ -37,7 +37,7 @@ ExternalProject_Add(shaderc
 
 add_git_steps(shaderc
     REPOSITORY https://github.com/google/shaderc.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*

@@ -16,7 +16,7 @@ ExternalProject_Add(vulkan-loader
 
 add_git_steps(vulkan-loader
     REPOSITORY https://github.com/KhronosGroup/Vulkan-Loader.git
-    TAG main
+    BRANCH main
     CLONE_FLAGS "--sparse --filter=tree:0"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
