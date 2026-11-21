@@ -49,6 +49,37 @@ scripts/build.sh    # x86-64-v3
 scripts/package.sh
 ```
 
+## CMake functions
+
+- The functions are in `cmake/`, and the recipes in `toolchain/` and
+  `packages/` call them.
+
+```cmake
+add_toolchain_profile(<profile> <cpu flags> <preprocessor flags>
+                      <code generation flags>)
+add_git_steps(<name> REPOSITORY <url> BRANCH <branch>
+              [CLONE_FLAGS <flags>] [CLONE_POST_COMMAND <git arguments>]
+              [COMMIT <commit>] [SUBMODULES <path>...]
+              [PATCHES <file>...] [PATCH_FLAGS <flags>])
+add_cleanup_steps(<name> <last step>)
+```
+
+| Function | Purpose |
+| -------- | ------- |
+| `add_toolchain_profile` | Generate a toolchain profile for the CPU, preprocessor and code generation flags. |
+| `add_git_steps` | Clone a git source and keep its checkout at the target commit. |
+| `add_cleanup_steps` | Add the step targets that delete the stamps or the prefix and source, and for a git source clean the build directory and checkout after `<last step>`. |
+
+| `add_git_steps` option | Purpose |
+| ---------------------- | ------- |
+| `REPOSITORY`, `BRANCH` | Clone this branch of the repository. |
+| `CLONE_FLAGS` | Pass these flags to `git clone`, such as `--sparse --filter=tree:0`. |
+| `CLONE_POST_COMMAND` | Run git with these arguments after the clone, such as `sparse-checkout set`. |
+| `COMMIT` | Keep the checkout at this commit instead of the tip of the branch or the commit of `build.sh --revisions`. |
+| `SUBMODULES` | Check out only these submodules, or none when given as `""`. All of them are checked out when the option is not given. |
+| `PATCHES` | Apply these patch files with `git apply`, in order. A relative path is relative to the directory of the recipe. |
+| `PATCH_FLAGS` | Pass these flags to `git apply`, such as `--3way`. |
+
 ## Information about packages
 
 - Git (Nightly)
