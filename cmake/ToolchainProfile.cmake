@@ -29,15 +29,15 @@ file(CREATE_LINK "${installed_resource_dir}/include" "${CLANG_RESOURCE_DIR}/incl
 # generation flags> in CMAKE_CURRENT_BINARY_DIR/<profile> and sets in the
 # calling directory:
 #
+#   TOOLCHAIN_BIN_DIR  directory of the ${TARGET_TRIPLE}-* tools
+#   TOOLCHAIN_FILE     CMake toolchain file
+#   MESON_CROSS_FILE   Meson cross file
+#   MESON_NATIVE_FILE  Meson native file
 #   EXEC               command prefix with the profile's tools first in PATH
 #                      and its autoconf site file
 #   CARGO_EXEC         EXEC with the Rust toolchain of RUSTUP_DIR and the
 #                      profile's cargo linkers; not among PROFILE_FILES
 #   MAKE               make with MAKE_JOBS jobs, run through EXEC
-#   TOOLCHAIN_BIN_DIR  directory of the ${TARGET_TRIPLE}-* tools
-#   TOOLCHAIN_FILE     CMake toolchain file
-#   MESON_CROSS_FILE   Meson cross file
-#   MESON_NATIVE_FILE  Meson native file
 #   PROFILE_FILES      the generated files that the patch step of every
 #                      toolchain component and package depends on
 function(add_toolchain_profile profile cpu_flags preprocessor_flags code_generation_flags)
@@ -46,10 +46,14 @@ function(add_toolchain_profile profile cpu_flags preprocessor_flags code_generat
     set(PREPROCESSOR_FLAGS "${preprocessor_flags}")
     set(CODE_GENERATION_FLAGS "${code_generation_flags}")
     set(profile_dir "${CMAKE_CURRENT_BINARY_DIR}/${profile}")
-    set(TOOLCHAIN_BIN_DIR "${profile_dir}/bin")
     set(CLANG_CONFIG_FILE "${profile_dir}/${TARGET_TRIPLE}.cfg")
+    set(TOOLCHAIN_BIN_DIR "${profile_dir}/bin")
+    set(TOOLCHAIN_FILE "${profile_dir}/toolchain.cmake")
+    set(MESON_CROSS_FILE "${profile_dir}/meson-cross.ini")
+    set(MESON_NATIVE_FILE "${profile_dir}/meson-native.ini")
     set(CONFIG_SITE "${profile_dir}/config.site")
     set(EXEC "${profile_dir}/exec")
+    set(CARGO_EXEC "${profile_dir}/cargo-exec")
     set(profile_template_dir "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/profile")
 
     configure_file("${profile_template_dir}/clang.cfg.in" "${CLANG_CONFIG_FILE}" @ONLY)
@@ -64,21 +68,22 @@ function(add_toolchain_profile profile cpu_flags preprocessor_flags code_generat
         file(CREATE_LINK "${${variable}}" "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-${tool}" SYMBOLIC)
     endforeach()
 
-    configure_file("${profile_template_dir}/pkg-config.sh.in" "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-pkg-config" @ONLY)
-    configure_file("${profile_template_dir}/exec.sh.in" "${EXEC}" @ONLY)
-    configure_file("${profile_template_dir}/cargo-exec.sh.in" "${profile_dir}/cargo-exec" @ONLY)
-    configure_file("${profile_template_dir}/toolchain.cmake.in" "${profile_dir}/toolchain.cmake" @ONLY)
-    configure_file("${profile_template_dir}/meson-cross.ini.in" "${profile_dir}/meson-cross.ini" @ONLY)
-    configure_file("${profile_template_dir}/meson-native.ini.in" "${profile_dir}/meson-native.ini" @ONLY)
+    configure_file("${profile_template_dir}/toolchain.cmake.in" "${TOOLCHAIN_FILE}" @ONLY)
+    configure_file("${profile_template_dir}/meson-cross.ini.in" "${MESON_CROSS_FILE}" @ONLY)
+    configure_file("${profile_template_dir}/meson-native.ini.in" "${MESON_NATIVE_FILE}" @ONLY)
     configure_file("${profile_template_dir}/config.site.in" "${CONFIG_SITE}" @ONLY)
+    configure_file("${profile_template_dir}/exec.sh.in" "${EXEC}" @ONLY)
+    configure_file("${profile_template_dir}/cargo-exec.sh.in" "${CARGO_EXEC}" @ONLY)
 
-    set(EXEC "${EXEC}" PARENT_SCOPE)
-    set(CARGO_EXEC "${profile_dir}/cargo-exec" PARENT_SCOPE)
-    set(MAKE "${EXEC}" "${MAKE_EXECUTABLE}" "-j${MAKE_JOBS}" PARENT_SCOPE)
+    configure_file("${profile_template_dir}/pkg-config.sh.in" "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-pkg-config" @ONLY)
+
     set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_BIN_DIR}" PARENT_SCOPE)
-    set(TOOLCHAIN_FILE "${profile_dir}/toolchain.cmake" PARENT_SCOPE)
-    set(MESON_CROSS_FILE "${profile_dir}/meson-cross.ini" PARENT_SCOPE)
-    set(MESON_NATIVE_FILE "${profile_dir}/meson-native.ini" PARENT_SCOPE)
+    set(TOOLCHAIN_FILE "${TOOLCHAIN_FILE}" PARENT_SCOPE)
+    set(MESON_CROSS_FILE "${MESON_CROSS_FILE}" PARENT_SCOPE)
+    set(MESON_NATIVE_FILE "${MESON_NATIVE_FILE}" PARENT_SCOPE)
+    set(EXEC "${EXEC}" PARENT_SCOPE)
+    set(CARGO_EXEC "${CARGO_EXEC}" PARENT_SCOPE)
+    set(MAKE "${EXEC}" "${MAKE_EXECUTABLE}" "-j${MAKE_JOBS}" PARENT_SCOPE)
 
     # configure_file() rewrites a file only when its content changes, so only
     # a changed file rebuilds what depends on it.
@@ -86,12 +91,12 @@ function(add_toolchain_profile profile cpu_flags preprocessor_flags code_generat
         "${CLANG_CONFIG_FILE}"
         "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-clang"
         "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-clang++"
-        "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-pkg-config"
-        "${EXEC}"
-        "${profile_dir}/toolchain.cmake"
-        "${profile_dir}/meson-cross.ini"
-        "${profile_dir}/meson-native.ini"
+        "${TOOLCHAIN_FILE}"
+        "${MESON_CROSS_FILE}"
+        "${MESON_NATIVE_FILE}"
         "${CONFIG_SITE}"
+        "${EXEC}"
+        "${TOOLCHAIN_BIN_DIR}/${TARGET_TRIPLE}-pkg-config"
         PARENT_SCOPE
     )
 endfunction()
