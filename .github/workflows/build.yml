@@ -50,6 +50,7 @@ jobs:
           {
             echo "target_triple=${TARGET_TRIPLE}"
             echo "llvm_version=${LLVM_VERSION}"
+            echo "package_march=${PACKAGE_MARCH}"
             echo "sources_key_prefix=${TARGET_TRIPLE}-sources-"
             echo "sources_key=${TARGET_TRIPLE}-sources-${GITHUB_RUN_ID}"
           } >> "${GITHUB_OUTPUT}"
@@ -72,9 +73,10 @@ jobs:
           restore-keys: ${{ steps.defaults.outputs.sources_key_prefix }}
 
       - name: Update sources
+        env:
+          PACKAGE_MARCH: ${{ steps.defaults.outputs.package_march }}
         run: |
           scripts/build.sh --sources-only
-          . scripts/defaults.env
           cp "build/${PACKAGE_MARCH}/revisions.txt" revisions.txt
 
       - name: Upload revisions
