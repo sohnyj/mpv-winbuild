@@ -16,12 +16,14 @@
 #   For an external project with DOWNLOAD_COMMAND "".
 #   Step clone, before download: clone the branch TAG of REPOSITORY with
 #   CLONE_FLAGS, run git with CLONE_POST_COMMAND, reset to COMMIT and update
-#   SUBMODULES (all of them when not given, none when given as ""). Runs again
-#   when REPOSITORY, TAG, the source directory or the submodules change, and
-#   clones again when the checkout has another origin or branch. A changed
-#   COMMIT reaches the checkout through force-update.
+#   SUBMODULES (all of them when not given, none when given as ""), and
+#   deinitialize the other submodules. Runs again when REPOSITORY, TAG, the
+#   source directory or the submodules change, and clones again when the
+#   checkout has another origin or branch. A changed COMMIT reaches the
+#   checkout through force-update.
 #   Step target <name>-force-update: fetch, move the checkout to COMMIT, else
-#   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch, and
+#   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch,
+#   update SUBMODULES and deinitialize the other submodules as clone does, and
 #   delete the stamps when the checkout was patched and the commit or the
 #   download changed since.
 #   Step record-commit, after download: record the commit for force-update.
@@ -136,6 +138,16 @@ function(add_git_steps name)
     set_property(TARGET ${name} PROPERTY GIT_RESET_COMMAND
         ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=reset -P ${checkout_script})
 
+    # The submodules of the configuration, which the clone script and
+    # GitCheckout.cmake read.
+    set(submodules_file "${stamp_dir}/${name}-gitsubmodules.cmake")
+    file(CONFIGURE
+        OUTPUT "${submodules_file}"
+        CONTENT "set(init_submodules @init_submodules@)\nset(submodules [==[@arg_SUBMODULES@]==])\n"
+        @ONLY
+    )
+
+    set(submodules_script "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/GitSubmodules.cmake")
     configure_file("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/git-clone.cmake.in" "${stamp_dir}/${name}-gitclone.cmake" @ONLY)
     file(CONFIGURE
         OUTPUT "${stamp_dir}/${name}-gitsource.txt"

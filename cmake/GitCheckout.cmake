@@ -7,7 +7,8 @@
 #   record  write the checked-out commit to <STAMP_DIR>/<NAME>-commit.txt
 #   reset   discard the changes to the checkout and check out the target
 #           commit; when the build has gone past the patch step with another
-#           commit or with an earlier download, delete the stamps
+#           commit or with an earlier download, delete the stamps; bring the
+#           submodules to <STAMP_DIR>/<NAME>-gitsubmodules.cmake
 #   update  fetch, then reset
 # Without a checkout, nothing is done: the clone step makes one.
 
@@ -98,8 +99,6 @@ if(source_changed)
     )
 endif()
 file(WRITE "${commit_file}" "${commit}\n")
-execute_process(
-    COMMAND "${GIT_EXECUTABLE}" submodule --quiet update --recursive
-    WORKING_DIRECTORY "${SOURCE_DIR}"
-    COMMAND_ERROR_IS_FATAL ANY
-)
+include("${CMAKE_CURRENT_LIST_DIR}/GitSubmodules.cmake")
+include("${STAMP_DIR}/${NAME}-gitsubmodules.cmake")
+git_update_submodules("${GIT_EXECUTABLE}" "${SOURCE_DIR}" ${init_submodules} ${submodules})

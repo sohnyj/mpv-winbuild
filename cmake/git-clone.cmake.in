@@ -1,7 +1,11 @@
 # Clone script of @name@, run by its clone step. A checkout of the branch of
 # the repository is kept: the sources directory is shared between build
 # directories and restored from the sources cache of the workflow, and the
-# force-update step moves the checkout to its target commit.
+# force-update step moves the checkout to its target commit. Kept or cloned,
+# the checkout gets the submodules of the configuration.
+
+include([==[@submodules_script@]==])
+include([==[@submodules_file@]==])
 
 set(source_dir [==[@source_dir@]==])
 set(repository [==[@arg_REPOSITORY@]==])
@@ -9,8 +13,6 @@ set(tag [==[@arg_TAG@]==])
 set(clone_flags [==[@clone_flags@]==])
 set(clone_post_command [==[@clone_post_command@]==])
 set(commit [==[@arg_COMMIT@]==])
-set(init_submodules @init_submodules@)
-set(submodules [==[@arg_SUBMODULES@]==])
 
 if(EXISTS "${source_dir}/.git")
     execute_process(
@@ -24,6 +26,7 @@ if(EXISTS "${source_dir}/.git")
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     if(origin STREQUAL repository AND branch STREQUAL tag)
+        git_update_submodules([==[@GIT_EXECUTABLE@]==] "${source_dir}" ${init_submodules} ${submodules})
         return()
     endif()
 endif()
@@ -63,10 +66,4 @@ if(NOT commit STREQUAL "")
         COMMAND_ERROR_IS_FATAL ANY
     )
 endif()
-if(init_submodules)
-    execute_process(
-        COMMAND [==[@GIT_EXECUTABLE@]==] submodule update --recursive --init ${submodules}
-        WORKING_DIRECTORY "${source_dir}"
-        COMMAND_ERROR_IS_FATAL ANY
-    )
-endif()
+git_update_submodules([==[@GIT_EXECUTABLE@]==] "${source_dir}" ${init_submodules} ${submodules})
