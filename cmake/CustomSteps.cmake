@@ -2,13 +2,14 @@
 #
 # add_cleanup_steps(<name> <last step>)
 #   Step targets:
-#     <name>-delete-stamps             delete the stamps and reset a git
-#                                      checkout
+#     <name>-delete-stamps             delete the stamps and, with a git
+#                                      source, reset the checkout
 #     <name>-remove-prefix-and-source  delete the prefix directory (build
 #                                      directory, stamps) and the source
 #   Only with a git source of its own, given to add_git_steps before:
-#     step remove-build-after-install  after <last step>, empty the build
-#                                      directory and reset the checkout
+#     step clean-after-install         after <last step>, empty the build
+#                                      directory, and clean and reset the
+#                                      checkout
 #
 # add_git_steps(<name> REPOSITORY <url> BRANCH <branch>
 #               [CLONE_FLAGS <flags>] [CLONE_POST_COMMAND <git arguments>]
@@ -48,8 +49,10 @@ function(add_cleanup_steps name last_step)
     get_property(reset_command TARGET ${name} PROPERTY GIT_RESET_COMMAND)
 
     set(reset_commands "")
+    set(delete_stamps_comment "Deleting the stamps of ${name}")
     if(git_repository)
         set(reset_commands COMMAND ${reset_command})
+        string(APPEND delete_stamps_comment " and resetting its checkout")
     endif()
 
     ExternalProject_Add_Step(${name} delete-stamps
@@ -60,7 +63,7 @@ function(add_cleanup_steps name last_step)
         EXCLUDE_FROM_MAIN TRUE
         INDEPENDENT TRUE
         LOG 1
-        COMMENT "Deleting the stamps of ${name}"
+        COMMENT "${delete_stamps_comment}"
     )
 
     if(git_repository)
@@ -76,12 +79,12 @@ function(add_cleanup_steps name last_step)
                 COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force
             )
         endif()
-        ExternalProject_Add_Step(${name} remove-build-after-install
+        ExternalProject_Add_Step(${name} clean-after-install
             DEPENDEES ${last_step}
             ${empty_build_commands}
             ${reset_commands}
             LOG 1
-            COMMENT "Emptying the build directory of ${name} after install"
+            COMMENT "Cleaning the build directory and the checkout of ${name} after install"
         )
     endif()
 
