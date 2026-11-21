@@ -49,7 +49,7 @@ if(ACTION STREQUAL "update")
         RESULT_VARIABLE result
     )
     if(NOT result EQUAL 0)
-        message(WARNING "${NAME}: git fetch failed")
+        message(WARNING "Failed to fetch '${NAME}'")
     endif()
 elseif(NOT ACTION STREQUAL "reset")
     message(FATAL_ERROR "Unknown ACTION: ${ACTION}")
@@ -63,7 +63,7 @@ if(TARGET_COMMIT STREQUAL "")
 else()
     git_output(commit rev-parse --verify --quiet "${TARGET_COMMIT}^{commit}")
     if(commit STREQUAL "")
-        message(FATAL_ERROR "${NAME}: no commit ${TARGET_COMMIT} in ${SOURCE_DIR}")
+        message(FATAL_ERROR "No commit ${TARGET_COMMIT} in ${SOURCE_DIR} for '${NAME}'")
     endif()
 endif()
 
@@ -80,9 +80,9 @@ if(EXISTS "${patch_stamp}")
         file(STRINGS "${commit_file}" recorded_commit LIMIT_COUNT 1)
     endif()
     if(recorded_commit STREQUAL "")
-        set(deletion_reason "no commit is recorded for the source the build used")
+        set(deletion_reason "no commit recorded")
     elseif(NOT recorded_commit STREQUAL commit)
-        set(deletion_reason "the source moved from ${recorded_commit} to ${commit}")
+        set(deletion_reason "source moved from ${recorded_commit} to ${commit}")
     endif()
 endif()
 
@@ -92,7 +92,7 @@ execute_process(
     COMMAND_ERROR_IS_FATAL ANY
 )
 if(NOT deletion_reason STREQUAL "")
-    message(STATUS "${NAME}: ${deletion_reason}; deleting the stamps")
+    message(STATUS "Deleting stamps for '${NAME}': ${deletion_reason}")
     execute_process(
         COMMAND "${CMAKE_COMMAND}" -D "STAMP_DIR=${STAMP_DIR}"
             -P "${CMAKE_CURRENT_LIST_DIR}/DeleteStamps.cmake"

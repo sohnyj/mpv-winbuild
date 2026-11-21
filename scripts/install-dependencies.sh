@@ -26,8 +26,8 @@ while (( $# > 0 )); do
 done
 
 if (( EUID == 0 )); then
-  echo "Run as a regular user, not with sudo: pipx installs into the" \
-    "invoking user's home, and the script calls sudo where it needs it." >&2
+  echo "Run without sudo, since pipx installs into your home and this script" \
+    "runs sudo where needed" >&2
   exit 1
 fi
 

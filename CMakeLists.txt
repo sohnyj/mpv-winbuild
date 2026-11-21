@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 4.4)
 project(mpv-winbuild LANGUAGES NONE)
 
 if(NOT CMAKE_GENERATOR MATCHES "^Ninja")
-    message(FATAL_ERROR "Configure with the Ninja generator (-G Ninja).")
+    message(FATAL_ERROR "Configure with -G Ninja")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -24,7 +24,7 @@ set(SOURCE_REVISIONS_FILE "" CACHE FILEPATH "File of <source> <commit> lines tha
 
 foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE PACKAGE_CPU_FLAGS PACKAGE_RUST_CPU_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS CCACHE_DIR SOURCES_DIR RUSTUP_DIR SYSROOT_DIR)
     if(NOT ${variable})
-        message(FATAL_ERROR "Set ${variable}; scripts/build.sh passes it.")
+        message(FATAL_ERROR "Set ${variable}, which scripts/build.sh passes")
     endif()
 endforeach()
 

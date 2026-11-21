@@ -92,7 +92,8 @@ build_inputs="$("${repo_root}/scripts/build-inputs.sh" \
   --llvm-version "${llvm_version}" "${base_dir}")"
 if [[ "${configured_before}" == true ]] && [[ ! -f "${build_inputs_file}" \
   || "$(< "${build_inputs_file}")" != "${build_inputs}" ]]; then
-  echo ">> Start from an empty build directory: build-inputs.sh output changed"
+  echo ">> Start from empty build directory, since the build-inputs.sh output" \
+    "changed"
   rm -rf "${build_dir:?}"
   configure
   ninja -C "${build_dir}" revisions
