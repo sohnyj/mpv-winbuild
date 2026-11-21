@@ -37,9 +37,10 @@ revision() {
     "${build_dir}/revisions.txt"
 }
 
-name="${TARGET_TRIPLE%%-*}-${march#x86-64-}-$(date -u +%Y%m%d)"
-mpv_archive="${release_dir}/mpv-${name}-git-$(revision mpv).7z"
-ffmpeg_archive="${release_dir}/ffmpeg-${name}-git-$(revision ffmpeg).7z"
+build_name="${TARGET_TRIPLE%%-*}-${march#x86-64-}"
+build_date="$(date -u +%Y%m%d)"
+mpv_archive="${release_dir}/mpv-${build_name}-${build_date}-git-$(revision mpv).7z"
+ffmpeg_archive="${release_dir}/ffmpeg-${build_name}-${build_date}-git-$(revision ffmpeg).7z"
 
 mkdir -p "${release_dir}"
 rm -f "${mpv_archive}" "${ffmpeg_archive}"
