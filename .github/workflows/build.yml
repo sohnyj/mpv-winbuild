@@ -39,6 +39,7 @@ jobs:
       target_triple: ${{ steps.defaults.outputs.target_triple }}
       llvm_version: ${{ steps.defaults.outputs.llvm_version }}
       llvm_full_version: ${{ steps.llvm.outputs.version }}
+      sources_key: ${{ steps.defaults.outputs.sources_key }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -46,8 +47,12 @@ jobs:
         id: defaults
         run: |
           . scripts/defaults.env
-          echo "target_triple=${TARGET_TRIPLE}" >> "${GITHUB_OUTPUT}"
-          echo "llvm_version=${LLVM_VERSION}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "target_triple=${TARGET_TRIPLE}"
+            echo "llvm_version=${LLVM_VERSION}"
+            echo "sources_key_prefix=${TARGET_TRIPLE}-sources-"
+            echo "sources_key=${TARGET_TRIPLE}-sources-${GITHUB_RUN_ID}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Install dependencies
         run: |
@@ -63,8 +68,8 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: sources
-          key: ${{ steps.defaults.outputs.target_triple }}-sources-${{ github.run_id }}
-          restore-keys: ${{ steps.defaults.outputs.target_triple }}-sources-
+          key: ${{ steps.defaults.outputs.sources_key }}
+          restore-keys: ${{ steps.defaults.outputs.sources_key_prefix }}
 
       - name: Update sources
         run: |
@@ -84,13 +89,15 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: sources
-          key: ${{ steps.defaults.outputs.target_triple }}-sources-${{ github.run_id }}
+          key: ${{ steps.defaults.outputs.sources_key }}
 
       - name: Delete older sources caches
         if: ${{ steps.save_sources.outcome == 'success' }}
+        env:
+          KEY_PREFIX: ${{ steps.defaults.outputs.sources_key_prefix }}
+          KEY: ${{ steps.defaults.outputs.sources_key }}
         run: |
-          gh cache list --key ${{ steps.defaults.outputs.target_triple }}-sources- --limit 100 --json key \
-            --jq '.[].key | select(. != "${{ steps.defaults.outputs.target_triple }}-sources-${{ github.run_id }}")' \
+          gh cache list --key "${KEY_PREFIX}" --limit 100 --json key --jq '.[].key | select(. != env.KEY)' \
             | xargs -r -n 1 gh cache delete
 
   build:
@@ -118,6 +125,10 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       BUILD_DIR: build/${{ matrix.march }}
       LOGS_DIR: ${{ needs.sources.outputs.target_triple }}-logs-${{ matrix.march }}
+      # The caches of this CPU, from which the older ones are deleted.
+      BUILD_CACHE_PREFIX: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-
+      CCACHE_CACHE_PREFIX: ${{ needs.sources.outputs.target_triple }}-ccache-${{ matrix.march }}-
+      LLVM_KEY: llvm${{ needs.sources.outputs.llvm_version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -132,7 +143,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: sources
-          key: ${{ needs.sources.outputs.target_triple }}-sources-${{ github.run_id }}
+          key: ${{ needs.sources.outputs.sources_key }}
           fail-on-cache-miss: true
 
       - name: Download revisions
@@ -142,27 +153,33 @@ jobs:
 
       # The build cache key holds the hash of the output of build-inputs.sh, so
       # a changed output starts the build from scratch, with ccache.
-      - name: Hash the build inputs
-        id: build_inputs
+      - name: Compute the cache keys
+        id: cache_keys
         run: |
           scripts/build-inputs.sh | tee build-inputs.txt
-          echo "hash=$(sha256sum build-inputs.txt | cut -c 1-16)" >> "${GITHUB_OUTPUT}"
+          hash="$(sha256sum build-inputs.txt | cut -c 1-16)"
+          {
+            echo "build_key_prefix=${BUILD_CACHE_PREFIX}${LLVM_KEY}-${hash}-"
+            echo "build_key=${BUILD_CACHE_PREFIX}${LLVM_KEY}-${hash}-${GITHUB_RUN_ID}"
+            echo "ccache_key_prefix=${CCACHE_CACHE_PREFIX}${LLVM_KEY}-"
+            echo "ccache_key=${CCACHE_CACHE_PREFIX}${LLVM_KEY}-${GITHUB_RUN_ID}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Restore build
         if: ${{ !inputs.fresh_build }}
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ env.BUILD_DIR }}
-          key: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-${{ github.run_id }}
-          restore-keys: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-
+          key: ${{ steps.cache_keys.outputs.build_key }}
+          restore-keys: ${{ steps.cache_keys.outputs.build_key_prefix }}
 
       - name: Restore ccache
         if: ${{ !inputs.fresh_ccache }}
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ccache
-          key: ${{ needs.sources.outputs.target_triple }}-ccache-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ github.run_id }}
-          restore-keys: ${{ needs.sources.outputs.target_triple }}-ccache-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-
+          key: ${{ steps.cache_keys.outputs.ccache_key }}
+          restore-keys: ${{ steps.cache_keys.outputs.ccache_key_prefix }}
 
       - name: Build
         id: build
@@ -208,7 +225,7 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ env.BUILD_DIR }}
-          key: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-${{ github.run_id }}
+          key: ${{ steps.cache_keys.outputs.build_key }}
 
       - name: Save ccache
         id: save_ccache
@@ -216,20 +233,22 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ccache
-          key: ${{ needs.sources.outputs.target_triple }}-ccache-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ github.run_id }}
+          key: ${{ steps.cache_keys.outputs.ccache_key }}
 
       - name: Delete older build caches
         if: ${{ always() && steps.save_build.outcome == 'success' }}
+        env:
+          KEY: ${{ steps.cache_keys.outputs.build_key }}
         run: |
-          gh cache list --key ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}- --limit 100 --json key \
-            --jq '.[].key | select(. != "${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ steps.build_inputs.outputs.hash }}-${{ github.run_id }}")' \
+          gh cache list --key "${BUILD_CACHE_PREFIX}" --limit 100 --json key --jq '.[].key | select(. != env.KEY)' \
             | xargs -r -n 1 gh cache delete
 
       - name: Delete older ccache caches
         if: ${{ always() && steps.save_ccache.outcome == 'success' }}
+        env:
+          KEY: ${{ steps.cache_keys.outputs.ccache_key }}
         run: |
-          gh cache list --key ${{ needs.sources.outputs.target_triple }}-ccache-${{ matrix.march }}- --limit 100 --json key \
-            --jq '.[].key | select(. != "${{ needs.sources.outputs.target_triple }}-ccache-${{ matrix.march }}-llvm${{ needs.sources.outputs.llvm_version }}-${{ github.run_id }}")' \
+          gh cache list --key "${CCACHE_CACHE_PREFIX}" --limit 100 --json key --jq '.[].key | select(. != env.KEY)' \
             | xargs -r -n 1 gh cache delete
 
   release:
