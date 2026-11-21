@@ -62,7 +62,9 @@ jobs:
 
       - name: Record the LLVM version
         id: llvm
-        run: echo "version=$("llvm-config-${{ steps.defaults.outputs.llvm_version }}" --version)" >> "${GITHUB_OUTPUT}"
+        env:
+          LLVM_VERSION: ${{ steps.defaults.outputs.llvm_version }}
+        run: echo "version=$("llvm-config-${LLVM_VERSION}" --version)" >> "${GITHUB_OUTPUT}"
 
       - name: Restore sources
         if: ${{ !inputs.fresh_build }}
@@ -125,6 +127,8 @@ jobs:
     continue-on-error: ${{ matrix.ref != null }}
     env:
       GH_TOKEN: ${{ github.token }}
+      MARCH: ${{ matrix.march }}
+      MTUNE: ${{ matrix.mtune }}
       BUILD_DIR: build/${{ matrix.march }}
       LOGS_DIR: ${{ needs.sources.outputs.target_triple }}-logs-${{ matrix.march }}
       # The caches of this CPU, from which the older ones are deleted.
@@ -187,14 +191,14 @@ jobs:
         id: build
         run: |
           ccache --dir ccache --zero-stats
-          scripts/build.sh --march ${{ matrix.march }} --mtune ${{ matrix.mtune }} --revisions revisions.txt
+          scripts/build.sh --march "${MARCH}" --mtune "${MTUNE}" --revisions revisions.txt
 
       - name: Show the ccache statistics
         if: ${{ always() && steps.build.conclusion != 'skipped' }}
         run: ccache --dir ccache --show-stats --verbose
 
       - name: Package
-        run: scripts/package.sh --march ${{ matrix.march }}
+        run: scripts/package.sh --march "${MARCH}"
 
       - name: Upload archives
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -277,14 +281,16 @@ jobs:
           name: ${{ needs.sources.outputs.target_triple }}-revisions
 
       - name: Create the release
+        env:
+          LLVM_FULL_VERSION: ${{ needs.sources.outputs.llvm_full_version }}
         run: |
           revision() { awk -v source="$1" '$1 == source { print substr($2, 1, 9) }' revisions.txt; }
           tag="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=7 HEAD)"
-          notes="**LLVM**: [${{ needs.sources.outputs.llvm_full_version }}](https://github.com/llvm/llvm-project/commit/$(revision llvm))
+          notes="**LLVM**: [${LLVM_FULL_VERSION}](https://github.com/llvm/llvm-project/commit/$(revision llvm))
           **mpv**: [$(revision mpv)](https://github.com/mpv-player/mpv/commit/$(revision mpv))
           **FFmpeg**: [$(revision ffmpeg)](https://github.com/FFmpeg/FFmpeg/commit/$(revision ffmpeg))
           **libplacebo**: [$(revision libplacebo)](https://github.com/haasn/libplacebo/commit/$(revision libplacebo))
-          **Workflow**: [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          **Workflow**: [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
           gh release create "${tag}" release/*.7z --target "${GITHUB_SHA}" --title "$(date -u '+%Y-%m-%d %H:%M')" --notes "${notes}"
 
       - name: Keep the latest 30 releases
