@@ -44,7 +44,7 @@ mingw_w64_trees=()
 for dir in mingw-w64-crt mingw-w64-headers mingw-w64-libraries/winpthreads; do
   mingw_w64_trees+=("${dir} $(git -C "${mingw_w64_source}" rev-parse "HEAD:${dir}")")
 done
-recipes_hash="$(cd "${repo_root}" \
+build_system_hash="$(cd "${repo_root}" \
   && git ls-files -z --cached --others --exclude-standard \
     -- CMakeLists.txt cmake toolchain packages \
   | xargs -0 sha256sum | sha256sum | cut -d ' ' -f 1)"
@@ -55,4 +55,4 @@ echo "meson ${meson_version}"
 echo "nasm ${nasm_version}"
 echo "rust ${rust_version}"
 printf '%s\n' "${mingw_w64_trees[@]}"
-echo "recipes ${recipes_hash}"
+echo "build-system ${build_system_hash}"
