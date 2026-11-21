@@ -24,8 +24,8 @@
 #   Step target <name>-force-update: fetch, move the checkout to COMMIT, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch,
 #   update SUBMODULES and deinitialize the other submodules as clone does, and
-#   delete the stamps when the checkout was patched and the commit or the
-#   download changed since.
+#   delete the stamps when the checkout was patched and its commit changed
+#   since.
 #   Step record-commit, after download: record the commit for force-update.
 #   Target property GIT_REPOSITORY: REPOSITORY.
 #   Target property GIT_RESET_COMMAND: the command that discards the changes
