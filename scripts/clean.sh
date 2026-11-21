@@ -15,10 +15,10 @@
 # help.
 #
 # Cleaning a package or toolchain component deletes its build directories,
-# stamps and source: runs <name>-delete-stamps and
-# <name>-remove-prefix-and-source. Cleaning a component that builds from
-# another's source, such as libcxx from llvm, deletes that source; clean the
-# source's component instead.
+# stamps and source: runs <name>-remove-prefix-and-source, as the prefix
+# directory holds the build directory and the stamps. Cleaning a component that
+# builds from another's source, such as libcxx from llvm, deletes that source;
+# clean the source's component instead.
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
@@ -65,9 +65,9 @@ base_dir="$(cd "${base_dir}" && pwd)"
 ninja_targets=""
 
 # has_clean_target <directory> <name>: the external project <name> of
-# toolchain/ or packages/ has the clean targets.
+# toolchain/ or packages/ has the clean target.
 has_clean_target() {
-  awk -F: -v target="$1/$2-delete-stamps" \
+  awk -F: -v target="$1/$2-remove-prefix-and-source" \
     '$1 == target { found = 1 } END { exit !found }' <<< "${ninja_targets}"
 }
 
@@ -79,16 +79,10 @@ delete_sources_and_build() {
   rm -rf -- "${base_dir}/sources" "${base_dir}/build"
 }
 
-# clean_external_projects: run the clean targets of the packages and toolchain
+# clean_external_projects: run the clean target of the packages and toolchain
 # components in every configured build directory. Every name is checked before
 # anything is deleted.
 clean_external_projects() {
-  local sources_dir="${base_dir}/sources"
-  if [[ ! -d "${sources_dir}" ]]; then
-    echo "No sources directory under ${base_dir}" >&2
-    exit 1
-  fi
-
   local build_dirs=() dir
   shopt -s nullglob
   for dir in "${base_dir}"/build/*/; do
@@ -120,7 +114,6 @@ clean_external_projects() {
   for name in "${packages[@]}" "${toolchain_components[@]}"; do
     echo ">> Clean ${name}"
     for dir in "${build_dirs[@]}"; do
-      ninja -C "${dir}" "${name}-delete-stamps" || result=1
       ninja -C "${dir}" "${name}-remove-prefix-and-source" || result=1
     done
   done
