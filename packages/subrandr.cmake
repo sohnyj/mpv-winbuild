@@ -11,7 +11,6 @@ ExternalProject_Add(subrandr
         CARGO_NET_GIT_FETCH_WITH_CLI=true
         CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
         CARGO_PROFILE_RELEASE_LTO=thin
-        CARGO_PROFILE_RELEASE_PANIC=abort
         CARGO_PROFILE_RELEASE_STRIP=true
         "CARGO_TARGET_${RUST_TARGET_IDENTIFIER}_RUSTFLAGS=${PACKAGE_RUST_CPU_FLAGS} -Ccontrol-flow-guard -Clinker-plugin-lto"
         cargo xtask install
