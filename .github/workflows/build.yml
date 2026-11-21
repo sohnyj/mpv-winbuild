@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Read the defaults
+      - name: Read defaults
         id: defaults
         run: |
           . scripts/defaults.env
@@ -60,7 +60,7 @@ jobs:
           scripts/install-dependencies.sh
           echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
 
-      - name: Record the LLVM version
+      - name: Record LLVM version
         id: llvm
         env:
           LLVM_VERSION: ${{ steps.defaults.outputs.llvm_version }}
@@ -159,7 +159,7 @@ jobs:
 
       # The build cache key holds the hash of the output of build-inputs.sh, so
       # a changed output starts the build from scratch, with ccache.
-      - name: Compute the cache keys
+      - name: Compute cache keys
         id: cache_keys
         run: |
           scripts/build-inputs.sh | tee build-inputs.txt
@@ -193,7 +193,7 @@ jobs:
           ccache --dir ccache --zero-stats
           scripts/build.sh --march "${MARCH}" --mtune "${MTUNE}" --revisions revisions.txt
 
-      - name: Show the ccache statistics
+      - name: Show ccache statistics
         if: ${{ always() && steps.build.conclusion != 'skipped' }}
         run: ccache --dir ccache --show-stats --verbose
 
@@ -280,7 +280,7 @@ jobs:
         with:
           name: ${{ needs.sources.outputs.target_triple }}-revisions
 
-      - name: Create the release
+      - name: Create release
         env:
           LLVM_FULL_VERSION: ${{ needs.sources.outputs.llvm_full_version }}
         run: |
@@ -293,7 +293,7 @@ jobs:
           **Workflow**: [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
           gh release create "${tag}" release/*.7z --target "${GITHUB_SHA}" --title "$(date -u '+%Y-%m-%d %H:%M')" --notes "${notes}"
 
-      - name: Keep the latest 30 releases
+      - name: Keep latest 30 releases
         run: |
           gh release list --limit 1000 --json tagName --jq '.[].tagName' \
             | sort -r -V \
