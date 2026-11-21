@@ -143,5 +143,5 @@ if [[ "${fresh_ccache}" == true ]]; then
   clear_ccache || status=1
 fi
 
-echo ">> Done."
+echo ">> Done"
 exit "${status}"

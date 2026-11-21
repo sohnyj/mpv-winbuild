@@ -49,10 +49,10 @@ function(add_cleanup_steps name last_step)
     get_property(reset_command TARGET ${name} PROPERTY GIT_RESET_COMMAND)
 
     set(reset_commands "")
-    set(delete_stamps_comment "Deleting the stamps of ${name}")
+    set(delete_stamps_comment "Deleting stamps for '${name}'")
     if(git_repository)
         set(reset_commands COMMAND ${reset_command})
-        string(APPEND delete_stamps_comment " and resetting its checkout")
+        set(delete_stamps_comment "Deleting stamps and resetting checkout for '${name}'")
     endif()
 
     ExternalProject_Add_Step(${name} delete-stamps
@@ -84,7 +84,7 @@ function(add_cleanup_steps name last_step)
             ${empty_build_commands}
             ${reset_commands}
             LOG 1
-            COMMENT "Cleaning the build directory and the checkout of ${name} after install"
+            COMMENT "Cleaning build directory and checkout for '${name}'"
         )
     endif()
 
@@ -99,7 +99,7 @@ function(add_cleanup_steps name last_step)
         EXCLUDE_FROM_MAIN TRUE
         INDEPENDENT TRUE
         LOG 1
-        COMMENT "Deleting the prefix directory and the source of ${name}"
+        COMMENT "Deleting prefix directory and source for '${name}'"
     )
     ExternalProject_Add_StepTargets(${name} delete-stamps remove-prefix-and-source)
 endfunction()
