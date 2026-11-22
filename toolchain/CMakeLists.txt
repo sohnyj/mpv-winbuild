@@ -1,8 +1,8 @@
-# Toolchain components: the runtimes of the target, built with the runtime
-# profile, and host tools. The runtime profile has no _FORTIFY_SOURCE: built
-# with it, mingw-w64-crt's __memcpy_chk loops forever instead of copying. It has
-# no stack protector either, since mingw-w64-crt sets __stack_chk_guard while
-# frames of its own startup code have yet to return.
+# Toolchain components: target runtimes, built with the runtime profile, and
+# host tools. The runtime profile has no _FORTIFY_SOURCE, because with it
+# mingw-w64-crt's __memcpy_chk loops forever instead of copying. It has no stack
+# protector either, since mingw-w64-crt sets __stack_chk_guard while frames of
+# its own startup code have yet to return.
 add_toolchain_profile(runtime "${RUNTIME_CPU_FLAGS}" "" "")
 
 set(toolchain_components
@@ -28,8 +28,8 @@ set(toolchain_components
 foreach(toolchain_component IN LISTS toolchain_components)
     set(SOURCE_DIR "${SOURCES_DIR}/${toolchain_component}")
     include("${CMAKE_CURRENT_SOURCE_DIR}/${toolchain_component}.cmake")
-    # When the toolchain profile changes, the steps from patch on run again,
-    # since the checkout is reset after the install step.
+    # When the toolchain profile changes, steps from patch on run again, since
+    # the checkout is reset after install.
     ExternalProject_Add_StepDependencies("${toolchain_component}" patch ${PROFILE_FILES})
 endforeach()
 

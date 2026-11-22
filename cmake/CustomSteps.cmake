@@ -1,9 +1,9 @@
-# Steps added to the external projects: the toolchain components and packages.
+# Steps added to external projects: toolchain components and packages.
 #
 # add_cleanup_steps(<name> <last step>)
 #   Step targets:
-#     <name>-delete-stamps             delete the stamps and, with a git
-#                                      source, reset the checkout
+#     <name>-delete-stamps             delete stamps and, with a git source,
+#                                      reset the checkout
 #     <name>-remove-prefix-and-source  delete the prefix directory (build
 #                                      directory, stamps) and the source
 #   Only with a git source of its own, given to add_git_steps before:
@@ -19,27 +19,27 @@
 #   Step clone, before download: clone BRANCH of REPOSITORY with
 #   CLONE_FLAGS, run git with CLONE_POST_COMMAND, reset to COMMIT and update
 #   SUBMODULES (all of them when not given, none when given as ""), and
-#   deinitialize the other submodules. Runs again when REPOSITORY, BRANCH, the
-#   source directory or the submodules change, and clones again when the
+#   deinitialize other submodules. Runs again when REPOSITORY, BRANCH, the
+#   source directory or SUBMODULES change, and clones again when the
 #   checkout has another origin or branch. force-update checks out a changed
 #   COMMIT.
 #   Step target <name>-force-update: fetch, move the checkout to COMMIT, else
 #   to its commit in SOURCE_REVISIONS_FILE, else to its upstream branch,
-#   update SUBMODULES and deinitialize the other submodules as clone does,
-#   delete the stamps when the checkout was patched and its commit changed
+#   update SUBMODULES and deinitialize other submodules as clone does,
+#   delete stamps when the checkout was patched and its commit changed
 #   since, and apply PATCHES as apply-patches does.
 #   Step record-commit, after download: record the commit for force-update.
-#   Step apply-patches, after record-commit and before patch: discard the
-#   changes to the checkout and apply PATCHES with git apply and PATCH_FLAGS,
-#   in order. A relative path is relative to the current source directory.
-#   Runs again when the patches or PATCH_FLAGS change.
+#   Step apply-patches, after record-commit and before patch: discard changes
+#   to the checkout and apply PATCHES with git apply and PATCH_FLAGS, in order.
+#   Relative paths are relative to the current source directory. Runs again
+#   when the patch files or PATCH_FLAGS change.
 #   Target property GIT_REPOSITORY: REPOSITORY.
-#   Target property GIT_RESET_COMMAND: the command that discards the changes
-#   to the checkout, checks out the target commit and applies PATCHES, for
+#   Target property GIT_RESET_COMMAND: command that discards changes to the
+#   checkout, checks out the target commit and applies PATCHES, for
 #   add_cleanup_steps.
 
-# The "<source> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions
-# target writes them.
+# "<source> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions target
+# writes them.
 if(SOURCE_REVISIONS_FILE)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${SOURCE_REVISIONS_FILE}")
     file(STRINGS "${SOURCE_REVISIONS_FILE}" revision_lines)
@@ -73,9 +73,9 @@ function(add_cleanup_steps name last_step)
     )
 
     if(git_repository)
-        # With the build directory in the checkout, the outputs of the build are
-        # in the checkout and listed in .gitignore, so clean removes ignored
-        # files too.
+        # With the build directory in the checkout, build outputs are in the
+        # checkout and listed in .gitignore, so clean also removes ignored
+        # files.
         cmake_path(IS_PREFIX SOURCE_DIR "${BINARY_DIR}" build_in_checkout)
         if(build_in_checkout)
             set(empty_build_commands COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force -x)
@@ -95,10 +95,10 @@ function(add_cleanup_steps name last_step)
         )
     endif()
 
-    # INSTALL_DIR is the prefix directory: ExternalProject defaults it to the
+    # INSTALL_DIR is the prefix directory. ExternalProject defaults it to the
     # prefix, which it does not expose, and no recipe gives PREFIX or
     # INSTALL_DIR. Configuring writes the clone script and its inputs into the
-    # stamp directory, which the prefix directory holds.
+    # stamp directory, inside the prefix directory.
     ExternalProject_Add_Step(${name} remove-prefix-and-source
         COMMAND ${CMAKE_COMMAND} -E rm -rf ${INSTALL_DIR} ${SOURCE_DIR}
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target rebuild_cache
@@ -156,8 +156,8 @@ function(add_git_steps name)
     set_property(TARGET ${name} PROPERTY GIT_RESET_COMMAND
         ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=reset -P ${checkout_script})
 
-    # The submodules of the configuration, which the clone script and
-    # GitCheckout.cmake read.
+    # Submodules of the configuration, read by the clone script and
+    # GitCheckout.cmake.
     set(submodules_file "${stamp_dir}/${name}-gitsubmodules.cmake")
     file(CONFIGURE
         OUTPUT "${submodules_file}"
@@ -165,8 +165,7 @@ function(add_git_steps name)
         @ONLY
     )
 
-    # The patches and patch flags of the configuration, which GitCheckout.cmake
-    # reads.
+    # Patches and patch flags of the configuration, read by GitCheckout.cmake.
     set(patches_file "${stamp_dir}/${name}-gitpatches.cmake")
     file(CONFIGURE
         OUTPUT "${patches_file}"

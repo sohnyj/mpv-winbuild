@@ -1,5 +1,5 @@
-# A host tool that generates the C++/WinRT headers from the Windows metadata
-# into the sysroot, where mpv's win32-smtc includes them.
+# Host tool that generates C++/WinRT headers from Windows metadata into the
+# sysroot, where mpv's win32-smtc includes them.
 ExternalProject_Add(cppwinrt
     DEPENDS
         windows-rs

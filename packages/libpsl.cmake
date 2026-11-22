@@ -1,5 +1,5 @@
 # Only the library is built, and only the devel tag (library, header, .pc) is
-# installed: the psl tool is added unconditionally.
+# installed, as the psl tool is added unconditionally.
 ExternalProject_Add(libpsl
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""

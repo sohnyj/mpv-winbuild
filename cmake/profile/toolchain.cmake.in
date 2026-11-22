@@ -7,7 +7,7 @@ set(CMAKE_C_COMPILER "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-clang")
 set(CMAKE_CXX_COMPILER "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-clang++")
 set(CMAKE_RC_COMPILER "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-windres")
 
-# Archivers for interprocedural optimization: llvm-ar reads bitcode objects
+# Archivers for interprocedural optimization. llvm-ar reads bitcode objects
 # without a plugin.
 set(CMAKE_C_COMPILER_AR "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-ar")
 set(CMAKE_CXX_COMPILER_AR "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-ar")

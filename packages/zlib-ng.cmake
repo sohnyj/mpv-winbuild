@@ -1,4 +1,4 @@
-# Only the library is built: the utilities are added unconditionally.
+# Only the library is built, as the utilities are added unconditionally.
 # CMakeLists.txt replaces -O3 with -O2 in the Release flags unless
 # CMAKE_C_FLAGS has -O3.
 ExternalProject_Add(zlib-ng

@@ -1,6 +1,6 @@
 #!/bin/sh
-# Runs a command with the @PROFILE@ toolchain profile: its tools first in PATH
-# and its autoconf site file.
+# Runs a command with the tools of the @PROFILE@ toolchain profile first in PATH
+# and with its autoconf site file.
 PATH="@TOOLCHAIN_BIN_DIR@:$PATH"
 CONFIG_SITE="@CONFIG_SITE@"
 export PATH CONFIG_SITE

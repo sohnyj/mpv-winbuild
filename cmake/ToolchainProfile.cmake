@@ -11,8 +11,8 @@ include_guard(GLOBAL)
 
 include(BuildTools)
 
-# clang resource directory: the headers of the installed clang and the builtins
-# of toolchain/compiler-rt.cmake.
+# clang resource directory: headers of the installed clang and builtins of
+# toolchain/compiler-rt.cmake.
 execute_process(
     COMMAND "${CLANG_EXECUTABLE}" -print-resource-dir
     OUTPUT_VARIABLE installed_resource_dir
@@ -29,16 +29,16 @@ file(CREATE_LINK "${installed_resource_dir}/include" "${CLANG_RESOURCE_DIR}/incl
 # generation flags> in CMAKE_CURRENT_BINARY_DIR/<profile> and sets in the
 # calling directory:
 #
-#   TOOLCHAIN_BIN_DIR  directory of the ${TARGET_TRIPLE}-* tools
+#   TOOLCHAIN_BIN_DIR  directory of ${TARGET_TRIPLE}-* tools
 #   TOOLCHAIN_FILE     CMake toolchain file
 #   MESON_CROSS_FILE   Meson cross file
 #   MESON_NATIVE_FILE  Meson native file
 #   EXEC               command prefix with the profile's tools first in PATH
 #                      and its autoconf site file
 #   CARGO_EXEC         EXEC with the Rust toolchain of RUSTUP_DIR and the
-#                      profile's cargo linkers; not among PROFILE_FILES
+#                      profile's cargo linkers, not among PROFILE_FILES
 #   MAKE               make with MAKE_JOBS jobs, run through EXEC
-#   PROFILE_FILES      the generated files that the patch step of every
+#   PROFILE_FILES      generated files that the patch step of every
 #                      toolchain component and package depends on
 function(add_toolchain_profile profile cpu_flags preprocessor_flags code_generation_flags)
     set(PROFILE "${profile}")

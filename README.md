@@ -3,10 +3,10 @@
 Windows builds of mpv and FFmpeg, cross-compiled on Linux with the apt.llvm.org
 LLVM toolchain.
 
-- Every git source of the packages and the toolchain is built from the latest
-  commit of its branch at build time.
-- The `-march` and `-mtune` values in `scripts/defaults.env` are applied to the
-  runtimes and the packages.
+- Every git source of packages and toolchain is built from the latest commit of
+  its branch at build time.
+- The `-march` and `-mtune` values in `scripts/defaults.env` are applied to
+  runtimes and packages.
 - The build system uses CMake's ExternalProject module as shipped, extended
   through its public API.
 
@@ -32,15 +32,15 @@ Autobuild runs daily at UTC 00:00.
 ## Build scripts
 
 - The scripts run on Ubuntu 26.04, natively or on WSL2.
-- Defaults such as the CPU and the LLVM version are in `scripts/defaults.env`.
+- Defaults such as CPU and LLVM version are in `scripts/defaults.env`.
 
 | Script | Purpose |
 | ------ | ------- |
-| `install-dependencies.sh` | Install the build tools. |
-| `build.sh` | Update the sources and build the runtimes and packages for a CPU into `build/<march>/sysroot`. |
-| `build-inputs.sh` | Print the inputs that stamps do not track. `build.sh` empties the build directory when they change. |
+| `install-dependencies.sh` | Install build tools. |
+| `build.sh` | Update sources and build runtimes and packages for a CPU into `build/<march>/sysroot`. |
+| `build-inputs.sh` | Print inputs that stamps do not track. `build.sh` empties the build directory when they change. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` into `release/*.7z`. |
-| `update.sh` | Move the git sources to the tips of their branches, or to the commits that `build.sh --revisions` set. |
+| `update.sh` | Move git sources to their branch tips, or to the commits that `build.sh --revisions` set. |
 | `clean.sh` | Delete build directories, stamps and sources, or clear the ccache. |
 
 ```bash

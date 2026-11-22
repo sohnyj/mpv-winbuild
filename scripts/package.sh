@@ -1,13 +1,13 @@
 #!/bin/bash
-# Pack mpv.exe, mpv.com and ffmpeg.exe of a build directory into the release
-# archives, named after the architecture, the CPU without x86-64- (v3, znver3),
-# the UTC date and the mpv and FFmpeg commits of its revisions.txt.
+# Pack mpv.exe, mpv.com and ffmpeg.exe of a build directory into release
+# archives, named after architecture, CPU without x86-64- (v3, znver3), UTC
+# date and mpv and FFmpeg commits of its revisions.txt.
 #
 # Usage: package.sh [--march <cpu>] [base_dir]
 #   --march <cpu>  build directory build/<cpu> (default: PACKAGE_MARCH of
 #                  defaults.env)
-#   base_dir       location of the build/ directory; the archives are written to
-#                  its release/ (default: the repository root)
+#   base_dir       location of build/, with archives written to its release/
+#                  (default: repository root)
 set -euo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
@@ -31,7 +31,7 @@ base_dir="$(cd "${base_dir}" && pwd)"
 build_dir="${base_dir}/build/${march}"
 release_dir="${base_dir}/release"
 
-# The first nine characters of the commit of <source> in revisions.txt.
+# First nine characters of the commit of <source> in revisions.txt.
 revision() {
   awk -v source="$1" '$1 == source { print substr($2, 1, 9) }' \
     "${build_dir}/revisions.txt"

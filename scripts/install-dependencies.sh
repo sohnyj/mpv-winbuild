@@ -5,8 +5,8 @@
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
 #                           defaults.env)
 #
-# Run as a regular user: system packages are installed through sudo, and
-# CMake and Meson are installed into the user's pipx environment.
+# Run as a regular user. System packages are installed through sudo, and CMake
+# and Meson into the user's pipx environment.
 set -euo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }

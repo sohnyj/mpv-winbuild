@@ -131,7 +131,7 @@ jobs:
       MTUNE: ${{ matrix.mtune }}
       BUILD_DIR: build/${{ matrix.march }}
       LOGS_DIR: ${{ needs.sources.outputs.target_triple }}-logs-${{ matrix.march }}
-      # The caches of this CPU, from which the older ones are deleted.
+      # Caches of this CPU, from which older ones are deleted.
       BUILD_CACHE_PREFIX: ${{ needs.sources.outputs.target_triple }}-build-${{ matrix.march }}-
       CCACHE_CACHE_PREFIX: ${{ needs.sources.outputs.target_triple }}-ccache-${{ matrix.march }}-
       LLVM_KEY: llvm${{ needs.sources.outputs.llvm_version }}
@@ -157,8 +157,8 @@ jobs:
         with:
           name: ${{ needs.sources.outputs.target_triple }}-revisions
 
-      # The build cache key holds the hash of the output of build-inputs.sh, so
-      # a changed output starts the build from scratch, with ccache.
+      # The build cache key holds the hash of build-inputs.sh output, so a
+      # changed output starts the build from scratch, with ccache.
       - name: Compute cache keys
         id: cache_keys
         run: |

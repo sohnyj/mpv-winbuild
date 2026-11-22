@@ -2,17 +2,17 @@
 #       -D NAME=<name> -D SOURCE_DIR=<directory> -D STAMP_DIR=<directory>
 #       [-D TARGET_COMMIT=<commit>] -P GitCheckout.cmake
 #
-# Keeps the git checkout of the external project NAME at its target commit:
+# Keeps the git checkout of external project NAME at its target commit, which is
 # TARGET_COMMIT, or the tip of its upstream branch when TARGET_COMMIT is empty.
-#   patch   discard the changes to the checkout and apply the patches of
+#   patch   discard changes to the checkout and apply patches of
 #           <STAMP_DIR>/<NAME>-gitpatches.cmake with its patch flags
 #   record  write the checked-out commit to <STAMP_DIR>/<NAME>-commit.txt
-#   reset   discard the changes to the checkout, check out the target commit,
-#           delete the stamps when the source was patched without a recorded
-#           commit or at another commit, bring the submodules to
-#           <STAMP_DIR>/<NAME>-gitsubmodules.cmake, and apply the patches
+#   reset   discard changes to the checkout, check out the target commit,
+#           delete stamps when the source was patched without a recorded commit
+#           or at another commit, bring submodules to
+#           <STAMP_DIR>/<NAME>-gitsubmodules.cmake, and apply patches
 #   update  fetch, then reset
-# Without a checkout, nothing is done: the clone step makes one.
+# Does nothing without a checkout, which the clone step makes.
 
 if(NOT EXISTS "${SOURCE_DIR}/.git")
     return()
@@ -20,7 +20,7 @@ endif()
 
 set(commit_file "${STAMP_DIR}/${NAME}-commit.txt")
 
-# git_output(<variable> <git argument>...): the trimmed output of git in the
+# git_output(<variable> <git argument>...): trimmed output of git in the
 # checkout, or an empty string when git fails.
 function(git_output variable)
     execute_process(
@@ -37,9 +37,9 @@ function(git_output variable)
     set(${variable} "${output}" PARENT_SCOPE)
 endfunction()
 
-# apply_patches(): applies the patches with the patch flags, in order, to the
-# checkout, which has no changes. They are applied to the index too, so that
-# resetting the checkout also deletes the files they add.
+# apply_patches(): applies patches with patch flags, in order, to the checkout,
+# which has no changes. They are also applied to the index, so resetting the
+# checkout deletes the files they add.
 function(apply_patches)
     include("${STAMP_DIR}/${NAME}-gitpatches.cmake")
     foreach(patch IN LISTS patches)
@@ -93,11 +93,11 @@ else()
     endif()
 endif()
 
-# The steps after patch ran on the recorded commit as it was downloaded. They
-# are invalid when no commit is recorded or the target commit is another one;
-# deletion_reason holds the case. A download that runs again, as the clone step
-# makes it do when the repository, branch, source directory or submodules
-# change, reruns them through their dependencies.
+# Steps after patch ran on the recorded commit as downloaded. They are invalid
+# when no commit is recorded or the target commit differs, and deletion_reason
+# names the case. A download that runs again, as the clone step makes it do when
+# the repository, branch, source directory or submodules change, reruns them
+# through their dependencies.
 set(patch_stamp "${STAMP_DIR}/${NAME}-patch")
 set(deletion_reason "")
 if(EXISTS "${patch_stamp}")

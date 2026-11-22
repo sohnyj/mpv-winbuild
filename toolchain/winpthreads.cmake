@@ -1,4 +1,4 @@
-# Linked only by code that calls POSIX thread or clock functions: the packages
+# Linked only by code that calls POSIX thread or clock functions, since packages
 # use the Win32 thread API. Built without LTO and section splitting, like the
 # CRT.
 ExternalProject_Add(winpthreads

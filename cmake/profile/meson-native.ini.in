@@ -1,4 +1,4 @@
-# Meson native file of the @PROFILE@ toolchain profile: the compilers of the
+# Meson native file of the @PROFILE@ toolchain profile, with compilers of the
 # build machine.
 
 [binaries]
