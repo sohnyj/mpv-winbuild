@@ -1,5 +1,5 @@
-# Only the library is built: simdcoverage is added whenever the SIMD extensions
-# and the static library are.
+# Only the library is built, as simdcoverage is otherwise added whenever the
+# SIMD extensions and the static library are.
 ExternalProject_Add(libjpeg-turbo
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""

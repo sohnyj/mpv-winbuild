@@ -1,7 +1,7 @@
 # compiler-rt builtins, installed into the resource directory of the build
 # directory. The compiler checks only compile, as nothing links before the
-# builtins exist. LLVM_DIR names the CMake package of the installed LLVM, which
-# lies outside the sysroot that the toolchain file searches.
+# builtins exist. LLVM_DIR is the CMake package directory of the installed LLVM,
+# which is outside the sysroot to which the toolchain file restricts searches.
 ExternalProject_Add(compiler-rt
     DEPENDS
         llvm

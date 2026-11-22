@@ -1,9 +1,9 @@
-# Autoconf site defaults of the @PROFILE@ toolchain profile, read by the
-# configure scripts run through the exec wrapper. Arguments of a recipe take
+# Autoconf site defaults of the @PROFILE@ toolchain profile, read by configure
+# scripts run through the exec wrapper. Arguments of a recipe take
 # precedence.
 
-# Absolute paths: llvm-windres finds its preprocessor next to the path it was
-# started from.
+# Absolute paths, since llvm-windres finds its preprocessor next to the path it
+# was started from.
 : "${CC=@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-clang}"
 : "${CXX=@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-clang++}"
 : "${RC=@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-windres}"

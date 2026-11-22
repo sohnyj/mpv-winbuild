@@ -1,7 +1,7 @@
 # Submodule functions of the clone script and GitCheckout.cmake.
 
-# git_checked_out_submodules(<variable> <git executable> <directory>): the
-# paths of the submodules checked out in the directory, not recursively.
+# git_checked_out_submodules(<variable> <git executable> <directory>): paths of
+# submodules checked out in the directory, not recursively.
 function(git_checked_out_submodules variable git_executable directory)
     execute_process(
         COMMAND "${git_executable}" submodule --quiet foreach "printf '%s\\n' \"$sm_path\""
@@ -13,11 +13,11 @@ function(git_checked_out_submodules variable git_executable directory)
     set(${variable} ${paths} PARENT_SCOPE)
 endfunction()
 
-# git_check_out_submodules(<git executable> <directory> [<path>...]): checks
-# out the submodules of the directory at the paths, or all of them without a
-# path, then all of theirs. The URLs are synchronized from .gitmodules level by
-# level: the .gitmodules that lists the submodules of a submodule exists only
-# once that submodule is checked out.
+# git_check_out_submodules(<git executable> <directory> [<path>...]): checks out
+# submodules of the directory at the paths, or all of them without a path, then
+# all of theirs. URLs are synchronized from .gitmodules level by level, since
+# the .gitmodules that lists the submodules of a submodule exists only once that
+# submodule is checked out.
 function(git_check_out_submodules git_executable directory)
     execute_process(
         COMMAND "${git_executable}" submodule --quiet sync -- ${ARGN}
@@ -38,11 +38,11 @@ endfunction()
 # git_update_submodules(<git executable> <source directory> <init submodules>
 #                       [<path>...])
 #
-# Brings the submodules of the checkout in the source directory to the
-# configuration of add_git_steps: with <init submodules> false none of them,
+# Brings submodules of the checkout in the source directory to the configuration
+# of add_git_steps, which is no submodules when <init submodules> is false,
 # otherwise the submodules at the paths, or all of them without a path. Those
 # are checked out recursively at the commits of the checkout, from the URLs of
-# its .gitmodules; the other checked-out submodules are deinitialized.
+# its .gitmodules. Other checked-out submodules are deinitialized.
 function(git_update_submodules git_executable source_dir init_submodules)
     set(paths ${ARGN})
 

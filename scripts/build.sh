@@ -1,23 +1,23 @@
 #!/bin/bash
-# Configure and build the runtimes and packages for a target CPU. The commits of
-# the git sources are written to build/<cpu>/revisions.txt. When the output of
-# build-inputs.sh differs from build/<cpu>/build-inputs.txt, the build directory
-# is emptied first.
+# Configure and build runtimes and packages for a target CPU. Commits of git
+# sources are written to build/<cpu>/revisions.txt. When build-inputs.sh output
+# differs from build/<cpu>/build-inputs.txt, the build directory is emptied
+# first.
 #
 # Usage: build.sh [--march <cpu>] [--mtune <cpu>] [--llvm-version <major>]
 #                 [--revisions <file>] [--sources-only] [base_dir]
-#   --march <cpu>           clang -march of the packages (default: PACKAGE_MARCH
-#                           of defaults.env; e.g. x86-64-v3, znver3)
-#   --mtune <cpu>           clang -mtune of the packages (default: PACKAGE_MTUNE
-#                           of defaults.env)
+#   --march <cpu>           clang -march of packages, such as x86-64-v3 or
+#                           znver3 (default: PACKAGE_MARCH of defaults.env)
+#   --mtune <cpu>           clang -mtune of packages (default: PACKAGE_MTUNE of
+#                           defaults.env)
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
 #                           defaults.env)
-#   --revisions <file>      move the git sources to the commits of a
-#                           revisions.txt instead of the tips of their branches
-#   --sources-only          stop after updating the sources and writing
+#   --revisions <file>      move git sources to the commits of a revisions.txt
+#                           instead of their branch tips
+#   --sources-only          stop after updating sources and writing
 #                           revisions.txt
-#   base_dir                location of the sources/, ccache/ and build/
-#                           directories (default: the repository root)
+#   base_dir                location of sources/, ccache/ and build/ (default:
+#                           repository root)
 set -euo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }

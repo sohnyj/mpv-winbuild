@@ -61,11 +61,11 @@ set(packages
 foreach(package IN LISTS packages)
     set(SOURCE_DIR "${SOURCES_DIR}/${package}")
     include("${CMAKE_CURRENT_SOURCE_DIR}/${package}.cmake")
-    # A changed toolchain profile rebuilds from the patch step, since the
-    # checkout is reset after the install step.
+    # When the toolchain profile changes, steps from patch on run again, since
+    # the checkout is reset after install.
     ExternalProject_Add_StepDependencies("${package}" patch ${PROFILE_FILES})
-    # The toolchain components are built first, but a rebuilt component
-    # rebuilds only the packages that name it in DEPENDS.
+    # Toolchain components are built first, but rebuilding a component rebuilds
+    # only packages that list it in DEPENDS.
     ExternalProject_Add_StepDependencies("${package}" configure ${TOOLCHAIN_COMPONENTS})
 endforeach()
 

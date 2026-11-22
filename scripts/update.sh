@@ -1,10 +1,10 @@
 #!/bin/bash
-# Run `ninja update` in every configured build directory, which moves the git
-# sources to the tips of their branches, or to the commits of the --revisions
-# file the directory was last configured with.
+# Run `ninja update` in every configured build directory, which moves git
+# sources to their branch tips, or to the commits of the --revisions file the
+# directory was last configured with.
 #
 # Usage: update.sh [base_dir]
-#   base_dir  location of the build/ directory (default: the repository root)
+#   base_dir  location of build/ (default: repository root)
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }

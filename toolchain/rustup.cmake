@@ -1,4 +1,4 @@
-# The Rust toolchain of the packages written in Rust, in RUSTUP_DIR.
+# Rust toolchain of packages written in Rust, in RUSTUP_DIR.
 ExternalProject_Add(rustup
     DOWNLOAD_COMMAND ""
     CONFIGURE_COMMAND curl -sSf -o <TMP_DIR>/rustup-init.sh https://sh.rustup.rs

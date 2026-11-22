@@ -1,13 +1,12 @@
 #!/bin/bash
-# Print the inputs that change a build but that the stamps of its build
-# directory do not track. build.sh starts from an empty build directory when
+# Print inputs that change a build but that stamps of its build directory do
+# not track. build.sh starts from an empty build directory when
 # they change, and the workflow puts their hash in its build cache key.
 #
 # Usage: build-inputs.sh [--llvm-version <major>] [base_dir]
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
 #                           defaults.env)
-#   base_dir                location of the sources/ directory (default: the
-#                           repository root)
+#   base_dir                location of sources/ (default: repository root)
 set -euo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }

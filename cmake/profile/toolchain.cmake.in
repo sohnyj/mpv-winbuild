@@ -7,15 +7,15 @@ set(CMAKE_C_COMPILER "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-clang")
 set(CMAKE_CXX_COMPILER "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-clang++")
 set(CMAKE_RC_COMPILER "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-windres")
 
-# Archivers for interprocedural optimization: llvm-ar reads bitcode objects
+# Archivers for interprocedural optimization. llvm-ar reads bitcode objects
 # without a plugin.
 set(CMAKE_C_COMPILER_AR "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-ar")
 set(CMAKE_CXX_COMPILER_AR "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-ar")
 set(CMAKE_C_COMPILER_RANLIB "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-ranlib")
 set(CMAKE_CXX_COMPILER_RANLIB "@TOOLCHAIN_BIN_DIR@/@TARGET_TRIPLE@-ranlib")
 
-# No package uses C++ modules, and clang-scan-deps would not see the options
-# the compiler wrapper adds.
+# No package uses C++ modules, and clang-scan-deps would run without the
+# options that the compiler wrapper adds.
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set(CMAKE_FIND_ROOT_PATH "@SYSROOT_DIR@")

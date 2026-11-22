@@ -1,4 +1,4 @@
-# Sources of the MinGW-w64 headers, CRT and winpthreads.
+# Sources of MinGW-w64 headers, CRT and winpthreads.
 ExternalProject_Add(mingw-w64
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""

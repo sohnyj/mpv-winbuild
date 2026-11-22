@@ -1,7 +1,7 @@
-# Clone script of @name@, run by its clone step. A checkout of the branch of
-# the repository is kept: the sources directory is shared between build
-# directories and restored from the sources cache of the workflow, and the
-# force-update step moves the checkout to its target commit. Kept or cloned,
+# Clone script of @name@, run by its clone step. An existing checkout of the
+# branch of the repository is kept, since the sources directory is shared
+# between build directories and restored from the workflow's sources cache, and
+# the force-update step moves the checkout to its target commit. Kept or cloned,
 # the checkout gets the submodules of the configuration.
 
 include([==[@submodules_script@]==])

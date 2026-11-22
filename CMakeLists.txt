@@ -8,19 +8,19 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Inputs, passed by scripts/build.sh.
-set(LLVM_VERSION "" CACHE STRING "Major version of the apt.llvm.org LLVM toolchain")
+set(LLVM_VERSION "" CACHE STRING "apt.llvm.org LLVM major version")
 set(TARGET_TRIPLE "" CACHE STRING "Target triple, such as x86_64-w64-mingw32")
-set(PACKAGE_CPU_FLAGS "" CACHE STRING "clang CPU flags of the packages, such as -march=x86-64-v3 -mtune=generic")
-set(PACKAGE_RUST_CPU_FLAGS "" CACHE STRING "rustc CPU flags of the packages, such as -C target-cpu=x86-64-v3")
-set(RUNTIME_CPU_FLAGS "" CACHE STRING "clang CPU flags of the runtimes")
-set(LTO_MODE "" CACHE STRING "clang -flto mode of the packages, such as thin")
-set(MAKE_JOBS "" CACHE STRING "Parallel jobs of the make builds")
-set(CCACHE_DIR "" CACHE PATH "ccache directory of the compiler wrappers")
-set(SOURCES_DIR "" CACHE PATH "Directory of the source checkouts and downloads, shared between build directories")
-set(RUSTUP_DIR "" CACHE PATH "Directory of the Rust toolchain")
-set(SYSROOT_DIR "" CACHE PATH "Directory the runtimes and packages are installed into")
-# Empty moves the git sources to the tips of their branches.
-set(SOURCE_REVISIONS_FILE "" CACHE FILEPATH "File of <source> <commit> lines that the git sources are moved to")
+set(PACKAGE_CPU_FLAGS "" CACHE STRING "clang CPU flags of packages, such as -march=x86-64-v3 -mtune=generic")
+set(PACKAGE_RUST_CPU_FLAGS "" CACHE STRING "rustc CPU flags of packages, such as -C target-cpu=x86-64-v3")
+set(RUNTIME_CPU_FLAGS "" CACHE STRING "clang CPU flags of runtimes")
+set(LTO_MODE "" CACHE STRING "clang -flto mode of packages, such as thin")
+set(MAKE_JOBS "" CACHE STRING "Parallel jobs of make builds")
+set(CCACHE_DIR "" CACHE PATH "ccache directory of compiler wrappers")
+set(SOURCES_DIR "" CACHE PATH "Directory of source checkouts and downloads, shared between build directories")
+set(RUSTUP_DIR "" CACHE PATH "Rust toolchain directory")
+set(SYSROOT_DIR "" CACHE PATH "Install directory of runtimes and packages")
+# When empty, git sources are moved to their branch tips.
+set(SOURCE_REVISIONS_FILE "" CACHE FILEPATH "File of <source> <commit> lines that git sources are moved to")
 
 foreach(variable IN ITEMS LLVM_VERSION TARGET_TRIPLE PACKAGE_CPU_FLAGS PACKAGE_RUST_CPU_FLAGS RUNTIME_CPU_FLAGS LTO_MODE MAKE_JOBS CCACHE_DIR SOURCES_DIR RUSTUP_DIR SYSROOT_DIR)
     if(NOT ${variable})
@@ -30,7 +30,7 @@ endforeach()
 
 string(REGEX MATCH "^[^-]+" TARGET_PROCESSOR "${TARGET_TRIPLE}")
 set(RUST_TARGET "${TARGET_PROCESSOR}-pc-windows-gnullvm")
-# The triple of the build machine, for build scripts and procedural macros.
+# Build machine triple, for build scripts and procedural macros.
 set(RUST_HOST "${CMAKE_HOST_SYSTEM_PROCESSOR}-unknown-linux-gnu")
 # RUST_TARGET and RUST_HOST as cargo's environment variable names spell them.
 string(MAKE_C_IDENTIFIER "${RUST_TARGET}" RUST_TARGET_IDENTIFIER)
@@ -67,8 +67,8 @@ add_dependencies(update ${update_targets})
 add_custom_target(download)
 add_dependencies(download ${download_targets})
 
-# revisions writes the checked-out commit of every git source to
-# revisions.txt, in the form that SOURCE_REVISIONS_FILE reads.
+# revisions writes the checked-out commit of every git source to revisions.txt
+# in the format that SOURCE_REVISIONS_FILE reads.
 set(git_source_lines "")
 foreach(git_external_project IN LISTS git_external_projects)
     ExternalProject_Get_Property(${git_external_project} SOURCE_DIR)

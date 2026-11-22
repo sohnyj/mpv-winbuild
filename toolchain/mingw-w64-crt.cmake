@@ -1,6 +1,6 @@
-# Built without LTO: the startup objects and the functions that code generation
-# calls must stay native code. Built without section splitting: most archive
-# members hold a single function.
+# Built without LTO, since startup objects and functions that code generation
+# calls must stay native code. Built without section splitting, since most
+# archive members hold a single function.
 #
 # libbluray's meson.build requires libssp on MinGW (find_library('ssp')), and
 # clang's MinGW driver links -lssp_nonshared -lssp for -fstack-protector*.

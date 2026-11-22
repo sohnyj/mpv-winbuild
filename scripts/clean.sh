@@ -9,16 +9,16 @@
 #                            workflow ignores its cache
 #   --package <package>      package to clean (repeatable)
 #   --toolchain <component>  toolchain component to clean (repeatable)
-#   base_dir                 location of the sources/, build/ and ccache/
-#                            directories (default: the repository root)
+#   base_dir                 location of sources/, build/ and ccache/ (default:
+#                            repository root)
 # Without --fresh-build, --fresh-ccache, --package and --toolchain, print this
 # help.
 #
-# Cleaning a package or toolchain component deletes its build directories,
-# stamps and source: runs <name>-remove-prefix-and-source, as the prefix
-# directory holds the build directory and the stamps. Cleaning a component that
-# builds from another's source, such as libcxx from llvm, deletes that source;
-# clean the source's component instead.
+# Cleaning a package or toolchain component runs <name>-remove-prefix-and-source
+# in every build directory, which deletes its source and its prefix directory,
+# where its build directory and stamps are. Cleaning a component that builds
+# from another's source, such as libcxx from llvm, deletes that source. Clean
+# the source's component instead.
 set -uo pipefail
 
 usage() { sed -n '2,${/^#/!q;s/^# \?//p}' "$0"; exit "${1:-0}"; }
@@ -71,8 +71,8 @@ has_clean_target() {
     '$1 == target { found = 1 } END { exit !found }' <<< "${ninja_targets}"
 }
 
-# delete_sources_and_build: delete <base_dir>/sources and <base_dir>/build. The
-# stamps of every build directory refer to the shared sources, so both are
+# delete_sources_and_build: delete <base_dir>/sources and <base_dir>/build.
+# Stamps of every build directory refer to the shared sources, so both are
 # deleted together.
 delete_sources_and_build() {
   echo ">> Delete ${base_dir}/sources and ${base_dir}/build"

@@ -1,6 +1,6 @@
 # The project's minimum CMake version predates policy CMP0069, so CMake ignores
 # CMAKE_INTERPROCEDURAL_OPTIMIZATION unless the policy default is NEW. Only the
-# library is built: the tests are added unconditionally.
+# library is built, as the tests are added unconditionally.
 ExternalProject_Add(uchardet
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
