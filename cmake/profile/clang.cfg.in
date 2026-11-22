@@ -1,16 +1,20 @@
 # clang configuration of the @PROFILE@ toolchain profile. Options prefixed with
 # $ apply only to links, after the linker inputs.
 
+# Sysroot, target and resource directory
 --sysroot=@SYSROOT_DIR@
 --target=@TARGET_TRIPLE@
 -resource-dir=@CLANG_RESOURCE_DIR@
 
+# Runtimes
 -rtlib=compiler-rt
 -stdlib=libc++
 -unwindlib=libunwind
 
+# Linker
 -fuse-ld=lld
 
+# Profile flags, section splitting for --gc-sections and Control Flow Guard
 @CPU_FLAGS@
 @PREPROCESSOR_FLAGS@
 @CODE_GENERATION_FLAGS@
@@ -18,15 +22,19 @@
 -ffunction-sections
 -mguard=cf
 
+# Static linking
 $-static
 
+# Unused section removal, identical code folding and symbol stripping
 $-Wl,--gc-sections
 $-Wl,--icf=safe
 $-Wl,-s
 
+# PE image: CET shadow stack compatibility and header checksum
 $-Wl,-Xlink=-cetcompat
 $-Wl,-Xlink=-release
 
+# LTO: optimization level, ThinLTO cache and jobs
 $-Wl,--lto-O3
 $-Wl,--thinlto-cache-dir=@THINLTO_CACHE_DIR@
 $-Wl,--thinlto-cache-policy=cache_size_bytes=1g:prune_interval=1m
