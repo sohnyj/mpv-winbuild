@@ -40,7 +40,7 @@ Autobuild runs daily at UTC 00:00.
 | `build.sh` | Update sources and build runtimes and packages for a CPU into `build/<march>/sysroot`. |
 | `build-inputs.sh` | Print inputs that stamps do not track. `build.sh` empties the build directory when they change. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` into `release/*.7z`. |
-| `update.sh` | Move git sources to the `COMMIT` of their recipes, else to the commits that `build.sh --revisions` set, else to their branch tips. |
+| `update.sh` | Move git sources to the `COMMIT` of their recipes, else to their branch tips. |
 | `clean.sh` | Delete build directories, stamps and sources, or clear the ccache. |
 
 ```bash
@@ -51,32 +51,23 @@ scripts/package.sh
 
 ## CMake functions
 
-The functions are in `cmake/`. Recipes call `add_git_steps`, and
-`toolchain/CMakeLists.txt` and `packages/CMakeLists.txt` call
-`add_toolchain_profile` and, after including each recipe, `add_cleanup_steps`.
+Recipes in `toolchain/` and `packages/` call `add_git_steps` of
+`cmake/CustomSteps.cmake` for a git source, which clones it and keeps its
+checkout at the target commit.
 
 ```cmake
-add_toolchain_profile(<profile> <cpu flags> <preprocessor flags>
-                      <code generation flags>)
 add_git_steps(<name> REPOSITORY <url> BRANCH <branch>
               [CLONE_FLAGS <flags>] [CLONE_POST_COMMAND <git arguments>]
               [COMMIT <commit>] [SUBMODULES <path>...]
               [PATCHES <file>...] [PATCH_FLAGS <flags>])
-add_cleanup_steps(<name>)
 ```
-
-| Function | Purpose |
-| -------- | ------- |
-| `add_toolchain_profile` | Generate a toolchain profile for CPU, preprocessor and code generation flags. |
-| `add_git_steps` | Clone a git source and keep its checkout at the target commit. |
-| `add_cleanup_steps` | Add a step target that deletes prefix and source, and for a git source clean its build directory and checkout after install. |
 
 | `add_git_steps` option | Purpose |
 | ---------------------- | ------- |
 | `REPOSITORY`, `BRANCH` | Clone `BRANCH` of `REPOSITORY`. |
 | `CLONE_FLAGS` | Pass these flags to `git clone`, such as `--sparse --filter=tree:0`. |
 | `CLONE_POST_COMMAND` | Run git with these arguments after cloning, such as `sparse-checkout set`. |
-| `COMMIT` | Check out this commit instead of the branch tip or the commit that `build.sh --revisions` set. |
+| `COMMIT` | Check out this commit instead of the branch tip. |
 | `SUBMODULES` | Check out only these submodules, or none when given as `""`. Without it, all submodules are checked out. |
 | `PATCHES` | Apply these patch files with `git apply`, in order. Relative paths are relative to the recipe directory. |
 | `PATCH_FLAGS` | Pass these flags to `git apply`, such as `--3way`. |
