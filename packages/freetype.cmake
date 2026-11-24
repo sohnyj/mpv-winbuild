@@ -1,3 +1,4 @@
+# Submodules are not checked out, as dlg is only for debug logging.
 ExternalProject_Add(freetype
     DEPENDS
         brotli

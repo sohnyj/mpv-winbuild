@@ -1,3 +1,5 @@
+# Submodules are not checked out, as brotli, highway and lcms2 are built as
+# packages, and the others are for disabled options and tests.
 ExternalProject_Add(libjxl
     DEPENDS
         brotli

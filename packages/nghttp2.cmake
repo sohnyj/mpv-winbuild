@@ -1,3 +1,5 @@
+# Submodules are not checked out, as they are only for applications and tests
+# excluded by ENABLE_LIB_ONLY and BUILD_TESTING.
 ExternalProject_Add(nghttp2
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""

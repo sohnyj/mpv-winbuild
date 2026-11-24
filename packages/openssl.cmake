@@ -1,3 +1,5 @@
+# Submodules are not checked out, as they are only for tests, fuzzing and
+# external providers.
 ExternalProject_Add(openssl
     DEPENDS
         brotli

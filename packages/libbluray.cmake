@@ -1,3 +1,4 @@
+# Submodules are not checked out, as libudfread is built as a package.
 ExternalProject_Add(libbluray
     DEPENDS
         freetype
