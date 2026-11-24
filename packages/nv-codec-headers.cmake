@@ -1,3 +1,4 @@
+# Headers only, installed into the sysroot without a build.
 ExternalProject_Add(nv-codec-headers
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
