@@ -1,9 +1,7 @@
 # Steps added to external projects: toolchain components and packages.
 #
 # add_cleanup_steps(<name> <last step>)
-#   Step targets:
-#     <name>-delete-stamps             delete stamps and, with a git source,
-#                                      reset the checkout
+#   Step target:
 #     <name>-remove-prefix-and-source  delete the prefix directory (build
 #                                      directory, stamps) and the source
 #   Only with a git source of its own, given to add_git_steps before:
@@ -50,27 +48,9 @@ if(SOURCE_REVISIONS_FILE)
 endif()
 
 function(add_cleanup_steps name last_step)
-    ExternalProject_Get_Property(${name} BINARY_DIR INSTALL_DIR SOURCE_DIR STAMP_DIR)
+    ExternalProject_Get_Property(${name} BINARY_DIR INSTALL_DIR SOURCE_DIR)
     get_property(git_repository TARGET ${name} PROPERTY GIT_REPOSITORY)
     get_property(reset_command TARGET ${name} PROPERTY GIT_RESET_COMMAND)
-
-    set(reset_commands "")
-    set(delete_stamps_comment "Deleting stamps for '${name}'")
-    if(git_repository)
-        set(reset_commands COMMAND ${reset_command})
-        set(delete_stamps_comment "Deleting stamps and resetting checkout for '${name}'")
-    endif()
-
-    ExternalProject_Add_Step(${name} delete-stamps
-        COMMAND ${CMAKE_COMMAND} -D "STAMP_DIR=${STAMP_DIR}"
-            -P "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/DeleteStamps.cmake"
-        ${reset_commands}
-        ALWAYS TRUE
-        EXCLUDE_FROM_MAIN TRUE
-        INDEPENDENT TRUE
-        LOG 1
-        COMMENT "${delete_stamps_comment}"
-    )
 
     if(git_repository)
         # With the build directory in the checkout, build outputs are in the
@@ -89,7 +69,7 @@ function(add_cleanup_steps name last_step)
         ExternalProject_Add_Step(${name} clean-after-install
             DEPENDEES ${last_step}
             ${empty_build_commands}
-            ${reset_commands}
+            COMMAND ${reset_command}
             LOG 1
             COMMENT "Cleaning build directory and checkout for '${name}'"
         )
@@ -108,7 +88,7 @@ function(add_cleanup_steps name last_step)
         LOG 1
         COMMENT "Deleting prefix directory and source for '${name}'"
     )
-    ExternalProject_Add_StepTargets(${name} delete-stamps remove-prefix-and-source)
+    ExternalProject_Add_StepTargets(${name} remove-prefix-and-source)
 endfunction()
 
 function(add_git_steps name)

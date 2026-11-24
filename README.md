@@ -67,7 +67,7 @@ add_cleanup_steps(<name> <last step>)
 | -------- | ------- |
 | `add_toolchain_profile` | Generate a toolchain profile for CPU, preprocessor and code generation flags. |
 | `add_git_steps` | Clone a git source and keep its checkout at the target commit. |
-| `add_cleanup_steps` | Add step targets that delete stamps, or prefix and source, and for a git source clean its build directory and checkout after `<last step>`. |
+| `add_cleanup_steps` | Add a step target that deletes prefix and source, and for a git source clean its build directory and checkout after `<last step>`. |
 
 | `add_git_steps` option | Purpose |
 | ---------------------- | ------- |
