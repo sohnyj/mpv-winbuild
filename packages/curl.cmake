@@ -78,4 +78,3 @@ add_git_steps(curl
         !/projects/
         !/tests/"
 )
-add_cleanup_steps(curl)

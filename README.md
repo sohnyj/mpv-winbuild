@@ -51,7 +51,9 @@ scripts/package.sh
 
 ## CMake functions
 
-Recipes in `toolchain/` and `packages/` call these functions from `cmake/`.
+The functions are in `cmake/`. Recipes call `add_git_steps`, and
+`toolchain/CMakeLists.txt` and `packages/CMakeLists.txt` call
+`add_toolchain_profile` and, after including each recipe, `add_cleanup_steps`.
 
 ```cmake
 add_toolchain_profile(<profile> <cpu flags> <preprocessor flags>

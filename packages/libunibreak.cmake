@@ -20,4 +20,3 @@ add_git_steps(libunibreak
     BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
-add_cleanup_steps(libunibreak)

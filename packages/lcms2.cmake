@@ -31,4 +31,3 @@ add_git_steps(lcms2
         !/testbed/
         !/utils/"
 )
-add_cleanup_steps(lcms2)

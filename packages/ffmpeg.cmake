@@ -100,4 +100,3 @@ add_git_steps(ffmpeg
         /*
         !/tests/ref/"
 )
-add_cleanup_steps(ffmpeg)

@@ -47,4 +47,3 @@ add_git_steps(libplacebo
         3rdparty/jinja
         3rdparty/markupsafe
 )
-add_cleanup_steps(libplacebo)

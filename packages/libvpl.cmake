@@ -24,4 +24,3 @@ add_git_steps(libvpl
         !/doc/
         !/libvpl/test/"
 )
-add_cleanup_steps(libvpl)

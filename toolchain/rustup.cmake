@@ -14,4 +14,3 @@ ExternalProject_Add(rustup
 )
 
 ExternalProject_Add_StepDependencies(rustup patch ${CARGO_EXEC})
-add_cleanup_steps(rustup)

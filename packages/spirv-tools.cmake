@@ -20,6 +20,5 @@ add_git_steps(spirv-tools
         !/docs/
         !/kokoro/"
 )
-add_cleanup_steps(spirv-tools)
 
 set(SPIRV_TOOLS_SOURCE_DIR ${SOURCE_DIR})

@@ -26,4 +26,3 @@ add_git_steps(libzimg
     SUBMODULES
         graphengine
 )
-add_cleanup_steps(libzimg)

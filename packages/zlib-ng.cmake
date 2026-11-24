@@ -28,4 +28,3 @@ add_git_steps(zlib-ng
         !/doc/
         !/test/"
 )
-add_cleanup_steps(zlib-ng)

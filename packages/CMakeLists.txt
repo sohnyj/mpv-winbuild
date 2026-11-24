@@ -61,6 +61,7 @@ set(packages
 foreach(package IN LISTS packages)
     set(SOURCE_DIR "${SOURCES_DIR}/${package}")
     include("${CMAKE_CURRENT_SOURCE_DIR}/${package}.cmake")
+    add_cleanup_steps("${package}")
     # When the toolchain profile changes, steps from patch on run again, since
     # the checkout is reset after install.
     ExternalProject_Add_StepDependencies("${package}" patch ${PROFILE_FILES})

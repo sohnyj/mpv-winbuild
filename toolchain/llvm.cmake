@@ -41,6 +41,5 @@ add_git_steps(llvm
         /llvm/cmake/"
     COMMIT ${LLVM_COMMIT}
 )
-add_cleanup_steps(llvm)
 
 set(LLVM_SOURCE_DIR ${SOURCE_DIR})

@@ -29,4 +29,3 @@ add_git_steps(libsoxr
         /*
         !/lsr-tests/"
 )
-add_cleanup_steps(libsoxr)

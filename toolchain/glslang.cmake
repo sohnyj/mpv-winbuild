@@ -25,7 +25,6 @@ add_git_steps(glslang
         !/Test/
         !/gtests/"
 )
-add_cleanup_steps(glslang)
 
 ExternalProject_Get_Property(glslang INSTALL_DIR)
 set(GLSLANG_EXECUTABLE ${INSTALL_DIR}/bin/glslang)

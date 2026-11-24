@@ -23,4 +23,3 @@ add_git_steps(vulkan-loader
         !/docs/
         !/tests/"
 )
-add_cleanup_steps(vulkan-loader)

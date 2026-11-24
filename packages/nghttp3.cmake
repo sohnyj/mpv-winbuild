@@ -24,4 +24,3 @@ add_git_steps(nghttp3
     SUBMODULES
         lib/sfparse
 )
-add_cleanup_steps(nghttp3)

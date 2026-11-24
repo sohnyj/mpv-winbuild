@@ -47,4 +47,3 @@ add_git_steps(libarchive
         !/examples/
         !/test_utils/"
 )
-add_cleanup_steps(libarchive)

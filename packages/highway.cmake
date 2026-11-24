@@ -25,4 +25,3 @@ add_git_steps(highway
         /*
         !/g3doc/"
 )
-add_cleanup_steps(highway)

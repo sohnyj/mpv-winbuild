@@ -24,4 +24,3 @@ add_git_steps(libpng
         !/projects/
         !/tests/"
 )
-add_cleanup_steps(libpng)

@@ -33,5 +33,3 @@ ExternalProject_Add(libcxx
     LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
-
-add_cleanup_steps(libcxx)

@@ -11,5 +11,3 @@ ExternalProject_Add(mingw-w64-headers
     LOG_CONFIGURE 1 LOG_INSTALL 1
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
-
-add_cleanup_steps(mingw-w64-headers)

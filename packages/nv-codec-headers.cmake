@@ -15,4 +15,3 @@ add_git_steps(nv-codec-headers
     BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
-add_cleanup_steps(nv-codec-headers)

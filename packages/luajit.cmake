@@ -35,4 +35,3 @@ add_git_steps(luajit
         /*
         !/doc/"
 )
-add_cleanup_steps(luajit)

@@ -33,4 +33,3 @@ add_git_steps(libpsl
     SUBMODULES
         list
 )
-add_cleanup_steps(libpsl)

@@ -32,4 +32,3 @@ add_git_steps(zstd
         !/tests/
         !/zlibWrapper/"
 )
-add_cleanup_steps(zstd)

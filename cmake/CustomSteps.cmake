@@ -28,10 +28,12 @@
 #   add_cleanup_steps.
 #
 # add_cleanup_steps(<name>)
+#   Called by toolchain/CMakeLists.txt and packages/CMakeLists.txt for every
+#   recipe, after including it.
 #   Step target:
 #     <name>-remove-prefix-and-source  delete the prefix directory (build
 #                                      directory, stamps) and the source
-#   Only with a git source of its own, given to add_git_steps before:
+#   Only with a git source of its own, given to add_git_steps in the recipe:
 #     step clean-after-install         after install, empty the build
 #                                      directory, and clean and reset the
 #                                      checkout

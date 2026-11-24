@@ -41,4 +41,3 @@ add_git_steps(libjxl
         !/examples/"
     SUBMODULES ""
 )
-add_cleanup_steps(libjxl)

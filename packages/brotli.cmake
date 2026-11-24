@@ -26,4 +26,3 @@ add_git_steps(brotli
         !/research/
         !/tests/"
 )
-add_cleanup_steps(brotli)

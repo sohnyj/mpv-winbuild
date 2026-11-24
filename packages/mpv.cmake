@@ -84,4 +84,3 @@ add_git_steps(mpv
         !/fuzzers/
         !/test/"
 )
-add_cleanup_steps(mpv)

@@ -40,4 +40,3 @@ add_git_steps(libxml2
         !/result/
         !/test/"
 )
-add_cleanup_steps(libxml2)

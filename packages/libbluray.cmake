@@ -36,4 +36,3 @@ add_git_steps(libbluray
         !/contrib/"
     SUBMODULES ""
 )
-add_cleanup_steps(libbluray)

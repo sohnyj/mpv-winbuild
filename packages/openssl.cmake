@@ -97,4 +97,3 @@ add_git_steps(openssl
         !/test/"
     SUBMODULES ""
 )
-add_cleanup_steps(openssl)

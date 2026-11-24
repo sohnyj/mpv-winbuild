@@ -19,6 +19,5 @@ add_git_steps(mingw-w64
         !/build-aux/
         !/mingw-w64-tools/"
 )
-add_cleanup_steps(mingw-w64)
 
 set(MINGW_W64_SOURCE_DIR ${SOURCE_DIR})

@@ -39,4 +39,3 @@ add_git_steps(harfbuzz
         !/test/
         !/util/"
 )
-add_cleanup_steps(harfbuzz)

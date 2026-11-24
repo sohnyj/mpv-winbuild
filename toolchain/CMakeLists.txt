@@ -28,6 +28,7 @@ set(toolchain_components
 foreach(toolchain_component IN LISTS toolchain_components)
     set(SOURCE_DIR "${SOURCES_DIR}/${toolchain_component}")
     include("${CMAKE_CURRENT_SOURCE_DIR}/${toolchain_component}.cmake")
+    add_cleanup_steps("${toolchain_component}")
     # When the toolchain profile changes, steps from patch on run again, since
     # the checkout is reset after install.
     ExternalProject_Add_StepDependencies("${toolchain_component}" patch ${PROFILE_FILES})
