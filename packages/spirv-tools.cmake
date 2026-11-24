@@ -1,3 +1,4 @@
+# Source from which shaderc builds SPIRV-Tools for the target.
 ExternalProject_Add(spirv-tools
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""

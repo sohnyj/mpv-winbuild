@@ -1,3 +1,4 @@
+# Source of Windows metadata from which cppwinrt generates C++/WinRT headers.
 ExternalProject_Add(windows-rs
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""

@@ -1,3 +1,5 @@
+# Host tool, whose executable is passed to FFmpeg as --glslc to compile FFmpeg's
+# Vulkan shaders. shaderc builds glslang for the target from the same source.
 ExternalProject_Add(glslang
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
