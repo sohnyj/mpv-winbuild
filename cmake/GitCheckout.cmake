@@ -37,6 +37,20 @@ function(git_output variable)
     set(${variable} "${output}" PARENT_SCOPE)
 endfunction()
 
+# delete_stamps(): deletes stamps of the external project, so that all its
+# steps run again. Stamps are the empty files of STAMP_DIR, since
+# ExternalProject creates them by touching. An empty log there is deleted with
+# them.
+function(delete_stamps)
+    file(GLOB files LIST_DIRECTORIES false "${STAMP_DIR}/*")
+    foreach(file IN LISTS files)
+        file(SIZE "${file}" size)
+        if(size EQUAL 0)
+            file(REMOVE "${file}")
+        endif()
+    endforeach()
+endfunction()
+
 # apply_patches(): applies patches with patch flags, in order, to the checkout,
 # which has no changes. They are also applied to the index, so resetting the
 # checkout deletes the files they add.
@@ -119,11 +133,7 @@ execute_process(
 )
 if(NOT deletion_reason STREQUAL "")
     message(STATUS "Deleting stamps for '${NAME}': ${deletion_reason}")
-    execute_process(
-        COMMAND "${CMAKE_COMMAND}" -D "STAMP_DIR=${STAMP_DIR}"
-            -P "${CMAKE_CURRENT_LIST_DIR}/DeleteStamps.cmake"
-        COMMAND_ERROR_IS_FATAL ANY
-    )
+    delete_stamps()
 endif()
 file(WRITE "${commit_file}" "${commit}\n")
 include("${CMAKE_CURRENT_LIST_DIR}/GitSubmodules.cmake")
