@@ -18,4 +18,4 @@ add_git_steps(fast_float
         /*
         !/tests/"
 )
-add_cleanup_steps(fast_float install)
+add_cleanup_steps(fast_float)

@@ -1,11 +1,11 @@
 # Steps added to external projects: toolchain components and packages.
 #
-# add_cleanup_steps(<name> <last step>)
+# add_cleanup_steps(<name>)
 #   Step target:
 #     <name>-remove-prefix-and-source  delete the prefix directory (build
 #                                      directory, stamps) and the source
 #   Only with a git source of its own, given to add_git_steps before:
-#     step clean-after-install         after <last step>, empty the build
+#     step clean-after-install         after install, empty the build
 #                                      directory, and clean and reset the
 #                                      checkout
 #
@@ -47,7 +47,7 @@ if(SOURCE_REVISIONS_FILE)
     endforeach()
 endif()
 
-function(add_cleanup_steps name last_step)
+function(add_cleanup_steps name)
     ExternalProject_Get_Property(${name} BINARY_DIR INSTALL_DIR SOURCE_DIR)
     get_property(git_repository TARGET ${name} PROPERTY GIT_REPOSITORY)
     get_property(reset_command TARGET ${name} PROPERTY GIT_RESET_COMMAND)
@@ -67,7 +67,7 @@ function(add_cleanup_steps name last_step)
             )
         endif()
         ExternalProject_Add_Step(${name} clean-after-install
-            DEPENDEES ${last_step}
+            DEPENDEES install
             ${empty_build_commands}
             COMMAND ${reset_command}
             LOG 1

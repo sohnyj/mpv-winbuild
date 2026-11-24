@@ -16,4 +16,4 @@ add_git_steps(vulkan-headers
     BRANCH main
     CLONE_FLAGS "--filter=tree:0"
 )
-add_cleanup_steps(vulkan-headers install)
+add_cleanup_steps(vulkan-headers)

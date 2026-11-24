@@ -34,4 +34,4 @@ ExternalProject_Add(libcxx
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_cleanup_steps(libcxx install)
+add_cleanup_steps(libcxx)

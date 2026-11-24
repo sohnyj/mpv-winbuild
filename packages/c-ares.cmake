@@ -22,4 +22,4 @@ add_git_steps(c-ares
         /*
         !/test/"
 )
-add_cleanup_steps(c-ares install)
+add_cleanup_steps(c-ares)

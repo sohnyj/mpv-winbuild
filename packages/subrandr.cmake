@@ -30,4 +30,4 @@ add_git_steps(subrandr
     BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
-add_cleanup_steps(subrandr install)
+add_cleanup_steps(subrandr)

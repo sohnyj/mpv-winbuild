@@ -29,4 +29,4 @@ add_git_steps(ngtcp2
         !/tests/"
     SUBMODULES ""
 )
-add_cleanup_steps(ngtcp2 install)
+add_cleanup_steps(ngtcp2)

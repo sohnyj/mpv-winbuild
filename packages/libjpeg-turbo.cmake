@@ -32,4 +32,4 @@ add_git_steps(libjpeg-turbo
         !/test/
         !/testimages/"
 )
-add_cleanup_steps(libjpeg-turbo install)
+add_cleanup_steps(libjpeg-turbo)

@@ -39,4 +39,4 @@ add_git_steps(freetype
         !/tests/"
     SUBMODULES ""
 )
-add_cleanup_steps(freetype install)
+add_cleanup_steps(freetype)

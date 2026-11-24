@@ -29,4 +29,4 @@ add_git_steps(fribidi
         /*
         !/test/"
 )
-add_cleanup_steps(fribidi install)
+add_cleanup_steps(fribidi)

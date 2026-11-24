@@ -24,4 +24,4 @@ add_git_steps(libvpl
         !/doc/
         !/libvpl/test/"
 )
-add_cleanup_steps(libvpl install)
+add_cleanup_steps(libvpl)

@@ -20,4 +20,4 @@ ExternalProject_Add(libiconv
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_cleanup_steps(libiconv install)
+add_cleanup_steps(libiconv)

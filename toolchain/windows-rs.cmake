@@ -17,6 +17,6 @@ add_git_steps(windows-rs
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /crates/libs/default/"
 )
-add_cleanup_steps(windows-rs install)
+add_cleanup_steps(windows-rs)
 
 set(WINDOWS_RS_SOURCE_DIR ${SOURCE_DIR})

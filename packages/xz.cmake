@@ -37,4 +37,4 @@ add_git_steps(xz
         !/po4a/
         !/windows/"
 )
-add_cleanup_steps(xz install)
+add_cleanup_steps(xz)

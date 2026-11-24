@@ -18,4 +18,4 @@ add_git_steps(amf-headers
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /amf/public/include/"
 )
-add_cleanup_steps(amf-headers install)
+add_cleanup_steps(amf-headers)

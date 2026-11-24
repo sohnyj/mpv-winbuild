@@ -32,4 +32,4 @@ add_git_steps(spirv-cross
         !/shaders*
         !/tests-other/"
 )
-add_cleanup_steps(spirv-cross install)
+add_cleanup_steps(spirv-cross)

@@ -26,4 +26,4 @@ add_git_steps(libudfread
         /*
         !/tests/"
 )
-add_cleanup_steps(libudfread install)
+add_cleanup_steps(libudfread)

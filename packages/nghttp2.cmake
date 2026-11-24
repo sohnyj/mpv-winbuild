@@ -28,4 +28,4 @@ add_git_steps(nghttp2
         !/tests/"
     SUBMODULES ""
 )
-add_cleanup_steps(nghttp2 install)
+add_cleanup_steps(nghttp2)

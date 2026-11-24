@@ -21,4 +21,4 @@ add_git_steps(bzip2
     BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
-add_cleanup_steps(bzip2 install)
+add_cleanup_steps(bzip2)

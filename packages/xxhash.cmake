@@ -25,4 +25,4 @@ add_git_steps(xxhash
         !/fuzz/
         !/tests/"
 )
-add_cleanup_steps(xxhash install)
+add_cleanup_steps(xxhash)

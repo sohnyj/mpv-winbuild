@@ -20,4 +20,4 @@ ExternalProject_Add(winpthreads
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_cleanup_steps(winpthreads install)
+add_cleanup_steps(winpthreads)

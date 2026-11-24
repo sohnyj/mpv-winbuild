@@ -43,4 +43,4 @@ add_git_steps(shaderc
         /*
         !/kokoro/"
 )
-add_cleanup_steps(shaderc install)
+add_cleanup_steps(shaderc)

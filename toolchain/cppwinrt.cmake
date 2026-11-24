@@ -28,4 +28,4 @@ add_git_steps(cppwinrt
         !/test/
         !/vsix/"
 )
-add_cleanup_steps(cppwinrt install)
+add_cleanup_steps(cppwinrt)

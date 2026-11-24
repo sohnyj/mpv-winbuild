@@ -36,4 +36,4 @@ add_git_steps(libass
         /*
         !/compare/"
 )
-add_cleanup_steps(libass install)
+add_cleanup_steps(libass)

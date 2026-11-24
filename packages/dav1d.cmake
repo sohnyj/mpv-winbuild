@@ -25,4 +25,4 @@ add_git_steps(dav1d
     BRANCH master
     CLONE_FLAGS "--filter=tree:0"
 )
-add_cleanup_steps(dav1d install)
+add_cleanup_steps(dav1d)

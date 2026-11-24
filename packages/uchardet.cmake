@@ -27,4 +27,4 @@ add_git_steps(uchardet
         /*
         !/script/"
 )
-add_cleanup_steps(uchardet install)
+add_cleanup_steps(uchardet)

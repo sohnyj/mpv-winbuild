@@ -19,6 +19,6 @@ add_git_steps(spirv-headers
         /*
         !/tools/"
 )
-add_cleanup_steps(spirv-headers install)
+add_cleanup_steps(spirv-headers)
 
 set(SPIRV_HEADERS_SOURCE_DIR ${SOURCE_DIR})

@@ -23,4 +23,4 @@ ExternalProject_Add(compiler-rt
     LOG_MERGED_STDOUTERR 1 LOG_OUTPUT_ON_FAILURE 1
 )
 
-add_cleanup_steps(compiler-rt install)
+add_cleanup_steps(compiler-rt)
