@@ -1,7 +1,7 @@
 #!/bin/bash
 # Print inputs that change a build but that stamps of its build directory do
-# not track. build.sh starts from an empty build directory when
-# they change, and the workflow puts their hash in its build cache key.
+# not track. build.sh starts from an empty build directory when they change,
+# and the workflow puts their hash in its build cache key.
 #
 # Usage: build-inputs.sh [--llvm-version <major>] [base_dir]
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of

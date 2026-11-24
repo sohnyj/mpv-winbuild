@@ -13,7 +13,8 @@
 #   --llvm-version <major>  apt.llvm.org major version (default: LLVM_VERSION of
 #                           defaults.env)
 #   --revisions <file>      move git sources to the commits of a revisions.txt
-#                           instead of their branch tips
+#                           instead of their branch tips (a recipe's COMMIT
+#                           takes precedence)
 #   --sources-only          stop after updating sources and writing
 #                           revisions.txt
 #   base_dir                location of sources/, ccache/ and build/ (default:

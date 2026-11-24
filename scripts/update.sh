@@ -1,7 +1,8 @@
 #!/bin/bash
 # Run `ninja update` in every configured build directory, which moves git
-# sources to their branch tips, or to the commits of the --revisions file the
-# directory was last configured with.
+# sources to the COMMIT of their recipes, else to the commits of the
+# --revisions file the directory was last configured with, else to their branch
+# tips.
 #
 # Usage: update.sh [base_dir]
 #   base_dir  location of build/ (default: repository root)

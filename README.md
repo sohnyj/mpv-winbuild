@@ -40,7 +40,7 @@ Autobuild runs daily at UTC 00:00.
 | `build.sh` | Update sources and build runtimes and packages for a CPU into `build/<march>/sysroot`. |
 | `build-inputs.sh` | Print inputs that stamps do not track. `build.sh` empties the build directory when they change. |
 | `package.sh` | Pack `mpv.exe`, `mpv.com` and `ffmpeg.exe` into `release/*.7z`. |
-| `update.sh` | Move git sources to their branch tips, or to the commits that `build.sh --revisions` set. |
+| `update.sh` | Move git sources to the `COMMIT` of their recipes, else to the commits that `build.sh --revisions` set, else to their branch tips. |
 | `clean.sh` | Delete build directories, stamps and sources, or clear the ccache. |
 
 ```bash
