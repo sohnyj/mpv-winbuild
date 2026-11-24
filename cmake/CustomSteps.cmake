@@ -1,14 +1,5 @@
 # Steps added to external projects: toolchain components and packages.
 #
-# add_cleanup_steps(<name>)
-#   Step target:
-#     <name>-remove-prefix-and-source  delete the prefix directory (build
-#                                      directory, stamps) and the source
-#   Only with a git source of its own, given to add_git_steps before:
-#     step clean-after-install         after install, empty the build
-#                                      directory, and clean and reset the
-#                                      checkout
-#
 # add_git_steps(<name> REPOSITORY <url> BRANCH <branch>
 #               [CLONE_FLAGS <flags>] [CLONE_POST_COMMAND <git arguments>]
 #               [COMMIT <commit>] [SUBMODULES <path>...]
@@ -35,6 +26,15 @@
 #   Target property GIT_RESET_COMMAND: command that discards changes to the
 #   checkout, checks out the target commit and applies PATCHES, for
 #   add_cleanup_steps.
+#
+# add_cleanup_steps(<name>)
+#   Step target:
+#     <name>-remove-prefix-and-source  delete the prefix directory (build
+#                                      directory, stamps) and the source
+#   Only with a git source of its own, given to add_git_steps before:
+#     step clean-after-install         after install, empty the build
+#                                      directory, and clean and reset the
+#                                      checkout
 
 # "<source> <commit>" lines of SOURCE_REVISIONS_FILE, as the revisions target
 # writes them.
@@ -46,50 +46,6 @@ if(SOURCE_REVISIONS_FILE)
         set_property(GLOBAL PROPERTY "SOURCE_REVISION_${CMAKE_MATCH_1}" "${CMAKE_MATCH_2}")
     endforeach()
 endif()
-
-function(add_cleanup_steps name)
-    ExternalProject_Get_Property(${name} BINARY_DIR INSTALL_DIR SOURCE_DIR)
-    get_property(git_repository TARGET ${name} PROPERTY GIT_REPOSITORY)
-    get_property(reset_command TARGET ${name} PROPERTY GIT_RESET_COMMAND)
-
-    if(git_repository)
-        # With the build directory in the checkout, build outputs are in the
-        # checkout and listed in .gitignore, so clean also removes ignored
-        # files.
-        cmake_path(IS_PREFIX SOURCE_DIR "${BINARY_DIR}" build_in_checkout)
-        if(build_in_checkout)
-            set(empty_build_commands COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force -x)
-        else()
-            set(empty_build_commands
-                COMMAND ${CMAKE_COMMAND} -E rm -rf ${BINARY_DIR}
-                COMMAND ${CMAKE_COMMAND} -E make_directory ${BINARY_DIR}
-                COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force
-            )
-        endif()
-        ExternalProject_Add_Step(${name} clean-after-install
-            DEPENDEES install
-            ${empty_build_commands}
-            COMMAND ${reset_command}
-            LOG 1
-            COMMENT "Cleaning build directory and checkout for '${name}'"
-        )
-    endif()
-
-    # INSTALL_DIR is the prefix directory. ExternalProject defaults it to the
-    # prefix, which it does not expose, and no recipe gives PREFIX or
-    # INSTALL_DIR. Configuring writes the clone script and its inputs into the
-    # stamp directory, inside the prefix directory.
-    ExternalProject_Add_Step(${name} remove-prefix-and-source
-        COMMAND ${CMAKE_COMMAND} -E rm -rf ${INSTALL_DIR} ${SOURCE_DIR}
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target rebuild_cache
-        ALWAYS TRUE
-        EXCLUDE_FROM_MAIN TRUE
-        INDEPENDENT TRUE
-        LOG 1
-        COMMENT "Deleting prefix directory and source for '${name}'"
-    )
-    ExternalProject_Add_StepTargets(${name} remove-prefix-and-source)
-endfunction()
 
 function(add_git_steps name)
     cmake_parse_arguments(PARSE_ARGV 1 arg ""
@@ -194,4 +150,48 @@ function(add_git_steps name)
         COMMAND ${CMAKE_COMMAND} ${checkout_definitions} -D ACTION=patch -P ${checkout_script}
         LOG 1
     )
+endfunction()
+
+function(add_cleanup_steps name)
+    ExternalProject_Get_Property(${name} BINARY_DIR INSTALL_DIR SOURCE_DIR)
+    get_property(git_repository TARGET ${name} PROPERTY GIT_REPOSITORY)
+    get_property(reset_command TARGET ${name} PROPERTY GIT_RESET_COMMAND)
+
+    if(git_repository)
+        # With the build directory in the checkout, build outputs are in the
+        # checkout and listed in .gitignore, so clean also removes ignored
+        # files.
+        cmake_path(IS_PREFIX SOURCE_DIR "${BINARY_DIR}" build_in_checkout)
+        if(build_in_checkout)
+            set(empty_build_commands COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force -x)
+        else()
+            set(empty_build_commands
+                COMMAND ${CMAKE_COMMAND} -E rm -rf ${BINARY_DIR}
+                COMMAND ${CMAKE_COMMAND} -E make_directory ${BINARY_DIR}
+                COMMAND ${GIT_EXECUTABLE} -C ${SOURCE_DIR} clean -d --force
+            )
+        endif()
+        ExternalProject_Add_Step(${name} clean-after-install
+            DEPENDEES install
+            ${empty_build_commands}
+            COMMAND ${reset_command}
+            LOG 1
+            COMMENT "Cleaning build directory and checkout for '${name}'"
+        )
+    endif()
+
+    # INSTALL_DIR is the prefix directory. ExternalProject defaults it to the
+    # prefix, which it does not expose, and no recipe gives PREFIX or
+    # INSTALL_DIR. Configuring writes the clone script and its inputs into the
+    # stamp directory, inside the prefix directory.
+    ExternalProject_Add_Step(${name} remove-prefix-and-source
+        COMMAND ${CMAKE_COMMAND} -E rm -rf ${INSTALL_DIR} ${SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target rebuild_cache
+        ALWAYS TRUE
+        EXCLUDE_FROM_MAIN TRUE
+        INDEPENDENT TRUE
+        LOG 1
+        COMMENT "Deleting prefix directory and source for '${name}'"
+    )
+    ExternalProject_Add_StepTargets(${name} remove-prefix-and-source)
 endfunction()
