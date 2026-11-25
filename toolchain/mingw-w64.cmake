@@ -11,9 +11,9 @@ ExternalProject_Add(mingw-w64
 )
 
 add_git_steps(mingw-w64
-    REPOSITORY https://github.com/mingw-w64/mingw-w64.git
+    REPOSITORY https://git.code.sf.net/p/mingw-w64/mingw-w64
     BRANCH master
-    CLONE_FLAGS "--sparse --filter=tree:0"
+    CLONE_FLAGS "--sparse"
     CLONE_POST_COMMAND "sparse-checkout set --no-cone
         /*
         !/build-aux/
