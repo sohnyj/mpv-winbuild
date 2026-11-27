@@ -108,7 +108,7 @@ add_git_steps(<name> REPOSITORY <url> BRANCH <branch>
     - [vulkan-loader](https://github.com/KhronosGroup/Vulkan-Loader) (with [vulkan-headers](https://github.com/KhronosGroup/Vulkan-Headers))
     - [xz](https://github.com/tukaani-project/xz)
     - [zlib-ng](https://github.com/zlib-ng/zlib-ng)
-    - [zstd](https://github.com/facebook/zstd)
+    - [zstd](https://github.com/meta/zstd)
 
 - Tarball
     - [libiconv](https://ftp.gnu.org/pub/gnu/libiconv/) (1.19.1)
